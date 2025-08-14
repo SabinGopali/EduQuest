@@ -40,6 +40,7 @@ class NearestAlgorithmController extends Controller
 
     // Fetch all colleges with valid coordinates
     $colleges = DB::table('colleges')
+        ->where('status', 'APPROVED')
         ->whereNotNull('latitude')
         ->whereNotNull('longitude')
         ->get()

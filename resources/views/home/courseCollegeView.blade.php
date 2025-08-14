@@ -183,7 +183,7 @@
       <div class="course-card">
         <img src="{{ asset('storage/' . $detail->college->logo) }}" alt="College Logo">
         <div class="card-title">
-          <a href="courses.html">{{ $detail->college->name }}</a>
+          <a href="/college/detail/{{ $detail->college->id }}">{{ $detail->college->name }}</a>
         </div>
         <div class="card-text">{{ $detail->college->address }}</div>
         <a href="/college/detail/course/description/{{ $detail->id }}">
