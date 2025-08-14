@@ -175,7 +175,7 @@
             @auth('student')
                 <li><a href="{{ url('/recommend') }}">Recommend Me</a></li>
             @else
-                <li><a href="{{ url('/login') }}">Recommend Me</a></li>
+                <li><a href="{{ url('/student/login') }}">Recommend Me</a></li>
             @endauth
 
             <li><a href="{{ url('/courses') }}">Courses</a></li>
@@ -188,16 +188,16 @@
             @auth('student')
                 <div class="dropdown">
                     <button>Welcome, {{ Auth::guard('student')->user()->name }}</button>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url('/myprofile') }}">My Profile</a></li>
-                        <li><a href="{{ url('/inquiry') }}">My Inquiry</a></li>
-                        <li><a href="{{ url('/changepassword') }}">Change Password</a></li>
-                        <li><a href="{{ url('/student/logout') }}">Logout</a></li>
-                    </ul>
+                    <div class="dropdown-content">
+                        <a href="{{ url('/myprofile') }}">My Profile</a>
+                        <a href="{{ url('/inquiry') }}">My Inquiry</a>
+                        <a href="{{ url('/changepassword') }}">Change Password</a>
+                        <a href="{{ url('/student/logout') }}">Logout</a>
+                    </div>
                 </div>
             @else
-                <a href="{{ url('/login') }}"><button>Login</button></a>
-                <a href="{{ url('/register') }}"><button>Sign Up</button></a>
+                <a href="{{ url('/student/login') }}"><button>Login</button></a>
+                <a href="{{ url('/student/register') }}"><button>Sign Up</button></a>
             @endauth
         </div>
     </header>

@@ -22,7 +22,7 @@
 						<li class="main_nav_item"><a href="/recommend">Recommend Me</a></li>
 
 						@else
-						<li class="main_nav_item"><a href="/login">Recommend Me</a></li>
+						<li class="main_nav_item"><a href="/student/login">Recommend Me</a></li>
 
 						@endauth
 
@@ -53,12 +53,12 @@
 				</div>
 				@else
 					@if (Route::has('login'))
-						<a href="/login">
+						<a href="/student/login">
 							<button type="button" class="btn btn-primary mr-2">Login</button>
 						</a>
 					@endif
 					@if (Route::has('register'))
-						<a href="/register">
+						<a href="/student/register">
 							<button type="button" class="btn btn-primary">Sign up</button>
 						</a>
 					@endif

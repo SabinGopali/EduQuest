@@ -10,6 +10,9 @@ use App\Models\Students;
 class AlgorithmController extends Controller
 {
     protected function tokenizeAndPreprocess($text) {
+        // Normalize to string and handle nulls
+        $text = (string) ($text ?? '');
+
         // Tokenize the text into words
         $words = str_word_count($text, 1);
 
@@ -48,7 +51,7 @@ class AlgorithmController extends Controller
 
         // Normalize TF by dividing by the total number of terms 0 and 1
         foreach ($termFrequency as &$tf) {
-            $tf /= $totalTerms;
+            $tf /= max(1, $totalTerms);
         }
 
         return $termFrequency;
@@ -58,7 +61,7 @@ class AlgorithmController extends Controller
         $tfidf = [];
 
         foreach ($tf as $term => $tfScore) {
-            $tfidf[$term] = $tfScore * $idf[$term];
+            $tfidf[$term] = $tfScore * ($idf[$term] ?? 1);
         }
 
         return $tfidf;
@@ -89,10 +92,10 @@ class AlgorithmController extends Controller
     protected function calculateTFIDFForStudent($student) {
 
         // Tokenize and preprocess the student's profile
-        $interestTerms = $this->tokenizeAndPreprocess($student->interest);
+        $interestTerms = $this->tokenizeAndPreprocess($student->interest ?? '');
 
         // Tokenize and preprocess the student's goal
-        $goalTerms = $this->tokenizeAndPreprocess($student->goal);
+        $goalTerms = $this->tokenizeAndPreprocess($student->goal ?? '');
 
         // Calculate TF for the profile and goal
         $tfProfile = $this->calculateTF($interestTerms);
@@ -112,31 +115,39 @@ class AlgorithmController extends Controller
         return $tfidfCombined;
     }
     public function recommend(){
+        // Ensure student is authenticated
+        if (!Auth::guard('student')->check()) {
+            return redirect('/student/login');
+        }
+
         // Function to calculate TF-IDF scores for a specific student by ID
         $currentStudent = Auth::guard('student')->user();
         $student= Students::find($currentStudent->id);
 
-        // Calculate TF-IDF for the specific student
+        // Calculate TF-IDF for the specific student (safe even if fields are null)
         $studentTFIDF = $this->calculateTFIDFForStudent($student);
-        // dd($studentTFIDF);
-        // $courseDescriptions = DB::table('courses')->pluck('description');
-        // dd($student->educationLevel == "+2");
-        if ($student->educationLevel == "SEE") {
+
+        // Select courses based on education level, defaulting safely
+        $educationLevel = (string) ($student->educationLevel ?? '');
+        if (strcasecmp($educationLevel, 'SEE') === 0) {
             // Find courses with 'stream' value of '+2'
-            $courses = Course::where('stream', '+2')->get();
+            $courses = Course::where('stream', '+2')->whereNotNull('description')->get();
         } else {
             // Find courses with 'stream' value of 'Bachelor'
-            $courses = Course::where('stream', 'Bachelor')->get();
+            $courses = Course::where('stream', 'Bachelor')->whereNotNull('description')->get();
+        }
+
+        // If none found by stream, fallback to any with description
+        if ($courses->isEmpty()) {
+            $courses = Course::whereNotNull('description')->get();
         }
 
         // Calculate TF-IDF for each course description and calculate cosine similarity
         $recommendedCourses = [];
-// dd($courses);
-        // dd($recommendedCourses);
         foreach ($courses as $index => $course) {
-            $terms = $this->tokenizeAndPreprocess($course->description);
+            $desc = (string) ($course->description ?? '');
+            $terms = $this->tokenizeAndPreprocess($desc);
             $tf = $this->calculateTF($terms);
-            // dd($course->description);
 
             // In this case, IDF is 1 since there's only one document (the course description).
             $idf = array_fill_keys(array_keys($tf), 1);
@@ -147,41 +158,23 @@ class AlgorithmController extends Controller
             $similarity = $this->cosineSimilarity($studentTFIDF, $tfidfCourse);
 
             // Store the course and its similarity score
-            // dd($courses);
-
             $recommendedCourses[$index] = [
                 'course_id' => $course->id, // You can replace this with the actual course ID
                 'similarity' => $similarity,
                 'name' => $course->name,
             ];
-
         }
-        // dd($recommendedCourses);
 
         usort($recommendedCourses, function ($a, $b) {
             // Sort in descending order based on the 'similarity' field
-            return $b['similarity'] - $a['similarity'];
+            return $b['similarity'] <=> $a['similarity'];
         });
-
-        // Remove items with a similarity value of 0
-        // $recommendedCourses = array_filter($recommendedCourses, function ($course) {
-        //     return $course['similarity'] != 0;
-        // });
 
         $topRecommendedCourses = array_filter($recommendedCourses, function ($course) {
             return $course['similarity'] > 0;
         });
 
-
-
-        //Top ten recommend course with higher similarity
-        // $topRecommendedCourses = array_slice($recommendedCourses, 0, 10);
-
-        // <------------------------------------------------------------>
-
         return view('home.recommend', compact('topRecommendedCourses'));
-        // return redirect()->route('algorithm.recommend')->with('topRecommendedCourses', $topRecommendedCourses);
-
     }
 
 }
