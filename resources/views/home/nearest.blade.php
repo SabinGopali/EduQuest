@@ -63,11 +63,14 @@
 <div class="row course_boxes">
     @foreach($colleges as $college)
     <div class="col-lg-4 course_box">
-        <div class="card" style="height:320px; border: 1px solid black; border-radius:5px;">
+        <div class="card" style="height:360px; border: 1px solid black; border-radius:5px;">
             <div class="card-body text-center">
             <img src="{{ asset('storage/' . $college->logo) }}" alt="College Logo" style="object-fit: contain; height: 100px; width:100px; margin-top: 10px; border: 2px solid black;">
                 <div class="card-title"><a>{{$college->name}}</a></div>
                 <div class="card-text">{{$college->address}}</div>
+                @if(isset($college->distance))
+                    <div class="card-text"><strong>Distance:</strong> {{ number_format($college->distance, 2) }} km</div>
+                @endif
             </div>
             <br/>
             <div class="d-flex justify-content-center">
@@ -133,8 +136,7 @@
 						map.setView(latlng, 13); // Set the map view to the geocoded coordinates
 						updateMarkerPosition(latlng); // Update the marker's position and display coordinates
 
-						// Send the coordinates to the PHP script using AJAX
-						sendCoordinatesToPHP(lat, lon);
+						// Removed undefined sendCoordinatesToPHP call
 					} else {
 						alert('Address not found.');
 					}
@@ -170,6 +172,15 @@
         var searchResultDiv = document.querySelector('.searchresult');
         searchResultDiv.style.display = 'block';
         });
+
+        // Auto-show results if colleges are present
+        (function() {
+            var hasColleges = {{ $colleges->count() > 0 ? 'true' : 'false' }};
+            if (hasColleges) {
+                var searchResultDiv = document.querySelector('.searchresult');
+                searchResultDiv.style.display = 'block';
+            }
+        })();
 
 		</script>
 

@@ -31,26 +31,24 @@ class NearestAlgorithmController extends Controller
     public function findNearestCollege(Request $request)
     {
         // Validate the input
-        // $request->validate([
-        //     'latitude' => 'required|numeric',
-        //     'longitude' => 'required|numeric',
-        // ]);
+        $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
 
         $addressInput = $request->addressInput;
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
+        $latitude = (float) $request->input('latitude');
+        $longitude = (float) $request->input('longitude');
         $radius = 50; // Radius in kilometers
 
-        // Use Haversine formula to calculate distance
+        // Use robust Haversine formula with clamped acos to avoid domain errors
         $colleges = DB::table('colleges')
-            ->select('*', DB::raw("(
-                6371 * acos(
-                    cos(radians(?)) * cos(radians(latitude)) *
-                    cos(radians(longitude) - radians(?)) +
-                    sin(radians(?)) * sin(radians(latitude))
-                )
-            ) AS distance"))
-            ->setBindings([$latitude, $longitude, $latitude]) // Bind dynamic values
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->selectRaw(
+                "*, (6371 * acos(least(1, greatest(-1, cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))))) AS distance",
+                [$latitude, $longitude, $latitude]
+            )
             ->having('distance', '<=', $radius)
             ->orderBy('distance', 'asc')
             ->limit(6)
