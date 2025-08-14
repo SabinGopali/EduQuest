@@ -84,6 +84,23 @@
             background-color: #dc2626;
         }
 
+        .reply-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .reply-btn:hover {
+            background-color: #2563eb;
+        }
+
         .no-data {
             text-align: center;
             padding: 20px;
@@ -119,6 +136,7 @@
                 <th>Student Name</th>
                 <th>Message</th>
                 <th>Inquiry Date</th>
+                <th>College Reply</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -129,13 +147,15 @@
                     <td>{{ $inquiry->student->name }}</td>
                     <td>{{ $inquiry->message }}</td>
                     <td>{{ $inquiry->created_at }}</td>
+                    <td>{{ $inquiry->reply ?? 'No reply yet' }}</td>
                     <td>
+                        <a href="/college/inquiry/edit/{{ $inquiry->id }}" class="reply-btn">REPLY</a>
                         <a href="/inquiry/delete/{{ $inquiry->id }}" class="action-btn">DELETE</a>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="no-data">No inquiries found for this college.</td>
+                    <td colspan="6" class="no-data">No inquiries found for this college.</td>
                 </tr>
             @endforelse
         </tbody>

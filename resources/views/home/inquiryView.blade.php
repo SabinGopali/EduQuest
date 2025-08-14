@@ -176,6 +176,7 @@
               <th scope="col">Course Detail</th>
               <th scope="col">College Name</th>
               <th scope="col">Message</th>
+              <th scope="col">College Reply</th>
               <th scope="col">Inquiry Date</th>
               <th scope="col">Action</th>
             </tr>
@@ -195,6 +196,7 @@
                   </a>
                 </td>
                 <td>{{ $inquiry->message ?? 'No message yet' }}</td>
+                <td>{{ $inquiry->reply ?? 'No reply yet' }}</td>
                 <td>{{ $inquiry->created_at }}</td>
                 <td>
                   <a href="/inquiry/delete/{{ $inquiry->id }}">

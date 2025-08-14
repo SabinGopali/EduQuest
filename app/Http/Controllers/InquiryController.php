@@ -121,25 +121,36 @@ class InquiryController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validate the request data
         $validatedData = $request->validate([
-            'message' => 'required|string',
+            'message' => 'nullable|string',
+            'reply' => 'nullable|string',
         ]);
 
-        // Find the inquiry by ID
         $inquiry = Inquiry::find($id);
 
-        // Check if the inquiry exists
         if (!$inquiry) {
             return redirect()->back()->with('error', 'Inquiry not found.');
         }
 
-        // Update the inquiry with the validated data
-        $inquiry->update([
-            'message' => $validatedData['message'],
-        ]);
+        $updateData = [];
+        if (array_key_exists('message', $validatedData)) {
+            $updateData['message'] = $validatedData['message'];
+        }
+        if (array_key_exists('reply', $validatedData)) {
+            $updateData['reply'] = $validatedData['reply'];
+        }
 
-        return redirect()->route('college.inquiryshow')->with('success', 'Inquiry updated successfully.');
+        if (!empty($updateData)) {
+            $inquiry->update($updateData);
+        }
+
+        if (\Illuminate\Support\Facades\Auth::guard('college')->check()) {
+            return redirect()->route('college.inquiryshow')->with('success', 'Inquiry updated successfully.');
+        } elseif (\Illuminate\Support\Facades\Auth::guard('student')->check()) {
+            return redirect()->route('student.getInquiries')->with('success', 'Inquiry updated successfully.');
+        } else {
+            return redirect()->route('inquiry.showForAdmin')->with('success', 'Inquiry updated successfully.');
+        }
     }
 
     /**

@@ -18,6 +18,7 @@ class Inquiry extends Model
         'coursedetail_id',
         'inquirydate',
         'message',
+        'reply',
     ];
 
     // Relationships
