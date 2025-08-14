@@ -34,7 +34,7 @@
         <button id="retryLocation" class="btn btn-primary w-100">Enable Location</button>
         <small id="locationHint" class="text-muted d-block mt-2"></small>
     </div>
-    <div class="a" id="manualBlock" style="display: none;">
+    <div class="a" id="manualBlock">
         <h3>Search your location or use your current location</h3>
         <input type="text" class="form-control" id="addressInput" placeholder="Enter an address (e.g., city, street)">
         <button type="button" class="btn btn-primary text-center w-100 mt-3" id="geocodeButton">Search</button>
