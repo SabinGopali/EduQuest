@@ -1,0 +1,176 @@
+@extends('layouts.app')
+@section('content')
+
+  <title>My-Profile</title>
+  
+  
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .super_container {
+      max-width: 700px;
+      margin: 150px auto 60px;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgb(0 0 0 / 0.1);
+    }
+
+    .profile {
+      text-align: center;
+      padding: 30px 20px 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .profile img {
+      width: 160px;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #007bff;
+      box-shadow: 0 0 10px rgb(0 123 255 / 0.3);
+      margin-bottom: 15px;
+      transition: transform 0.3s ease;
+    }
+
+    .profile img:hover {
+      transform: scale(1.05);
+    }
+
+    .profile h2 {
+      font-weight: 700;
+      font-size: 28px;
+      margin: 0 0 8px;
+      color: #222;
+    }
+
+    .profile p {
+      font-size: 16px;
+      color: #555;
+      margin: 4px 0;
+      font-weight: 500;
+    }
+
+    .section {
+      padding: 25px 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .section h3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #007bff;
+      border-left: 4px solid #007bff;
+      padding-left: 12px;
+    }
+
+    .section p {
+      font-size: 16px;
+      color: #444;
+      margin: 6px 0;
+      line-height: 1.5;
+    }
+
+    /* Edit button */
+    .edit-profile-btn {
+      display: block;
+      width: 160px;
+      margin: 30px auto 0;
+      padding: 12px 0;
+      background-color: #007bff;
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 6px 12px rgb(0 123 255 / 0.3);
+      transition: background-color 0.3s ease;
+    }
+
+    .edit-profile-btn:hover,
+    .edit-profile-btn:focus {
+      background-color: #0056b3;
+      box-shadow: 0 8px 16px rgb(0 86 179 / 0.4);
+      outline: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .super_container {
+        margin: 100px 15px 40px;
+        padding: 15px;
+      }
+
+      .profile img {
+        width: 120px;
+        height: 120px;
+      }
+
+      .profile h2 {
+        font-size: 24px;
+      }
+
+      .section h3 {
+        font-size: 20px;
+      }
+
+      .edit-profile-btn {
+        width: 140px;
+        font-size: 14px;
+        padding: 10px 0;
+      }
+    }
+  </style>
+
+
+<div class="super_container">
+
+  <div class="profile">
+    <img src="{{ asset('storage/uploads/' . $student->image) }}" alt="Student Image" />
+    <h2>{{ $student->name }}</h2>
+    <p>Email: {{ $student->email }}</p>
+    <p>Contact: {{ $student->contact }}</p>
+  </div>
+
+  <div class="section">
+    <h3>Academic Information</h3>
+    <p>Education Level: {{ $student->educationLevel }}</p>
+    <p>Passed Year: {{ $student->passedyear }}</p>
+    <p>Previous School/College: {{ $student->previousschool }}</p>
+    <p>GPA: {{ $student->gpa }}</p>
+  </div>
+
+  <div class="section">
+    <h3>Interests</h3>
+    <p>{{ $student->interest }}</p>
+  </div>
+
+  <div class="section">
+    <h3>Goals</h3>
+    <p>{{ $student->goal }}</p>
+  </div>
+
+  <a href="/myprofile-edit" class="edit-profile-btn">Edit Profile</a>
+
+</div>
+
+@endsection
+
+
+
+
