@@ -7,55 +7,55 @@ use Illuminate\Support\Facades\DB;
 
 class NearestAlgorithmController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view('home.nearest', ['colleges' => collect()]);
     }
+
     private function haversineDistance($lat1, $lon1, $lat2, $lon2)
     {
-        $earthRadius = 6371; // Earth's radius in kilometers
+        $earthRadius = 6371; // km
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
         $lat1 = deg2rad($lat1);
-        $lon1 = deg2rad($lon1);
         $lat2 = deg2rad($lat2);
-        $lon2 = deg2rad($lon2);
 
-        $dlat = $lat2 - $lat1;
-        $dlon = $lon2 - $lon1;
-
-        $a = sin($dlat / 2) * sin($dlat / 2) + cos($lat1) * cos($lat2) * sin($dlon / 2) * sin($dlon / 2);
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+             cos($lat1) * cos($lat2) *
+             sin($dLon / 2) * sin($dLon / 2);
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
-        return $earthRadius * $c; // Distance in kilometers
+        return $earthRadius * $c; // distance in km
     }
 
-    // Main function to find the nearest college
     public function findNearestCollege(Request $request)
-    {
-        $request->validate([
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-        ]);
+{
+    $request->validate([
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric',
+    ]);
 
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
+    $userLat = $request->input('latitude');
+    $userLon = $request->input('longitude');
 
-        $colleges = DB::table('colleges')
-            ->whereNotNull('latitude')
-            ->whereNotNull('longitude')
-            ->select('colleges.*')
-            ->selectRaw('(
-                6371 * acos(
-                    cos(radians(?)) * cos(radians(latitude)) *
-                    cos(radians(longitude) - radians(?)) +
-                    sin(radians(?)) * sin(radians(latitude))
-                )
-            ) AS distance', [$latitude, $longitude, $latitude])
-            ->orderBy('distance', 'asc')
-            ->get();
+    // Fetch all colleges with valid coordinates
+    $colleges = DB::table('colleges')
+        ->whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->get()
+        ->map(function ($college) use ($userLat, $userLon) {
+            // Ensure latitude and longitude are numbers
+            $collegeLat = floatval($college->latitude);
+            $collegeLon = floatval($college->longitude);
 
-        return view('home.nearest', [
-            'colleges' => $colleges,
-        ]);
-    }
+            $college->distance = $this->haversineDistance($userLat, $userLon, $collegeLat, $collegeLon);
 
+            return $college;
+        })
+        ->sortBy('distance')
+        ->values();
+
+    return view('home.nearest', ['colleges' => $colleges]);
+}
 
 }
