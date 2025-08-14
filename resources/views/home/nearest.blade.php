@@ -109,6 +109,8 @@
 
     var marker = L.marker([0,0], { draggable:true }).addTo(map);
     var current_lat = '', current_lon = '';
+    var hasAutoSubmitted = sessionStorage.getItem('nearestAutoSubmitted') === '1';
+    var hasResults = {{ count($colleges) ? 'true' : 'false' }};
 
     function updateMarkerPosition(latlng) {
         marker.setLatLng(latlng);
@@ -116,7 +118,17 @@
         current_lon = latlng.lng.toFixed(6);
         document.getElementById('latitude').value = current_lat;
         document.getElementById('longitude').value = current_lon;
+    }
+
+    function submitLocation(isAuto) {
+        if (isAuto && hasAutoSubmitted) {
+            return;
+        }
         document.getElementById('updatelonlan').click();
+        if (isAuto) {
+            sessionStorage.setItem('nearestAutoSubmitted', '1');
+            hasAutoSubmitted = true;
+        }
     }
 
     function geocodeAddress(address) {
@@ -129,6 +141,7 @@
                     var latlng = L.latLng(lat, lon);
                     map.setView(latlng, 13);
                     updateMarkerPosition(latlng);
+                    submitLocation(false);
                 } else { alert('Address not found.'); }
             }).catch(err => console.error(err));
     }
@@ -145,15 +158,17 @@
         if(e.key === 'Enter') geocodeButton.click();
     });
 
-    marker.on('drag', function(event){
+    marker.on('dragend', function(event){
         updateMarkerPosition(event.target.getLatLng());
+        submitLocation(false);
     });
 
-    if(navigator.geolocation){
+    if(navigator.geolocation && !hasResults){
         navigator.geolocation.getCurrentPosition(function(pos){
             var latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
             map.setView(latlng, 13);
             updateMarkerPosition(latlng);
+            submitLocation(true);
         });
     }
 </script>
