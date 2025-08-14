@@ -213,8 +213,8 @@ Route::middleware(['auth:college'])->group(function () {
 Route::get('/college/dashboard', [CollegeDashboardController::class, 'count'])->name('college.dashboard');
 Route::get('/college/edit-profile/', [CollegeController::class, 'getEditForm'])->name('college.editForm');
 Route::post('/college/update/', [CollegeController::class, 'update'])->name('college.update');
-Route::get('/college/view-inquiry', [InquiryController::class, 'showForCollege'])->name('college.inquiryshow');
-Route::get('/college/inquiry/edit/{id}', [InquiryController::class, 'editForCollege'])->name('college.inquiryedit');
+Route::get('/college/view-inquiry', [InquiryController::class, 'showForCollege'])->name('college.inquiryshow')->middleware('auth:college');
+Route::get('/college/inquiry/edit/{id}', [InquiryController::class, 'editForCollege'])->name('college.inquiryedit')->middleware('auth:college');
 Route::get('/college/course-detail', [CourseDetailController::class, 'showForCollege'])->name('college.coursedetail.show');
 Route::get('/college/coursedetail/edit/{id}', [CourseDetailController::class, 'editCourseDetail'])->name('coursedetail.editCourseDetail');
 Route::put('/coursedetail/update/{id}', [CourseDetailController::class, 'updateForCollege'])->name('college-coursedetail.update');
@@ -244,7 +244,7 @@ Route::get('/nearest-college/store', [NearestAlgorithmController::class, 'findNe
 
 
 //inquiry routes
-Route::get('/inquiry', [StudentController::class, 'getInquiries'])->name('student.getInquiries');
+Route::get('/inquiry', [StudentController::class, 'getInquiries'])->name('student.getInquiries')->middleware('auth:student');
 Route::get('/inquiry/create', [InquiryController::class, 'create'])->name('inquiry.create');
 Route::post('/inquiry/store', [InquiryController::class, 'store'])->name('inquiry.store');
 Route::get('/inquiry/show', [InquiryController::class, 'show'])->name('inquiry.show');
@@ -258,8 +258,8 @@ Route::get('/student/delete/{id}', [StudentController::class, 'destroy'])->name(
 
 
 //inquiry new
-Route::get('/inquiry-form/{coursedetail_id}', [InquiryController::class, 'inquiryForm'])->name('home.inquiry.form');
-Route::post('/inquiry-form/store', [InquiryController::class, 'inquiryFormStore'])->name('home.inquiry.form.store');
+Route::get('/inquiry-form/{coursedetail_id}', [InquiryController::class, 'inquiryForm'])->name('home.inquiry.form')->middleware('auth:student');
+Route::post('/inquiry-form/store', [InquiryController::class, 'inquiryFormStore'])->name('home.inquiry.form.store')->middleware('auth:student');
 
 Route::get('/colleges/{college_id}/inquiries', [InquiryController::class, 'getInquiriesByCollege'])->name('home.inquiry.college');
 

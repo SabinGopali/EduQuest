@@ -83,7 +83,7 @@
         <h1 class="inquiry-title">Inquiry Form</h1>
         <form action="{{ route('home.inquiry.form.store') }}" method="POST">
             @csrf
-            <input type="hidden" id="studentid" name="student_id" value="{{ Auth::guard('student')->user()->id }}" readonly>
+            <input type="hidden" id="studentid" name="student_id" value="{{ Auth::guard('student')->id() }}" readonly>
             <input type="hidden" name="college_id" value="{{ $college_id }}" readonly>
             <input type="hidden" name="coursedetail_id" value="{{ $coursedetail_id }}" readonly>
 
