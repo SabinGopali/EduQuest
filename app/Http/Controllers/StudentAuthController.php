@@ -35,8 +35,8 @@ class StudentAuthController extends Controller
         $credentials['user_type'] = 'students';
 
         if (Auth::guard('student')->attempt($credentials)) {
-            // Authentication successful, redirect to the student dashboard
-            return redirect()->intended('/');
+            // Authentication successful, redirect to the nearest colleges page by default
+            return redirect()->intended(route('home.nearest'));
         }
 
         // Authentication failed, display an error message

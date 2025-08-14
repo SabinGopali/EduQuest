@@ -7,6 +7,7 @@
     h3 { font-weight: 600; color: #333; margin-bottom: 20px; text-align: center; }
     #addressInput { border-radius: 8px; border: 1px solid #ced4da; padding: 10px 15px; width: 100%; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
     #addressInput:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25); outline: none; }
+    .alert-location { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
     .btn { border-radius: 8px; font-weight: 500; padding: 10px 20px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
     .btn-primary { background-color: #0d6efd; color: #fff; }
     .btn-primary:hover { background-color: #0b5ed7; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(13,110,253,0.3); }
@@ -29,7 +30,12 @@
 </style>
 
 <div class="container">
-    <div class="a">
+    <div id="autoLocateStatus" class="mt-2"></div>
+    <div id="locationAlert" class="alert-location" style="display:none;">
+        Enable location access in your browser to see nearby colleges.
+    </div>
+
+    <div class="a" id="manualBlock">
         <h3>Search your location or use your current location</h3>
         <input type="text" class="form-control" id="addressInput" placeholder="Enter an address (e.g., city, street)">
         <button type="button" class="btn btn-primary text-center w-100 mt-3" id="geocodeButton">Search</button>
@@ -78,11 +84,7 @@
                     @if(property_exists($college, 'distance'))
                         @php
                             $distance = $college->distance;
-                            if($distance >= 1) {
-                                $distanceFormatted = number_format($distance, 2) . ' km';
-                            } else {
-                                $distanceFormatted = number_format($distance * 1000, 0) . ' m';
-                            }
+                            $distanceFormatted = $distance >= 1 ? number_format($distance, 2).' km' : number_format($distance*1000,0).' m';
                         @endphp
                         <div class="card-text mt-2"><strong>{{ $distanceFormatted }}</strong></div>
                     @endif
@@ -100,7 +102,6 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
 <script>
     var map = L.map('map').setView([27.708317, 85.320582], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -109,6 +110,11 @@
 
     var marker = L.marker([0,0], { draggable:true }).addTo(map);
     var current_lat = '', current_lon = '';
+    var hasResults = {{ count($colleges) ? 'true' : 'false' }};
+    var statusEl = document.getElementById('autoLocateStatus');
+    var locationAlert = document.getElementById('locationAlert');
+
+    if (hasResults && statusEl) statusEl.style.display = 'none';
 
     function updateMarkerPosition(latlng) {
         marker.setLatLng(latlng);
@@ -116,21 +122,36 @@
         current_lon = latlng.lng.toFixed(6);
         document.getElementById('latitude').value = current_lat;
         document.getElementById('longitude').value = current_lon;
-        document.getElementById('updatelonlan').click();
     }
 
-    function geocodeAddress(address) {
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
-            .then(response => response.json())
-            .then(data => {
-                if(data && data.length > 0){
-                    var lat = parseFloat(data[0].lat);
-                    var lon = parseFloat(data[0].lon);
-                    var latlng = L.latLng(lat, lon);
-                    map.setView(latlng, 13);
-                    updateMarkerPosition(latlng);
-                } else { alert('Address not found.'); }
-            }).catch(err => console.error(err));
+    function submitLocation() { document.getElementById('updatelonlan').click(); }
+
+    function handleGeoError(err) {
+        if (statusEl) statusEl.style.display = 'none';
+        if (locationAlert) locationAlert.style.display = 'block';
+    }
+
+    function requestLocation() {
+        if (!navigator.geolocation) return handleGeoError();
+        if (statusEl) { statusEl.textContent = 'Detecting your location…'; statusEl.style.display = 'block'; }
+
+        navigator.geolocation.getCurrentPosition(function(pos){
+            var latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+            map.setView(latlng, 13);
+            updateMarkerPosition(latlng);
+            if (statusEl) statusEl.style.display = 'none';
+            if (locationAlert) locationAlert.style.display = 'none';
+            submitLocation();
+        }, function(err){ handleGeoError(err); }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 10000 });
+    }
+
+    function initGeo() {
+        if (navigator.permissions && navigator.permissions.query) {
+            navigator.permissions.query({ name: 'geolocation' }).then(function(p){
+                if (p.state === 'granted' || p.state === 'prompt') requestLocation();
+                else handleGeoError();
+            }).catch(function(){ requestLocation(); });
+        } else { requestLocation(); }
     }
 
     var addressInput = document.getElementById('addressInput');
@@ -141,20 +162,22 @@
         else alert('Please enter an address.');
     });
 
-    addressInput.addEventListener('keyup', function(e){
-        if(e.key === 'Enter') geocodeButton.click();
-    });
-
-    marker.on('drag', function(event){
-        updateMarkerPosition(event.target.getLatLng());
-    });
-
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(function(pos){
-            var latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-            map.setView(latlng, 13);
-            updateMarkerPosition(latlng);
-        });
+    function geocodeAddress(address) {
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
+            .then(response => response.json())
+            .then(data => {
+                if(data.length > 0){
+                    var latlng = L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
+                    map.setView(latlng, 13);
+                    updateMarkerPosition(latlng);
+                    submitLocation();
+                } else { alert('Address not found.'); }
+            }).catch(err => console.error(err));
     }
+
+    addressInput.addEventListener('keyup', function(e){ if(e.key==='Enter') geocodeButton.click(); });
+    marker.on('dragend', function(event){ updateMarkerPosition(event.target.getLatLng()); submitLocation(); });
+
+    if(!hasResults) initGeo();
 </script>
 @endsection
