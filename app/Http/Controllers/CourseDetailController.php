@@ -38,6 +38,7 @@ class CourseDetailController extends Controller
         $data['course_id'] = $request->input('course_id');
         $data['college_id'] = $request->input('college_id');
         $data['description'] = $request->input('description');
+        $data['status'] = 'PENDING';
 
         // If you have a model, you can use it to create a new record
         CourseDetail::create($data);
@@ -54,7 +55,7 @@ class CourseDetailController extends Controller
      */
     public function show(CourseDetail $courseDetail)
     {
-        $courseDetails=CourseDetail::all();
+        $courseDetails = CourseDetail::with(['course', 'college'])->get();
         return view('home.coursedetailshow',['courseDetails'=>$courseDetails]);
     }
 
@@ -70,7 +71,9 @@ class CourseDetailController extends Controller
         $college = Auth::guard('college')->user();
 
         // Retrieve the course details for the logged-in college
-        $courseDetails = CourseDetail::where('college_id', $college->id)->get();
+        $courseDetails = CourseDetail::with(['course', 'college'])
+            ->where('college_id', $college->id)
+            ->get();
 
         return view('college.coursedetailshow', ['courseDetails' => $courseDetails, 'college' => $college]);
     }
@@ -152,7 +155,10 @@ class CourseDetailController extends Controller
 
     public function getById($id)
     {
-        $courseDetail = CourseDetail::find($id);
+        $courseDetail = CourseDetail::with(['college', 'course'])->find($id);
+        if (!$courseDetail || ($courseDetail->status ?? 'PENDING') !== 'APPROVED' || ($courseDetail->college->status ?? 'PENDING') !== 'APPROVED') {
+            abort(404);
+        }
         return view('home.viewdes', compact('courseDetail'));
     }
 
@@ -165,7 +171,12 @@ class CourseDetailController extends Controller
     public function getCollegeByCourseId($id)
     {
         // Assuming $courseId is the course_id you want to filter by
-        $courseDetails = CourseDetail::where('course_id', $id)->get();
+        $courseDetails = CourseDetail::with(['college', 'course'])
+            ->where('course_id', $id)
+            ->whereHas('college', function ($q) {
+                $q->where('status', 'APPROVED');
+            })
+            ->get();
 
         // You can return the course details or do something else with them
         return view('home.courseCollegeView', compact('courseDetails'));
@@ -186,6 +197,15 @@ class CourseDetailController extends Controller
 
         // Pass the course detail and course list to the editCourseDetail view
         return view('college.courseDetailEditForm', ['courseDetail' => $courseDetail, 'courses' => $courses]);
+    }
+
+    public function approve($id)
+    {
+        $courseDetail = CourseDetail::findOrFail($id);
+        $courseDetail->status = 'APPROVED';
+        $courseDetail->save();
+
+        return redirect()->back()->with('success', 'Course detail approved successfully.');
     }
 
 }

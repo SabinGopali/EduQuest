@@ -63,7 +63,13 @@ class CourseController extends Controller
 
     public function showForStudent(Course $course)
     {
-        $course=Course::all();
+        $course = Course::whereHas('courseDetails', function ($q) {
+                $q->where('status', 'APPROVED')
+                  ->whereHas('college', function ($c) {
+                      $c->where('status', 'APPROVED');
+                  });
+            })
+            ->get();
         // return view('home.courses',['course'=>$course]);
         return view('home.courses', compact('course'));
     }

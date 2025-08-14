@@ -62,6 +62,12 @@
 				    <div class="col">
                         <div class="section_title text-center">
                             <h1>Courses</h1>
+                            @if($college->status === 'PENDING')
+                                <div class="mt-2">
+                                    <a href="{{ route('admin.college.approve', $college->id) }}" class="btn btn-success btn-sm">Approve College</a>
+                                    <a href="{{ route('admin.college.reject', $college->id) }}" class="btn btn-danger btn-sm">Reject</a>
+                                </div>
+                            @endif
                         </div>
 				    </div>
 			    </div>

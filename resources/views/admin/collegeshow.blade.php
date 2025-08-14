@@ -174,6 +174,7 @@
                 <th>Email</th>
                 <th>Address</th>
                 <th>Contact</th>
+                <th>Status</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -185,11 +186,20 @@
                 <td>{{ $college->email }}</td>
                 <td>{{ $college->address }}</td>
                 <td>{{ $college->contact }}</td>
+                <td>{{ $college->status }}</td>
                 <td>
                     <div class="action-buttons">
                         <a href="/admin/college/detail/{{ $college->id }}" class="icon-btn icon-view" title="View">
                             <i class="fas fa-eye"></i>
                         </a>
+                        @if($college->status === 'PENDING')
+                            <a href="{{ route('admin.college.approve', $college->id) }}" class="icon-btn icon-view" title="Approve">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            <a href="{{ route('admin.college.reject', $college->id) }}" class="icon-btn icon-delete" title="Reject">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        @endif
                         <a href="/college/delete/{{ $college->id }}" class="icon-btn icon-delete" title="Delete">
                             <i class="fas fa-trash-alt"></i>
                         </a>

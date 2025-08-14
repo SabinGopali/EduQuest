@@ -18,6 +18,7 @@ class College extends Authenticatable
         'contact',
         'description',
         'logo',
+        'status',
         'gallery.*',
     ];
 
