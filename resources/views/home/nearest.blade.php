@@ -29,7 +29,8 @@
 </style>
 
 <div class="container">
-    <div class="a">
+    <div id="autoLocateStatus" class="mt-2">Detecting your location…</div>
+    <div class="a" id="manualBlock" style="display: none;">
         <h3>Search your location or use your current location</h3>
         <input type="text" class="form-control" id="addressInput" placeholder="Enter an address (e.g., city, street)">
         <button type="button" class="btn btn-primary text-center w-100 mt-3" id="geocodeButton">Search</button>
@@ -109,8 +110,10 @@
 
     var marker = L.marker([0,0], { draggable:true }).addTo(map);
     var current_lat = '', current_lon = '';
-    var hasAutoSubmitted = sessionStorage.getItem('nearestAutoSubmitted') === '1';
     var hasResults = {{ count($colleges) ? 'true' : 'false' }};
+    var statusEl = document.getElementById('autoLocateStatus');
+    var manualBlock = document.getElementById('manualBlock');
+    if (hasResults && statusEl) { statusEl.style.display = 'none'; }
 
     function updateMarkerPosition(latlng) {
         marker.setLatLng(latlng);
@@ -120,15 +123,8 @@
         document.getElementById('longitude').value = current_lon;
     }
 
-    function submitLocation(isAuto) {
-        if (isAuto && hasAutoSubmitted) {
-            return;
-        }
+    function submitLocation() {
         document.getElementById('updatelonlan').click();
-        if (isAuto) {
-            sessionStorage.setItem('nearestAutoSubmitted', '1');
-            hasAutoSubmitted = true;
-        }
     }
 
     function geocodeAddress(address) {
@@ -141,7 +137,7 @@
                     var latlng = L.latLng(lat, lon);
                     map.setView(latlng, 13);
                     updateMarkerPosition(latlng);
-                    submitLocation(false);
+                    submitLocation();
                 } else { alert('Address not found.'); }
             }).catch(err => console.error(err));
     }
@@ -160,7 +156,7 @@
 
     marker.on('dragend', function(event){
         updateMarkerPosition(event.target.getLatLng());
-        submitLocation(false);
+        submitLocation();
     });
 
     if(navigator.geolocation && !hasResults){
@@ -168,8 +164,15 @@
             var latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
             map.setView(latlng, 13);
             updateMarkerPosition(latlng);
-            submitLocation(true);
-        });
+            if (statusEl) { statusEl.style.display = 'none'; }
+            submitLocation();
+        }, function(err){
+            if (statusEl) { statusEl.textContent = 'Unable to get your location. Enter your address below.'; }
+            if (manualBlock) { manualBlock.style.display = 'block'; }
+        }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+    } else {
+        if (statusEl) { statusEl.style.display = 'none'; }
+        if (manualBlock) { manualBlock.style.display = 'block'; }
     }
 </script>
 @endsection
