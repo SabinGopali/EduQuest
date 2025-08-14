@@ -93,6 +93,8 @@
                 <th>Course Name</th>
                 <th>College Name</th>
                 <th>Description</th>
+                <th>Status</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -105,6 +107,12 @@
                     <div>
                         {{ $courseDetail->description }}
                     </div>
+                </td>
+                <td>{{ $courseDetail->status ?? 'PENDING' }}</td>
+                <td>
+                    @if(($courseDetail->status ?? 'PENDING') === 'PENDING')
+                        <a href="{{ route('admin.coursedetail.approve', $courseDetail->id) }}" class="btn btn-success btn-sm">Approve</a>
+                    @endif
                 </td>
             </tr>
             @endforeach

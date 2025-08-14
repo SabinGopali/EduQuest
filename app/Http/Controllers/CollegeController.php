@@ -8,6 +8,7 @@ use App\Models\CollegeImage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Models\CourseDetail;
 
 class CollegeController extends Controller
 {
@@ -59,13 +60,13 @@ class CollegeController extends Controller
 
      function show(College $college)
     {
-        $college=College::all();
+        $college = College::orderByRaw("FIELD(status, 'PENDING','APPROVED','REJECTED')")->orderBy('name')->get();
         return view('admin.collegeshow',['college'=>$college]);
     }
 
      function showForStudent(College $college)
     {
-        $college=College::all();
+        $college = College::where('status', 'APPROVED')->get();
         return view('home.college',['college'=>$college]);
     }
 
@@ -77,12 +78,15 @@ class CollegeController extends Controller
 
     public function getByIdForAdmin($id)
     {
-        $college = College::with('courseDetails.course')->find($id);
+        $college = College::with(['courseDetails' => function($q){ $q->with('course'); }, 'images'])->findOrFail($id);
         return view('admin.collegeDetailView', compact('college'));
     }
     public function getByIdForStudent($id)
     {
-        $college = College::with('courseDetails.course')->find($id);
+        $college = College::with('courseDetails.course')->findOrFail($id);
+        if ($college->status !== 'APPROVED') {
+            abort(404);
+        }
         return view('home.collegeDetailView', compact('college'));
     }
 
@@ -154,10 +158,31 @@ class CollegeController extends Controller
 
     public function activateCollege(College $college)
     {
-        // Update the status to "active"
-        $college->update(['status' => 'active']);
+        $college->status = 'APPROVED';
+        $college->save();
 
-        return redirect()->route('home')->with('success', 'College status updated to active!');
+        return redirect()->route('home')->with('success', 'College status updated to approved!');
+    }
+
+    public function approve($id)
+    {
+        $college = College::findOrFail($id);
+        $college->status = 'APPROVED';
+        $college->save();
+
+        // Auto-approve all course details for this college
+        CourseDetail::where('college_id', $college->id)->update(['status' => 'APPROVED']);
+
+        return redirect()->back()->with('success', 'College approved successfully.');
+    }
+
+    public function reject($id)
+    {
+        $college = College::findOrFail($id);
+        $college->status = 'REJECTED';
+        $college->save();
+
+        return redirect()->back()->with('success', 'College rejected successfully.');
     }
 
     public function getCollegeByCourseId($id)

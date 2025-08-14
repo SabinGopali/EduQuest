@@ -184,6 +184,7 @@ Route::middleware(['auth:admin'])->group(function () {
         return view('admin.editProfile');
     });
     Route::get('/admin/course-detail/show', [CourseDetailController::class, 'show'])->name('coursedetail.show');
+    Route::get('/admin/coursedetail/approve/{id}', [CourseDetailController::class, 'approve'])->name('admin.coursedetail.approve');
     Route::get('/admin/contact/show', [ContactController::class, 'show'])->name('contact.show');
     Route::get('/admin/college/show', [CollegeController::class, 'show'])->name('college.show');
     Route::get('/admin/student/show', [StudentController::class, 'show'])->name('students.show');
@@ -193,6 +194,8 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/inquiry/edit/{id}', [InquiryController::class, 'editForAdmin'])->name('admin.inquiryedit');
     Route::get('/admin/student/detail/{id}', [StudentController::class, 'getByIdForAdmin'])->name('students.getByIdForAdmin');
     Route::get('/admin/college/detail/{id}', [CollegeController::class, 'getByIdForAdmin'])->name('college.getByIdForAdmin');
+    Route::get('/admin/college/approve/{id}', [CollegeController::class, 'approve'])->name('admin.college.approve');
+    Route::get('/admin/college/reject/{id}', [CollegeController::class, 'reject'])->name('admin.college.reject');
 
 });
 
