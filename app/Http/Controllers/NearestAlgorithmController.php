@@ -30,33 +30,28 @@ class NearestAlgorithmController extends Controller
     // Main function to find the nearest college
     public function findNearestCollege(Request $request)
     {
-        // Validate the input
-        // $request->validate([
-        //     'latitude' => 'required|numeric',
-        //     'longitude' => 'required|numeric',
-        // ]);
+        $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
 
-        $addressInput = $request->addressInput;
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
-        $radius = 50; // Radius in kilometers
 
-        // Use Haversine formula to calculate distance
         $colleges = DB::table('colleges')
-            ->select('*', DB::raw("(
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->select('colleges.*')
+            ->selectRaw('(
                 6371 * acos(
                     cos(radians(?)) * cos(radians(latitude)) *
                     cos(radians(longitude) - radians(?)) +
                     sin(radians(?)) * sin(radians(latitude))
                 )
-            ) AS distance"))
-            ->setBindings([$latitude, $longitude, $latitude]) // Bind dynamic values
-            ->having('distance', '<=', $radius)
+            ) AS distance', [$latitude, $longitude, $latitude])
             ->orderBy('distance', 'asc')
-            ->limit(6)
             ->get();
 
-        // Pass the results to the view
         return view('home.nearest', [
             'colleges' => $colleges,
         ]);

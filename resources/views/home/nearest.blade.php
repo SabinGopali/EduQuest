@@ -14,10 +14,10 @@
 <div class="container" >
     <div class="a">
     <h3>
-        Search The Location And Get Longitude and Latitude
+        Search your location or use your current location
     </h3>
         <input type="text" class="form-control" id="addressInput"
-            placeholder="Enter The Location">
+            placeholder="Enter an address (e.g., city, street)">
         <button type="button" class="btn btn-outline-primary text-center w-100 mt-3 " id="geocodeButton">Search</button>
             <br>
             <div id="coordinates"></div>
@@ -48,8 +48,6 @@
     </form>
 </div>
 
-    <button type="button" id="bb" class="btn btn-secondary">Show Nearest College</button>
-
 </div>
 <div class="col-xl-6" style="display: none;">
     <div class="abc">
@@ -58,20 +56,23 @@
 
 </div>
 </div>
-<div class="searchresult full-row border shadow-sm " style="display:none;">
-<h3>Show nearest College</h3>
+<div class="searchresult full-row border shadow-sm " style="{{ count($colleges) ? '' : 'display:none;' }}">
+<h3>Nearest Colleges</h3>
 <div class="row course_boxes">
     @foreach($colleges as $college)
     <div class="col-lg-4 course_box">
-        <div class="card" style="height:320px; border: 1px solid black; border-radius:5px;">
+        <div class="card" style="height:360px; border: 1px solid black; border-radius:5px;">
             <div class="card-body text-center">
             <img src="{{ asset('storage/' . $college->logo) }}" alt="College Logo" style="object-fit: contain; height: 100px; width:100px; margin-top: 10px; border: 2px solid black;">
-                <div class="card-title"><a>{{$college->name}}</a></div>
-                <div class="card-text">{{$college->address}}</div>
+                <div class="card-title"><a>{{ $college->name }}</a></div>
+                <div class="card-text">{{ $college->address }}</div>
+                @if(property_exists($college, 'distance'))
+                <div class="card-text mt-2"><strong>{{ number_format($college->distance, 2) }} km</strong></div>
+                @endif
             </div>
             <br/>
             <div class="d-flex justify-content-center">
-                <a href="/college/detail/{{$college->id}}">
+                <a href="/college/detail/{{ $college->id }}">
                     <button class="btn btn-primary">View</button>
                 </a>
             </div>
@@ -111,14 +112,7 @@
             document.getElementById('longitude').value = current_lon;
 			document.getElementById('coordinates').innerHTML = 'Latitude: ' + current_lan + '   Longitude: ' + current_lon;
             document.getElementById('updatelonlan').click();
-            // document.getElementById('bb').click();
 		}
-
-
-
-
-		// Function to geocode an address and update the map and marker
-		// ...
 
 		// Function to geocode an address and update the map and marker
 		function geocodeAddress(address) {
@@ -132,9 +126,6 @@
 						var latlng = L.latLng(lat, lon);
 						map.setView(latlng, 13); // Set the map view to the geocoded coordinates
 						updateMarkerPosition(latlng); // Update the marker's position and display coordinates
-
-						// Send the coordinates to the PHP script using AJAX
-						sendCoordinatesToPHP(lat, lon);
 					} else {
 						alert('Address not found.');
 					}
@@ -159,17 +150,26 @@
 
 		});
 
+        // Allow pressing Enter to trigger search
+        addressInput.addEventListener('keyup', function (e) {
+            if (e.key === 'Enter') {
+                geocodeButton.click();
+            }
+        });
+
 		// Listen for marker drag events and update the displayed coordinates
 		marker.on('drag', function (event) {
 			updateMarkerPosition(event.target.getLatLng());
 		});
 
-        var bbButton = document.getElementById('bb');
-        bbButton.addEventListener('click', function () {
-        // Show the searchresult div when the button is clicked
-        var searchResultDiv = document.querySelector('.searchresult');
-        searchResultDiv.style.display = 'block';
-        });
+        // Try to auto-detect current location and submit immediately
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (pos) {
+                var latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+                map.setView(latlng, 13);
+                updateMarkerPosition(latlng);
+            });
+        }
 
 		</script>
 
