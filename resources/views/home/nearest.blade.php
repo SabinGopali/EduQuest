@@ -29,7 +29,12 @@
 </style>
 
 <div class="container">
-    <div class="a">
+    <div id="autoLocateStatus" class="mt-2">Detecting your location…</div>
+    <div id="locationActions" class="mt-2" style="display:none;">
+        <button id="retryLocation" class="btn btn-primary w-100">Enable Location</button>
+        <small id="locationHint" class="text-muted d-block mt-2"></small>
+    </div>
+    <div class="a" id="manualBlock">
         <h3>Search your location or use your current location</h3>
         <input type="text" class="form-control" id="addressInput" placeholder="Enter an address (e.g., city, street)">
         <button type="button" class="btn btn-primary text-center w-100 mt-3" id="geocodeButton">Search</button>
@@ -109,6 +114,13 @@
 
     var marker = L.marker([0,0], { draggable:true }).addTo(map);
     var current_lat = '', current_lon = '';
+    var hasResults = {{ count($colleges) ? 'true' : 'false' }};
+    var statusEl = document.getElementById('autoLocateStatus');
+    var manualBlock = document.getElementById('manualBlock');
+    var locationActions = document.getElementById('locationActions');
+    var retryBtn = document.getElementById('retryLocation');
+    var locationHint = document.getElementById('locationHint');
+    if (hasResults && statusEl) { statusEl.style.display = 'none'; }
 
     function updateMarkerPosition(latlng) {
         marker.setLatLng(latlng);
@@ -116,8 +128,96 @@
         current_lon = latlng.lng.toFixed(6);
         document.getElementById('latitude').value = current_lat;
         document.getElementById('longitude').value = current_lon;
+    }
+
+    function submitLocation() {
         document.getElementById('updatelonlan').click();
     }
+
+    function handleGeoError(err) {
+        if (!statusEl) return;
+        if (err && typeof err.code !== 'undefined') {
+            if (err.code === err.PERMISSION_DENIED) {
+                statusEl.textContent = 'Location access denied. Click Enable Location and allow permission.';
+            } else if (err.code === err.POSITION_UNAVAILABLE) {
+                statusEl.textContent = 'Location unavailable. Ensure GPS/location is on and try again.';
+            } else if (err.code === err.TIMEOUT) {
+                statusEl.textContent = 'Location request timed out. Click Enable Location to retry.';
+            } else {
+                statusEl.textContent = 'Unable to get your location. Enter your address below.';
+            }
+        } else {
+            statusEl.textContent = 'Unable to get your location. Enter your address below.';
+        }
+        if (locationActions) { locationActions.style.display = 'block'; }
+        if (manualBlock) { manualBlock.style.display = 'block'; }
+        if (locationHint) {
+            if (!window.isSecureContext && location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                locationHint.textContent = 'Tip: Geolocation requires HTTPS or localhost. Access this site over HTTPS to enable automatic location.';
+            } else {
+                locationHint.textContent = 'Tip: After enabling permission in your browser, click Enable Location to retry.';
+            }
+        }
+    }
+
+    function requestLocation() {
+        if (!navigator.geolocation) {
+            handleGeoError();
+            return;
+        }
+        if (statusEl) {
+            statusEl.textContent = 'Detecting your location…';
+            statusEl.style.display = 'block';
+        }
+        navigator.geolocation.getCurrentPosition(function(pos){
+            var latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+            map.setView(latlng, 13);
+            updateMarkerPosition(latlng);
+            if (statusEl) { statusEl.style.display = 'none'; }
+            if (locationActions) { locationActions.style.display = 'none'; }
+            submitLocation();
+        }, function(err){
+            handleGeoError(err);
+        }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 10000 });
+    }
+
+    // Try permission-aware flow if supported
+    function initGeo() {
+        if (navigator.permissions && navigator.permissions.query) {
+            navigator.permissions.query({ name: 'geolocation' }).then(function(p){
+                if (p.state === 'granted') {
+                    requestLocation();
+                } else if (p.state === 'prompt') {
+                    requestLocation();
+                } else { // denied
+                    handleGeoError({ code: 1 });
+                }
+                p.onchange = function(){
+                    if (p.state === 'granted') {
+                        requestLocation();
+                    }
+                };
+            }).catch(function(){
+                requestLocation();
+            });
+        } else {
+            requestLocation();
+        }
+    }
+
+    if (retryBtn) {
+        retryBtn.addEventListener('click', function(){
+            initGeo();
+        });
+    }
+
+    var addressInput = document.getElementById('addressInput');
+    var geocodeButton = document.getElementById('geocodeButton');
+
+    geocodeButton.addEventListener('click', function(){
+        if(addressInput.value) geocodeAddress(addressInput.value);
+        else alert('Please enter an address.');
+    });
 
     function geocodeAddress(address) {
         fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
@@ -129,32 +229,24 @@
                     var latlng = L.latLng(lat, lon);
                     map.setView(latlng, 13);
                     updateMarkerPosition(latlng);
+                    submitLocation();
                 } else { alert('Address not found.'); }
             }).catch(err => console.error(err));
     }
-
-    var addressInput = document.getElementById('addressInput');
-    var geocodeButton = document.getElementById('geocodeButton');
-
-    geocodeButton.addEventListener('click', function(){
-        if(addressInput.value) geocodeAddress(addressInput.value);
-        else alert('Please enter an address.');
-    });
 
     addressInput.addEventListener('keyup', function(e){
         if(e.key === 'Enter') geocodeButton.click();
     });
 
-    marker.on('drag', function(event){
+    marker.on('dragend', function(event){
         updateMarkerPosition(event.target.getLatLng());
+        submitLocation();
     });
 
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(function(pos){
-            var latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-            map.setView(latlng, 13);
-            updateMarkerPosition(latlng);
-        });
+    if(!hasResults){
+        initGeo();
+    } else {
+        if (statusEl) { statusEl.style.display = 'none'; }
     }
 </script>
 @endsection
