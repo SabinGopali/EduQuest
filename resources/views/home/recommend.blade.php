@@ -171,7 +171,7 @@
     Looking for the nearest colleges to your location? We've got you covered!<br>
     Click the button below, and we'll show you the closest colleges based on where you are. 🌍
   </h2>
-  <a href="{{ route('algorithm.nearest') }}" class="btn">Nearest College</a>
+  <a href="{{ route('home.nearest') }}" class="btn">Nearest College</a>
 </div> --}}
 
 @endsection
