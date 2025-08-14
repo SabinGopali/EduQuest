@@ -43,14 +43,7 @@ class NearestAlgorithmController extends Controller
 
         // Use Haversine formula to calculate distance
         $colleges = DB::table('colleges')
-            ->select('*', DB::raw("(
-                6371 * acos(
-                    cos(radians(?)) * cos(radians(latitude)) *
-                    cos(radians(longitude) - radians(?)) +
-                    sin(radians(?)) * sin(radians(latitude))
-                )
-            ) AS distance"))
-            ->setBindings([$latitude, $longitude, $latitude]) // Bind dynamic values
+            ->selectRaw("colleges.*, (6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance", [$latitude, $longitude, $latitude])
             ->having('distance', '<=', $radius)
             ->orderBy('distance', 'asc')
             ->limit(6)

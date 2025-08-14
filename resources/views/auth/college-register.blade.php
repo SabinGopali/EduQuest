@@ -399,3 +399,31 @@
 </div>
 
 @endsection
+
+<script>
+    // Basic client-side validation for latitude/longitude values
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('Collegeform');
+        if (!form) return;
+
+        form.addEventListener('submit', function (e) {
+            const latInput = form.querySelector('input[name="latitude"]');
+            const lonInput = form.querySelector('input[name="longitude"]');
+            const lat = parseFloat(latInput && latInput.value);
+            const lon = parseFloat(lonInput && lonInput.value);
+
+            if (Number.isNaN(lat) || Number.isNaN(lon)) {
+                e.preventDefault();
+                alert('Please provide valid numeric Latitude and Longitude.');
+                return;
+            }
+
+            // Latitude must be between -90 and 90, Longitude between -180 and 180
+            if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+                e.preventDefault();
+                alert('Latitude must be between -90 and 90, and Longitude between -180 and 180.');
+                return;
+            }
+        });
+    });
+</script>

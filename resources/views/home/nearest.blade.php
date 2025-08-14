@@ -63,11 +63,19 @@
 <div class="row course_boxes">
     @foreach($colleges as $college)
     <div class="col-lg-4 course_box">
-        <div class="card" style="height:320px; border: 1px solid black; border-radius:5px;">
+        <div class="card" style="height:360px; border: 1px solid black; border-radius:5px;">
             <div class="card-body text-center">
             <img src="{{ asset('storage/' . $college->logo) }}" alt="College Logo" style="object-fit: contain; height: 100px; width:100px; margin-top: 10px; border: 2px solid black;">
                 <div class="card-title"><a>{{$college->name}}</a></div>
                 <div class="card-text">{{$college->address}}</div>
+                @if(isset($college->distance))
+                    @php
+                        $distanceKm = (float) $college->distance;
+                    @endphp
+                    <div class="mt-2" style="font-weight:600;">
+                        Distance: {{ $distanceKm < 1 ? number_format($distanceKm * 1000, 0) . ' m' : number_format($distanceKm, 2) . ' km' }}
+                    </div>
+                @endif
             </div>
             <br/>
             <div class="d-flex justify-content-center">
@@ -169,6 +177,15 @@
         // Show the searchresult div when the button is clicked
         var searchResultDiv = document.querySelector('.searchresult');
         searchResultDiv.style.display = 'block';
+        });
+
+        // Auto-show results if colleges are present
+        document.addEventListener('DOMContentLoaded', function () {
+            var hasColleges = {{ $colleges->count() > 0 ? 'true' : 'false' }};
+            if (hasColleges) {
+                var searchResultDiv = document.querySelector('.searchresult');
+                searchResultDiv.style.display = 'block';
+            }
         });
 
 		</script>
