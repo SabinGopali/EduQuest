@@ -128,7 +128,7 @@
             Discover Top Educational Institutions Tailored to Your Goals.<br>
             Start Your Journey to Success with Personalized Guidance Today!
         </p>
-        <a href="#" class="hero-btn">Get Started</a>
+        <a href="{{ route('algorithm.hybrid') }}" class="hero-btn">Get Started</a>
     </div>
 
     <!-- Image Carousel -->
