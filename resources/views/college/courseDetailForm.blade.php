@@ -137,7 +137,7 @@
             <textarea id="description" name="description" rows="4" required></textarea>
         </div>
 
-        <input type="text" id="collegeid" name="college_id" value="{{ Auth::guard('college')->user()->id }}" hidden>
+        <input type="text" id="collegeid" name="college_id" value="{{ Auth::guard('college')->id() }}" hidden>
 
         <button type="submit" class="submit-btn">
      Submit

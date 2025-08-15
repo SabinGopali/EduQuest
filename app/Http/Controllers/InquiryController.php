@@ -88,6 +88,9 @@ class InquiryController extends Controller
     public function showForCollege(Inquiry $inquiry)
     {
         $currentCollege = Auth::guard('college')->user();
+        if (!$currentCollege) {
+            return redirect()->route('college.loginFrom')->with('error', 'Please log in as a college.');
+        }
 
         $inquiries = Inquiry::whereHas('courseDetail.college', function ($query) use ($currentCollege) {
             $query->where('colleges.id', $currentCollege->id);
@@ -110,6 +113,10 @@ class InquiryController extends Controller
     }
     public function editForCollege($id)
     {
+        $currentCollege = Auth::guard('college')->user();
+        if (!$currentCollege) {
+            return redirect()->route('college.loginFrom')->with('error', 'Please log in as a college.');
+        }
         $inquiry=Inquiry::find($id);
         return view('college.inquiryedit', ['inquiry'=>$inquiry]);
     }

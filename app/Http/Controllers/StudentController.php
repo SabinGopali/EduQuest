@@ -221,6 +221,9 @@ class StudentController extends Controller
     public function getInquiries()
     {
         $currentStudent = Auth::guard('student')->user();
+        if (!$currentStudent) {
+            return redirect()->route('student.loginFrom')->with('error', 'Please log in as a student.');
+        }
         $student = Students::with('inquiries.courseDetail.college')->find($currentStudent->id);
 
         if (!$student) {

@@ -113,7 +113,7 @@
             <textarea id="description" name="description" rows="6" required>{{ $courseDetail->description }}</textarea>
         </div>
 
-        <input type="text" id="collegeid" name="college_id" value="{{ Auth::guard('college')->user()->id }}" hidden>
+        <input type="text" id="collegeid" name="college_id" value="{{ Auth::guard('college')->id() }}" hidden>
 
         <button type="submit" class="submit-btn">Update</button>
     </form>
