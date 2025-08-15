@@ -1,5 +1,5 @@
 <?php
-
+ 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminAuthController;
@@ -19,7 +19,8 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AlgorithmController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NearestAlgorithmController;
-
+use App\Http\Controllers\HybridRecommendationController;
+ 
 Auth::routes();
 
 // Admin authentication routes
@@ -242,7 +243,10 @@ Route::get('/recommend', [AlgorithmController::class, 'recommend'])->name('algor
 Route::get('/nearest-college', [NearestAlgorithmController::class, 'index'])->name('home.nearest');
 Route::get('/nearest-college/store', [NearestAlgorithmController::class, 'findNearestCollege'])->name('algorithm.nearest');
 
-
+// hybrid algorithm (content + popularity + proximity)
+Route::get('/smart-recommend', [HybridRecommendationController::class, 'index'])->name('algorithm.hybrid');
+ 
+ 
 //inquiry routes
 Route::get('/inquiry', [StudentController::class, 'getInquiries'])->name('student.getInquiries');
 Route::get('/inquiry/create', [InquiryController::class, 'create'])->name('inquiry.create');
