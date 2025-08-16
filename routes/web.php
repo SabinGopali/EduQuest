@@ -19,7 +19,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AlgorithmController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HybridRecommendationController;
-use App\Http\Controllers\NearestAlgorithmController;
+use App\Http\Controllers\NearestAlgorithmController;use App\Http\Controllers\StableMatchingController;
 
 Auth::routes();
 
@@ -246,6 +246,9 @@ Route::get('/nearest-college/store', [NearestAlgorithmController::class, 'findNe
 
 // hybrid algorithm (content + popularity + proximity)
 Route::get('/smart-recommend', [HybridRecommendationController::class, 'index'])->name('algorithm.hybrid');
+
+// stable matching allocation (Gale–Shapley)
+Route::get('/stable-match', [StableMatchingController::class, 'index'])->name('algorithm.match');
 
 
 //inquiry routes
