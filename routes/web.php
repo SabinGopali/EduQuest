@@ -20,6 +20,7 @@ use App\Http\Controllers\AlgorithmController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HybridRecommendationController;
 use App\Http\Controllers\NearestAlgorithmController;
+use App\Http\Controllers\SearchController;
 
 Auth::routes();
 
@@ -246,6 +247,9 @@ Route::get('/nearest-college/store', [NearestAlgorithmController::class, 'findNe
 
 // hybrid algorithm (content + popularity + proximity)
 Route::get('/smart-recommend', [HybridRecommendationController::class, 'index'])->name('algorithm.hybrid');
+
+// search (BM25 ranking + structured filters)
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 
 //inquiry routes
