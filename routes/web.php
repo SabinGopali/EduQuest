@@ -18,6 +18,7 @@ use App\Http\Controllers\CollegeDashboardController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AlgorithmController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\HybridRecommendationController;
 use App\Http\Controllers\NearestAlgorithmController;
 
 Auth::routes();
@@ -241,6 +242,10 @@ Route::get('/recommend', [AlgorithmController::class, 'recommend'])->name('algor
 //nearest college
 Route::get('/nearest-college', [NearestAlgorithmController::class, 'index'])->name('home.nearest');
 Route::get('/nearest-college/store', [NearestAlgorithmController::class, 'findNearestCollege'])->name('algorithm.nearest');
+
+
+// hybrid algorithm (content + popularity + proximity)
+Route::get('/smart-recommend', [HybridRecommendationController::class, 'index'])->name('algorithm.hybrid');
 
 
 //inquiry routes
