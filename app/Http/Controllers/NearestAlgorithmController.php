@@ -45,11 +45,12 @@ class NearestAlgorithmController extends Controller
         ->whereNotNull('longitude')
         ->get()
         ->map(function ($college) use ($userLat, $userLon) {
-            // Ensure latitude and longitude are numbers
             $collegeLat = floatval($college->latitude);
             $collegeLon = floatval($college->longitude);
 
-            $college->distance = $this->haversineDistance($userLat, $userLon, $collegeLat, $collegeLon);
+            // Calculate distance in kilometers and convert to meters for display consistency
+            $distanceKm = $this->haversineDistance($userLat, $userLon, $collegeLat, $collegeLon);
+            $college->distance = $distanceKm * 1000; // meters
 
             return $college;
         })
