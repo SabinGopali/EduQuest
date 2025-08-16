@@ -82,6 +82,14 @@
             color: white;
         }
 
+        .helper-text {
+            display: block;
+            margin-top: 6px;
+            color: #6b7280; /* Tailwind gray-500 */
+            font-size: 0.9rem;
+            line-height: 1.3;
+        }
+
         @media (max-width: 640px) {
             .form-container {
                 padding: 25px 20px;
@@ -109,8 +117,9 @@
         </div>
 
         <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="6" required>{{ $courseDetail->description }}</textarea>
+            <label for="description">Description (include details for +2 and Bachelor students):</label>
+            <small class="helper-text">Helpful to add: eligibility for +2 and Bachelor entrants, duration, seats, fees & scholarships, syllabus highlights, admission/entrance process, career paths, and contact info.</small>
+            <textarea id="description" name="description" rows="6" required placeholder="Eligibility: (+2 Science/Management, Bachelor prerequisites)\nDuration: (e.g., 4 years, 8 semesters)\nSeats: (e.g., 120)\nFees & Scholarships: (tuition per year, available aid)\nSyllabus Highlights: (core subjects)\nAdmission Process: (deadlines, documents, entrance)\nCareer Paths: (roles, industries)\nContact: (email/phone)">{{ $courseDetail->description }}</textarea>
         </div>
 
         <input type="text" id="collegeid" name="college_id" value="{{ Auth::guard('college')->user()->id }}" hidden>
