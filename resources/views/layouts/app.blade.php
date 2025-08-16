@@ -120,126 +120,52 @@
         box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4);
     }
 
-    /* Dropdown menu tweaks to match new design */
-    .badass-navbar .dropdown-menu {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: 110%;
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        padding: 10px 0;
-        min-width: 180px;
-        z-index: 10000;
-    }
-    .badass-navbar .dropdown:hover .dropdown-menu {
-        display: block;
-    }
-    .badass-navbar .dropdown-menu li {
-        list-style: none;
-    }
-    .badass-navbar .dropdown-menu li a {
-        display: block;
-        padding: 10px 18px;
-        font-size: 0.95rem;
-        color: #333;
-        transition: all 0.2s ease;
-        border-radius: 6px;
-    }
-    .badass-navbar .dropdown-menu li a:hover {
-        background: #ff4d4d;
-        color: white;
-    }
-
-    /* Mobile */
-    @media (max-width: 768px) {
-        .badass-navbar {
-            padding: 12px 20px;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .badass-navbar ul {
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-        }
-        .badass-navbar .auth-buttons {
-            margin-top: 10px;
-            width: 100%;
-            justify-content: flex-start;
-        }
-    }
+    .dkjiGx { height: 65px; }
 </style>
-
 </head>
 <body>
-
 <div class="super_container">
 
-    <!-- Floating Navbar -->
-    <header class="badass-navbar" id="badassNavbar">
-       <div class="logo" aria-label="EduQuest logo">
-            <img 
-                src="{{ asset('img/logo.jpg') }}"
-                alt="EduQuest Logo"
-                width="36"
-                height="36"
-                style="flex-shrink: 0;"
-            />
-        </div>
-        
-        <ul>
-            <li><a href="{{ url('/') }}">Home</a></li>
+	<nav class="badass-navbar">
+		<div class="logo">
+			<img src="{{asset('home/images/logo_12.png')}}" alt="Logo" class="logo">
+			<span>EduQuest</span>
+		</div>
+		<ul>
+			<li><a href="/">Home</a></li>
+			<li><a href="{{ route('course.showForStudent') }}">Courses</a></li>
+			<li><a href="{{ route('college.showForStudent') }}">Colleges</a></li>
+			<li><a href="{{ route('algorithm.hybrid') }}">Smart Recommend</a></li>
+			<li><a href="{{ route('search.index') }}">Search</a></li>
+		</ul>
+		<div class="auth-buttons">
+			@if(!Auth::guard('student')->check())
+				<a href="{{ route('student.loginFrom') }}"><button>Login</button></a>
+				<a href="{{ route('student.registerFrom') }}"><button>Signup</button></a>
+			@else
+				<div class="dropdown">
+					<a href="{{ route('student.getById') }}"><button>Welcome</button></a>
+				</div>
+			@endif
+		</div>
+	</nav>
 
-            @auth('student')
-                <li><a href="{{ url('/recommend') }}">Recommend Me</a></li>
-            @else
-                <li><a href="{{ url('/login') }}">Recommend Me</a></li>
-            @endauth
+	<div class="dkjiGx"></div>
 
-            <li><a href="{{ url('/courses') }}">Courses</a></li>
-            <li><a href="{{ url('/college') }}">College</a></li>
-            <li><a href="{{ url('/aboutus') }}">About Us</a></li>
-            <li><a href="{{ url('/contact') }}">Contact</a></li>
-        </ul>
-
-        <div class="auth-buttons">
-            @auth('student')
-                <div class="dropdown">
-                    <button>👋 Welcome, {{ Auth::guard('student')->user()->name }}</button>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url('/myprofile') }}">My Profile</a></li>
-                        <li><a href="{{ url('/inquiry') }}">My Inquiry</a></li>
-                        <li><a href="{{ url('/changepassword') }}">Change Password</a></li>
-                        <li><a href="{{ url('/student/logout') }}">Logout</a></li>
-                    </ul>
-                </div>
-            @else
-                <a href="{{ url('/login') }}"><button>Login</button></a>
-                <a href="{{ url('/register') }}"><button>Sign Up</button></a>
-            @endauth
-        </div>
-    </header>
-
-    <div class="container" style="margin-top: 120px; min-height: 100vh">
-        @yield('content')
-    </div>
-    <x-footer/>
-
+	@yield('content')
 </div>
 
-<script>
-    // Change navbar style on scroll
-    window.addEventListener('scroll', function() {
-        const navbar = document.getElementById('badassNavbar');
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-    });
-</script>
-
+<script src="{{asset('home/js/jquery-3.2.1.min.js')}}"></script>
+<script src="{{asset('home/styles/bootstrap4/popper.js')}}"></script>
+<script src="{{asset('home/styles/bootstrap4/bootstrap.min.js')}}"></script>
+<script src="{{asset('home/plugins/greensock/TweenMax.min.js')}}"></script>
+<script src="{{asset('home/plugins/greensock/TimelineMax.min.js')}}"></script>
+<script src="{{asset('home/plugins/scrollmagic/ScrollMagic.min.js')}}"></script>
+<script src="{{asset('home/plugins/greensock/animation.gsap.min.js')}}"></script>
+<script src="{{asset('home/plugins/greensock/ScrollToPlugin.min.js')}}"></script>
+<script src="{{asset('home/plugins/OwlCarousel2-2.2.1/owl.carousel.js')}}"></script>
+<script src="{{asset('home/plugins/easing/easing.js')}}"></script>
+<script src="{{asset('home/plugins/parallax-js-master/parallax.min.js')}}"></script>
+<script src="{{asset('home/js/custom.js')}}"></script>
 </body>
 </html>
