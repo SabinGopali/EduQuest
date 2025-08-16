@@ -83,8 +83,10 @@
                     
                     @if(property_exists($college, 'distance'))
                         @php
-                            $distance = $college->distance;
-                            $distanceFormatted = $distance >= 1 ? number_format($distance, 2).' km' : number_format($distance*1000,0).' m';
+                            $distanceMeters = (float) $college->distance;
+                            $distanceFormatted = $distanceMeters >= 1000
+                                ? number_format($distanceMeters / 1000, 2) . ' km'
+                                : number_format($distanceMeters, 0) . ' m';
                         @endphp
                         <div class="card-text mt-2"><strong>{{ $distanceFormatted }}</strong></div>
                     @endif
