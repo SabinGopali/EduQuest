@@ -11,6 +11,31 @@ College project 8th sem
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Berlekamp–Massey Algorithm (New)
+
+This project now includes a powerful, self-contained implementation of the Berlekamp–Massey algorithm under `app/Algorithms/BerlekampMassey.php`.
+
+- What it does: Given the first N terms of a sequence over a modulus, it infers the minimal linear recurrence that generates the sequence, and can efficiently predict further terms (including large indices) using fast matrix exponentiation.
+- Why it’s different: It’s neither a search, collaborative, hybrid, nor a stable-type algorithm. It’s a core algorithm from coding theory and number theory (used to reconstruct Linear Feedback Shift Registers), and is considerably sophisticated.
+
+### Working process (high level)
+- **Discrepancy calculation**: For each position n, compute the discrepancy d between the current sequence value and what the current recurrence would predict.
+- **Polynomial update**: Maintain a connection polynomial C(x) describing the recurrence. When d ≠ 0, adjust C(x) using another polynomial B(x) so the discrepancy is eliminated at n.
+- **Length adjustment**: When the algorithm observes a sufficiently large discrepancy, it updates the current recurrence length L and remembers the last good polynomial as B(x).
+- **Result**: After processing all N terms, the connection polynomial yields the minimal recurrence coefficients. A companion-matrix power method then predicts s[n] for large n.
+
+### Run the demo
+```bash
+php artisan bm:demo
+# Optional: choose a different prime modulus
+php artisan bm:demo --mod=998244353
+```
+
+### Files added
+- `app/Algorithms/BerlekampMassey.php`: Core algorithm implementation (recurrence inference, nth-term prediction, sequence extension).
+- `app/Console/Commands/BerlekampMasseyDemo.php`: Artisan command demonstrating inference on Fibonacci and a custom 3-term recurrence.
+- `tests/Unit/BerlekampMasseyTest.php`: Unit tests for inference and prediction.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
