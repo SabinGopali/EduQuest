@@ -242,6 +242,9 @@ Route::get('/college/course/view/{id}', [CourseController::class, 'getByIdForCol
 //recommend
 Route::get('/recommend', [AlgorithmController::class, 'recommend'])->name('algorithm.recommend');
 
+// colleges ranked by student inquiries (popularity)
+Route::get('/inquiry-rank', [AlgorithmController::class, 'rankCollegesByInquiry'])->name('algorithm.inquiry');
+
 //nearest college
 Route::get('/nearest-college', [NearestAlgorithmController::class, 'index'])->name('home.nearest');
 Route::get('/nearest-college/store', [NearestAlgorithmController::class, 'findNearestCollege'])->name('algorithm.nearest');

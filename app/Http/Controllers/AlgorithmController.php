@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Course;
 use App\Models\Students;
+use Illuminate\Support\Facades\DB;
+use App\Models\College;
+use App\Models\Inquiry;
 
 class AlgorithmController extends Controller
 {
@@ -175,6 +178,27 @@ class AlgorithmController extends Controller
         });
 
         return view('home.recommend', compact('topRecommendedCourses'));
+    }
+
+    public function rankCollegesByInquiry(Request $request)
+    {
+        $approvedColleges = College::where('status', 'APPROVED')->get();
+
+        $inquiryCounts = Inquiry::select('college_id', DB::raw('COUNT(*) as cnt'))
+            ->groupBy('college_id')
+            ->pluck('cnt', 'college_id');
+
+        $ranked = $approvedColleges->map(function ($college) use ($inquiryCounts) {
+            $count = (int) ($inquiryCounts[$college->id] ?? 0);
+            return [
+                'college' => $college,
+                'inquiries' => $count,
+            ];
+        })->sortByDesc('inquiries')->values();
+
+        return view('home.inquiry_rank', [
+            'items' => $ranked,
+        ]);
     }
 
 }
