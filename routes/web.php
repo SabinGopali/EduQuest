@@ -255,6 +255,7 @@ Route::get('/stable-match', [StableMatchingController::class, 'index'])->name('a
 
 // k-means clustering by location
 Route::get('/kmeans', [KMeansClusteringController::class, 'index'])->name('algorithm.kmeans');
+Route::get('/kmeans-student', [KMeansClusteringController::class, 'studentIndex'])->name('algorithm.kmeans.student');
 
 
 Route::get('/topsis', [TopsisController::class, 'index'])->name('algorithm.topsis');

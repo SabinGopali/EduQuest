@@ -196,6 +196,7 @@
 
             @auth('student')
                 <li><a href="{{ url('/recommend') }}">Recommend Me</a></li>
+                <li><a href="{{ url('/kmeans-student') }}">My Clusters</a></li>
             @else
                 <li><a href="{{ url('/login') }}">Recommend Me</a></li>
             @endauth
