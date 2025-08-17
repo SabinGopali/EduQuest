@@ -21,7 +21,7 @@
         left: 0;
         width: 100%;
         height: 12%;
-        background: rgba(255, 255, 255, 0.95);
+        background: white;
         backdrop-filter: blur(10px);
         display: flex;
         justify-content: space-between;
@@ -62,6 +62,7 @@
         user-select: none;
     }
     .badass-navbar ul {
+        
         display: flex;
         gap: 25px;
         list-style: none;
@@ -181,12 +182,13 @@
     <header class="badass-navbar" id="badassNavbar">
        <div class="logo" aria-label="EduQuest logo">
             <img 
-                src="{{ asset('img/logo.jpg') }}"
+                src="{{ asset('img/logo.png') }}"
                 alt="EduQuest Logo"
-                width="36"
-                height="36"
+                width="126"
+                height="126"
                 style="flex-shrink: 0;"
             />
+            <h2 style="color:black;">EDU<span style="color:red;">QUEST</span></h2>
         </div>
         
         <ul>

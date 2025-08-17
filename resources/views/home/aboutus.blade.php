@@ -17,10 +17,10 @@
       padding: 0;
     }
 
+    /* Hero Section */
     .home {
       position: relative;
       height: 280px;
-      background-color: white;
       color: #fff;
       display: flex;
       align-items: center;
@@ -33,10 +33,37 @@
       height: 100%;
       background-size: cover;
       background-position: center;
-      
       z-index: 1;
+      
     }
 
+    .home_overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      text-align: center;
+      flex-direction: column;
+      padding: 0 20px;
+    }
+
+    .home_overlay h1 {
+      font-size: 38px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .home_overlay p {
+      font-size: 18px;
+      margin-top: 12px;
+      max-width: 600px;
+    }
+
+    /* About Section */
     .about-container {
       max-width: 1300px;
       margin: 60px auto;
@@ -142,29 +169,24 @@
 </head>
 
 <!-- Hero Section -->
-<div class="home" style="height: 280px; position: relative;">
-  <div class="home_background" style="
-    background-image: url('{{ asset('img/aboutusbanner.jpg') }}');
-    background-size: cover;
-    background-position: center;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: 1;
-  "></div>
+<div class="home">
+  <div class="home_background" style="background-image: url('{{ asset('img/aboutus.jpg') }}');"></div>
+
+  <div class="home_overlay">
+    <h1 style="text-transform: uppercase;">About EduQuest</h1>
+    <p style="color:white;">Empowering students to make confident educational choices with personalized college and course recommendations.</p>
+  </div>
 </div>
 
 <!-- About Section -->
 <div class="about-container">
   <!-- Text Content -->
   <div>
-    <p class="about-heading">How It Started</p>
-    <h1 class="about-title">Our Dream is<br>Transforming Education Access</h1>
+    <p class="about-heading">Our Journey</p>
+    <h1 class="about-title">Transforming Education Access</h1>
     <p class="about-description">
-      EduQuest is a student-led initiative designed as part of our final-year college project.
-      We recognized a major challenge: students struggle to find the right college and course that fits their goals and interests.
-      So, we created a platform that personalizes college recommendations based on user input, interest, and academic performance.
-      With teamwork, research, and feedback from peers, EduQuest aims to guide students through their educational choices with clarity and confidence.
+      EduQuest is a student-led initiative created as part of our final-year project. We observed a major challenge: students often struggle to choose colleges and courses that align with their aspirations and skills. 
+      Our platform personalizes recommendations based on user interests, academic performance, and career goals. Through research, teamwork, and constant feedback, EduQuest aims to guide students in making informed educational decisions confidently and effectively.
     </p>
 
     <!-- Stats Section -->

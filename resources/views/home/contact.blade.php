@@ -158,9 +158,30 @@
 
 <!-- Hero Section -->
 <div class="home">
-  <div class="home_background" style="background-image: url('{{ asset('img/Contact_banner.jpg') }}')"></div>
-  
+  <div class="home_background" style="background-image: url('{{ asset('img/contactus.jpg') }}')"></div>
+
+  <!-- Overlay with text -->
+  <div style="
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    z-index: 2;
+    padding: 0 20px;
+    color: #fff;
+  ">
+    <h1 style="font-size: 42px; font-weight: 800; margin: 0; text-transform: uppercase;">Contact Us</h1>
+    <p style="font-size: 18px; margin-top: 12px; max-width: 600px; color:white;">
+      Get in touch with our team for inquiries, feedback, or support.
+    </p>
+  </div>
 </div>
+
 
 <!-- Contact Section -->
 <div class="contact">

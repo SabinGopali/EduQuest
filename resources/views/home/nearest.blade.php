@@ -12,7 +12,6 @@
     .btn-primary { background-color: #0d6efd; color: #fff; }
     .btn-primary:hover { background-color: #0b5ed7; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(13,110,253,0.3); }
     .form-group label { font-weight: 500; color: #555; }
-    .show { display: none; margin-top: 30px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
     #map { height: 400px; width: 100%; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-top: 30px; }
     .searchresult { margin-top: 40px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
     .course_boxes { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
@@ -32,7 +31,7 @@
 <div class="container">
     <div id="autoLocateStatus" class="mt-2"></div>
     <div id="locationAlert" class="alert-location" style="display:none;">
-        Enable location access in your browser to see nearby colleges.
+        Enable location access in your browser or search your address to find nearby colleges.
     </div>
 
     <div class="a" id="manualBlock">
@@ -42,31 +41,14 @@
         <div id="coordinates" class="mt-2"></div>
     </div>
 
-    <div class="show">
-        <form action="{{ route('algorithm.nearest') }}" method="GET" id="locationForm">
-            @csrf
-            <div class="form-group row mt-3">
-                <label for="latitude" class="col-lg-3 col-form-label">Latitude</label>
-                <div class="col-lg-9">
-                    <input type="text" id="latitude" class="form-control" name="latitude" required placeholder="Enter Latitude">
-                </div>
-            </div>
+    <!-- Hidden form purely to submit coords -->
+    <form action="{{ route('algorithm.nearest') }}" method="GET" id="locationForm" style="display:none;">
+        <input type="hidden" id="latitude" name="latitude" required>
+        <input type="hidden" id="longitude" name="longitude" required>
+        <button type="submit" id="submitLocation"></button>
+    </form>
 
-            <div class="form-group row">
-                <label for="longitude" class="col-lg-3 col-form-label">Longitude</label>
-                <div class="col-lg-9">
-                    <input type="text" id="longitude" class="form-control" name="longitude" required placeholder="Enter Longitude">
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-lg-12">
-                    <input type="submit" id="updatelonlan" name="submit" value="Update value" class="btn btn-primary w-100">
-                </div>
-            </div>
-        </form>
-    </div>
-
+    <!-- Map (optional/hidden). Remove the style to show the map. -->
     <div class="col-xl-6" style="display: none;">
         <div id="map"></div>
     </div>
@@ -80,17 +62,17 @@
                     <img src="{{ asset('storage/' . $college->logo) }}" alt="College Logo">
                     <div class="card-title"><a>{{ $college->name }}</a></div>
                     <div class="card-text">{{ $college->address }}</div>
-                    
+
                     @if(property_exists($college, 'distance'))
                         @php
-                            $distanceMeters = (float) $college->distance;
+                            $distanceMeters = (int) $college->distance;
                             $distanceFormatted = $distanceMeters >= 1000
                                 ? number_format($distanceMeters / 1000, 2) . ' km'
                                 : number_format($distanceMeters, 0) . ' m';
                         @endphp
                         <div class="card-text mt-2"><strong>{{ $distanceFormatted }}</strong></div>
                     @endif
-                    
+
                     <div class="d-flex justify-content-center">
                         <a href="/college/detail/{{ $college->id }}">
                             <button class="btn btn-primary">View</button>
@@ -111,24 +93,24 @@
     }).addTo(map);
 
     var marker = L.marker([0,0], { draggable:true }).addTo(map);
-    var current_lat = '', current_lon = '';
-    var hasResults = {{ count($colleges) ? 'true' : 'false' }};
-    var statusEl = document.getElementById('autoLocateStatus');
-    var locationAlert = document.getElementById('locationAlert');
 
-    if (hasResults && statusEl) statusEl.style.display = 'none';
+    const statusEl = document.getElementById('autoLocateStatus');
+    const locationAlert = document.getElementById('locationAlert');
+
+    function setCoords(lat, lon) {
+        document.getElementById('latitude').value = (+lat).toFixed(6);
+        document.getElementById('longitude').value = (+lon).toFixed(6);
+        document.getElementById('coordinates').textContent = 'Lat: ' + (+lat).toFixed(6) + '  Lon: ' + (+lon).toFixed(6);
+    }
+
+    function submitLocation() { document.getElementById('submitLocation').click(); }
 
     function updateMarkerPosition(latlng) {
         marker.setLatLng(latlng);
-        current_lat = latlng.lat.toFixed(6);
-        current_lon = latlng.lng.toFixed(6);
-        document.getElementById('latitude').value = current_lat;
-        document.getElementById('longitude').value = current_lon;
+        setCoords(latlng.lat, latlng.lng);
     }
 
-    function submitLocation() { document.getElementById('updatelonlan').click(); }
-
-    function handleGeoError(err) {
+    function handleGeoError() {
         if (statusEl) statusEl.style.display = 'none';
         if (locationAlert) locationAlert.style.display = 'block';
     }
@@ -144,42 +126,38 @@
             if (statusEl) statusEl.style.display = 'none';
             if (locationAlert) locationAlert.style.display = 'none';
             submitLocation();
-        }, function(err){ handleGeoError(err); }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 10000 });
+        }, function(){ handleGeoError(); }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 10000 });
     }
 
-    function initGeo() {
-        if (navigator.permissions && navigator.permissions.query) {
-            navigator.permissions.query({ name: 'geolocation' }).then(function(p){
-                if (p.state === 'granted' || p.state === 'prompt') requestLocation();
-                else handleGeoError();
-            }).catch(function(){ requestLocation(); });
-        } else { requestLocation(); }
-    }
-
-    var addressInput = document.getElementById('addressInput');
-    var geocodeButton = document.getElementById('geocodeButton');
-
-    geocodeButton.addEventListener('click', function(){
-        if(addressInput.value) geocodeAddress(addressInput.value);
-        else alert('Please enter an address.');
-    });
-
-    function geocodeAddress(address) {
+    // Manual geocode (Nominatim)
+    document.getElementById('geocodeButton').addEventListener('click', function(){
+        var address = document.getElementById('addressInput').value.trim();
+        if (!address) return alert('Please enter an address.');
         fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
-                if(data.length > 0){
-                    var latlng = L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
+                if (data.length > 0) {
+                    var lat = parseFloat(data[0].lat), lon = parseFloat(data[0].lon);
+                    var latlng = L.latLng(lat, lon);
                     map.setView(latlng, 13);
                     updateMarkerPosition(latlng);
                     submitLocation();
-                } else { alert('Address not found.'); }
-            }).catch(err => console.error(err));
-    }
+                } else {
+                    alert('Address not found.');
+                }
+            })
+            .catch(() => alert('Geocoding failed. Try again.'));
+    });
 
-    addressInput.addEventListener('keyup', function(e){ if(e.key==='Enter') geocodeButton.click(); });
-    marker.on('dragend', function(event){ updateMarkerPosition(event.target.getLatLng()); submitLocation(); });
+    marker.on('dragend', function(event){
+        const pos = event.target.getLatLng();
+        updateMarkerPosition(pos);
+        submitLocation();
+    });
 
-    if(!hasResults) initGeo();
+    // Auto geolocate if no results
+    @if(!count($colleges))
+        requestLocation();
+    @endif
 </script>
 @endsection

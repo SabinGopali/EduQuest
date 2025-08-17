@@ -36,8 +36,9 @@
         }
 
         .hero-text h1 {
+            font-family: 'Arial Black', sans-serif;
             font-size: 3.8rem;
-            font-weight: 900;
+            font-weight: bolder;
             line-height: 1.2;
             margin-bottom: 1.5rem;
             color: #333;
@@ -110,7 +111,7 @@
                 padding: 3rem 2rem;
             }
             .hero-text h1 {
-                font-size: 2.6rem;
+                font-size: 3.6rem;
             }
             .carousel {
                 margin-top: 2rem;
@@ -120,7 +121,7 @@
 </head>
 
 <section class="hero-section">
-    <div class="hero-text">
+    <div class="hero-text" >
         <h1>
             Find Your <strong>Perfect College</strong><br> with EduQuest
         </h1>
@@ -134,9 +135,9 @@
     <!-- Image Carousel -->
     <div class="carousel">
         <div class="carousel-track">
-            <img src="{{ asset('img/landing.jpg') }}" alt="Smiling Graduate">
-            <img src="{{ asset('img/landing.jpg') }}" alt="Campus View">
-            <img src="{{ asset('img/landing.jpg') }}" alt="Students Group">
+            <img src="{{ asset('img/carousel1.jpg') }}" alt="Smiling Graduate">
+            <img src="{{ asset('img/carousel2.jpg') }}" alt="Campus View">
+            <img src="{{ asset('img/carousel3.jpg') }}" alt="Students Group">
         </div>
     </div>
 </section>

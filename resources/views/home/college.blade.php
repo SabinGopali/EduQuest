@@ -183,8 +183,31 @@
 <!-- Hero Banner -->
 <div class="home">
   <div class="home_background"></div>
-  <div class="home_content" style="width: 100%; height: 38vh; overflow: hidden;">
-    <img src="{{ asset('img/College_banner.jpg') }}" alt="Colleges" 
+
+  <!-- Overlay with text -->
+  <div style="
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    z-index: 2;
+    padding: 0 20px;
+    color: #fff;
+  ">
+    <h1 style="font-size: 42px; font-weight: 800; margin: 0; text-transform: uppercase;">Explore Colleges & Courses</h1>
+    <p style="font-size: 18px; margin-top: 12px; max-width: 600px; color:white;">
+      Discover the best colleges and programs tailored to your academic goals and interests.
+    </p>
+  </div>
+
+  <!-- Background image inside content for effect -->
+  <div class="home_content" style="width: 100%; height: 38vh; overflow: hidden; position: relative; z-index: 1;">
+    <img src="{{ asset('img/college.jpg') }}" alt="Colleges" 
          style="width: 100%; height: 100%; object-fit: cover;">
   </div>
 </div>

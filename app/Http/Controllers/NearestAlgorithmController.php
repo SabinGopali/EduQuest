@@ -7,14 +7,20 @@ use Illuminate\Support\Facades\DB;
 
 class NearestAlgorithmController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // If the page is opened without coordinates, show empty results;
+        // the Blade will auto-detect location and resubmit.
         return view('home.nearest', ['colleges' => collect()]);
     }
 
-    private function haversineDistance($lat1, $lon1, $lat2, $lon2)
+    /**
+     * Haversine distance (km)
+     */
+    private function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
     {
         $earthRadius = 6371; // km
+
         $dLat = deg2rad($lat2 - $lat1);
         $dLon = deg2rad($lon2 - $lon1);
         $lat1 = deg2rad($lat1);
@@ -23,41 +29,53 @@ class NearestAlgorithmController extends Controller
         $a = sin($dLat / 2) * sin($dLat / 2) +
              cos($lat1) * cos($lat2) *
              sin($dLon / 2) * sin($dLon / 2);
+
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return $earthRadius * $c; // distance in km
     }
 
     public function findNearestCollege(Request $request)
-{
-    $request->validate([
-        'latitude' => 'required|numeric',
-        'longitude' => 'required|numeric',
-    ]);
+    {
+        // Strict validation to block junk coordinates
+        $validated = $request->validate([
+            'latitude'  => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+        ]);
 
-    $userLat = $request->input('latitude');
-    $userLon = $request->input('longitude');
+        $userLat = (float) $validated['latitude'];
+        $userLon = (float) $validated['longitude'];
 
-    // Fetch all colleges with valid coordinates
-    $colleges = DB::table('colleges')
-        ->where('status', 'APPROVED')
-        ->whereNotNull('latitude')
-        ->whereNotNull('longitude')
-        ->get()
-        ->map(function ($college) use ($userLat, $userLon) {
-            $collegeLat = floatval($college->latitude);
-            $collegeLon = floatval($college->longitude);
+        $colleges = DB::table('colleges')
+            ->select('id','name','address','logo','latitude','longitude','status')
+            ->where('status', 'APPROVED')
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->get()
 
-            // Calculate distance in kilometers and convert to meters for display consistency
-            $distanceKm = $this->haversineDistance($userLat, $userLon, $collegeLat, $collegeLon);
-            $college->distance = $distanceKm * 1000; // meters
+            // Filter out malformed or placeholder coords like 0,0
+            ->filter(function ($c) {
+                if (!is_numeric($c->latitude) || !is_numeric($c->longitude)) return false;
+                $lat = (float) $c->latitude;
+                $lon = (float) $c->longitude;
+                if ($lat === 0.0 && $lon === 0.0) return false;
+                return $lat >= -90 && $lat <= 90 && $lon >= -180 && $lon <= 180;
+            })
 
-            return $college;
-        })
-        ->sortBy('distance')
-        ->values();
+            // Compute distance for each college
+            ->map(function ($college) use ($userLat, $userLon) {
+                $collegeLat = (float) $college->latitude;
+                $collegeLon = (float) $college->longitude;
 
-    return view('home.nearest', ['colleges' => $colleges]);
-}
+                $distanceKm = $this->haversineDistance($userLat, $userLon, $collegeLat, $collegeLon);
+                $college->distance = (int) round($distanceKm * 1000); // meters (int for clean formatting)
 
+                return $college;
+            })
+
+            ->sortBy('distance')
+            ->values();
+
+        return view('home.nearest', ['colleges' => $colleges]);
+    }
 }
