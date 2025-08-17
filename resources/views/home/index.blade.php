@@ -117,6 +117,56 @@
                 margin-top: 2rem;
             }
         }
+
+        /* KMeans demo section */
+        .kmeans-section {
+            padding: 4rem 8vw;
+            background-color: #fafafa;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        .kmeans-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 2rem;
+        }
+        .kmeans-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #222;
+            margin-bottom: 0.5rem;
+        }
+        .kmeans-subtitle {
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+        .kmeans-steps {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            max-height: 320px;
+            overflow: auto;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .kmeans-steps li {
+            margin: 0.25rem 0;
+        }
+        .kmeans-badge {
+            display: inline-block;
+            background: #111;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 900px) {
+            .kmeans-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -138,6 +188,22 @@
             <img src="{{ asset('img/carousel1.jpg') }}" alt="Smiling Graduate">
             <img src="{{ asset('img/carousel2.jpg') }}" alt="Campus View">
             <img src="{{ asset('img/carousel3.jpg') }}" alt="Students Group">
+        </div>
+    </div>
+</section>
+
+<section id="kmeans-demo" class="kmeans-section">
+    <div class="kmeans-grid">
+        <div>
+            <span class="kmeans-badge">On-scroll demo</span>
+            <h2 class="kmeans-title">K-Means Clustering</h2>
+            <p class="kmeans-subtitle">
+                As you reach this section, we run K-Means on a small dataset and narrate each step: initialization, assignment, centroid update, and convergence.
+            </p>
+            <ul id="kmeans-steps" class="kmeans-steps"></ul>
+        </div>
+        <div>
+            <div id="kmeans-summary" class="kmeans-steps" style="min-height: 140px;"></div>
         </div>
     </div>
 </section>
