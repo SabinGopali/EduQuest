@@ -118,7 +118,6 @@
     }
     .badass-navbar .dropdown button:hover {
         transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4);
     }
 
     /* Dropdown menu tweaks to match new design */
@@ -196,6 +195,10 @@
 
             @auth('student')
                 <li><a href="{{ url('/recommend') }}">Recommend Me</a></li>
+                <li><a href="{{ url('/smart-recommend') }}">Smart Recommend</a></li>
+                <li><a href="{{ url('/nearest-college') }}">Nearest College</a></li>
+                <li><a href="{{ url('/stable-match') }}">Stable Match</a></li>
+                <li><a href="{{ url('/optimal-schedule') }}">Optimal Schedule</a></li>
             @else
                 <li><a href="{{ url('/login') }}">Recommend Me</a></li>
             @endauth
