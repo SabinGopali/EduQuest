@@ -25,8 +25,8 @@ class CollegeController extends Controller
             'email' => 'required|email|unique:colleges,email',
             'password' => 'required|string',
             'address' => 'required|string',
-            'latitude' => 'required',
-            'longitude' => 'required',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
             'contact' => 'required|string',
             'description' => 'required|string',
             'logo' => 'image|mimes:jpeg,png,jpg,gif',
@@ -36,6 +36,9 @@ class CollegeController extends Controller
         // Hash the password and store it in the $data array
         $data['password'] = bcrypt($request->input('password'));
 
+        // Normalize coordinate types
+        $data['latitude'] = (float) $data['latitude'];
+        $data['longitude'] = (float) $data['longitude'];
 
         // Handle Logo Upload
         if ($request->hasFile('logo')) {
@@ -109,6 +112,8 @@ class CollegeController extends Controller
             'description' => 'required|string',
             'logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust allowed image types and size
             'gallery.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust allowed image types and size
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
         if ($validator->fails()) {
@@ -122,6 +127,11 @@ class CollegeController extends Controller
         $oldCollege->address = $request->input('address');
         $oldCollege->contact = $request->input('contact');
         $oldCollege->description = $request->input('description');
+
+        if ($request->filled('latitude') && $request->filled('longitude')) {
+            $oldCollege->latitude = (float) $request->input('latitude');
+            $oldCollege->longitude = (float) $request->input('longitude');
+        }
 
         // Update logo if a new file is provided
         if ($request->hasFile('logo')) {

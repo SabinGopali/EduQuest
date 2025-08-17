@@ -238,12 +238,12 @@
 
                         <div class="col-md-6">
                             <label>Latitude</label>
-                            <input type="text" class="form-control" name="latitude" required placeholder="Latitude">
+                            <input type="number" step="any" class="form-control" name="latitude" required placeholder="Latitude">
                         </div>
 
                         <div class="col-md-6">
                             <label>Longitude</label>
-                            <input type="text" class="form-control" name="longitude" required placeholder="Longitude">
+                            <input type="number" step="any" class="form-control" name="longitude" required placeholder="Longitude">
                         </div>
 
                         <div class="col-12" style="display: none;">
