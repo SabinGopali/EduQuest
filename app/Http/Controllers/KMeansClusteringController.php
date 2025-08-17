@@ -183,24 +183,16 @@ class KMeansClusteringController extends Controller
             return redirect('/student/login');
         }
 
-        $requestedK = (int) ($request->input('k', 4));
-        if ($requestedK < 1) { $requestedK = 1; }
-
-        $weights = [
-            'content' => (float) ($request->input('w_content', 1.0)),
-            'eligibility' => (float) ($request->input('w_eligibility', 1.0)),
-            'popularity' => (float) ($request->input('w_popularity', 1.0)),
-            'proximity' => (float) ($request->input('w_proximity', 1.0)),
-        ];
+        $requestedK = $request->has('k') ? (int) $request->input('k') : null;
+        if ($requestedK !== null && $requestedK < 1) { $requestedK = null; }
 
         $lat = $request->input('latitude');
         $lon = $request->input('longitude');
         $hasLocation = is_numeric($lat) && is_numeric($lon);
-        if (!$hasLocation) {
-            $lat = null; $lon = null;
-            $weights['proximity'] = 0.0;
-        } else {
+        if ($hasLocation) {
             $lat = (float) $lat; $lon = (float) $lon;
+        } else {
+            $lat = null; $lon = null;
         }
 
         $student = Auth::guard('student')->user();
@@ -210,6 +202,9 @@ class KMeansClusteringController extends Controller
         if ($student && $student->gpa !== null) {
             $studentGpa = (float) $student->gpa;
         }
+
+        // Auto-determine weights based on profile and location
+        $weights = $this->determineAutoWeights($studentGpa, $hasLocation);
 
         $colleges = College::with(['courseDetails.course'])
             ->where('status', 'APPROVED')
@@ -307,14 +302,15 @@ class KMeansClusteringController extends Controller
                     $weights['content'] * $r['content'],
                     $weights['eligibility'] * $r['eligibility'],
                     $weights['popularity'] * $popNorm,
-                    $weights['proximity'] * $proxScore,
+                    ($hasLocation ? $weights['proximity'] : 0.0) * $proxScore,
                 ],
             ];
         }
 
-        $numPoints = count($points);
-        $effectiveK = min(max(1, $requestedK), max(1, $numPoints));
-
+                $numPoints = count($points);
+        $autoK = (int) max(1, round(sqrt(max(1, $numPoints))));
+        $effectiveK = min(max(1, $requestedK ?? $autoK), max(1, $numPoints));
+ 
         $result = [
             'centroids' => [],
             'assignments' => [],
@@ -553,5 +549,30 @@ class KMeansClusteringController extends Controller
         $a = sin($dLat / 2) * sin($dLat / 2) + cos($lat1r) * cos($lat2r) * sin($dLon / 2) * sin($dLon / 2);
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
         return $earthRadius * $c;
+    }
+
+    private function determineAutoWeights(?float $studentGpa, bool $hasLocation): array
+    {
+        // Base preferences: content is primary
+        $wContent = 0.5;
+        $wEligibility = ($studentGpa !== null) ? 0.25 : 0.0; // if GPA known, include eligibility
+        $wPopularity = 0.25;
+        $wProximity = $hasLocation ? 0.2 : 0.0; // add proximity only if we have location
+
+        // Normalize to sum to 1 for active weights
+        $weights = [
+            'content' => $wContent,
+            'eligibility' => $wEligibility,
+            'popularity' => $wPopularity,
+            'proximity' => $wProximity,
+        ];
+        $sum = 0.0;
+        foreach ($weights as $k => $v) { $sum += $v; }
+        if ($sum > 0) {
+            foreach ($weights as $k => $v) {
+                $weights[$k] = $v / $sum;
+            }
+        }
+        return $weights;
     }
 }

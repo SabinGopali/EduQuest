@@ -47,17 +47,10 @@
     </div>
 
     <div>
-      <label for="w_content">Weight: Content</label>
-      <input id="w_content" type="number" min="0" step="0.1" name="w_content" value="{{ $weights['content'] }}" />
+      <label>Weights</label>
+      <div style="font-size:12px; color:#666;">Auto‑tuned from your profile and location.</div>
     </div>
-    <div>
-      <label for="w_eligibility">Weight: Eligibility</label>
-      <input id="w_eligibility" type="number" min="0" step="0.1" name="w_eligibility" value="{{ $weights['eligibility'] }}" />
-    </div>
-    <div>
-      <label for="w_popularity">Weight: Popularity</label>
-      <input id="w_popularity" type="number" min="0" step="0.1" name="w_popularity" value="{{ $weights['popularity'] }}" />
-    </div>
+
     <div>
       <label for="addressInput">Location (optional)</label>
       <input id="addressInput" type="text" name="q" placeholder="City/Street" value="" />
@@ -78,6 +71,8 @@
     <span>Iterations: <strong>{{ $iterations }}</strong></span>
     <span style="margin: 0 10px;">|</span>
     <span>SSE: <strong>{{ number_format($sse, 6) }}</strong></span>
+    <span style="margin: 0 10px;">|</span>
+    <span>Auto Weights — C: <strong>{{ number_format($weights['content'], 2) }}</strong>, E: <strong>{{ number_format($weights['eligibility'], 2) }}</strong>, P: <strong>{{ number_format($weights['popularity'], 2) }}</strong>, X: <strong>{{ number_format($weights['proximity'], 2) }}</strong></span>
   </div>
 
   <div id="skm-map"></div>
@@ -201,18 +196,32 @@
       .catch(() => {});
   }
 
+  function tryBrowserGeolocation() {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const lat = pos.coords.latitude.toFixed(6);
+      const lon = pos.coords.longitude.toFixed(6);
+      document.getElementById('latitude').value = lat;
+      document.getElementById('longitude').value = lon;
+    }, () => {}, { enableHighAccuracy: true, timeout: 2000 });
+  }
+
   const form = document.querySelector('form.skm-controls');
   const addressInput = document.getElementById('addressInput');
   form.addEventListener('submit', (e) => {
     const lat = document.getElementById('latitude').value;
     const lon = document.getElementById('longitude').value;
-    if (addressInput.value && (!lat || !lon)) {
-      e.preventDefault();
-      geocodeAddress(addressInput.value);
-      setTimeout(() => form.submit(), 450);
+    if (!lat || !lon) {
+      if (addressInput.value) {
+        e.preventDefault();
+        geocodeAddress(addressInput.value);
+        setTimeout(() => form.submit(), 450);
+      } else {
+        tryBrowserGeolocation();
+      }
     }
   });
 
-  document.addEventListener('DOMContentLoaded', initMap);
+  document.addEventListener('DOMContentLoaded', () => { tryBrowserGeolocation(); initMap(); });
 </script>
 @endsection
