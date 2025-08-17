@@ -21,6 +21,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HybridRecommendationController;
 use App\Http\Controllers\NearestAlgorithmController;
 use App\Http\Controllers\StableMatchingController;
+use App\Http\Controllers\StudyScheduleController;
 
 Auth::routes();
 
@@ -239,6 +240,10 @@ Route::get('/college/course/view/{id}', [CourseController::class, 'getByIdForCol
 
 //recommend
 Route::get('/recommend', [AlgorithmController::class, 'recommend'])->name('algorithm.recommend');
+
+// Optimal study scheduler (Weighted Interval Scheduling)
+Route::get('/optimal-schedule', [StudyScheduleController::class, 'index'])->name('algorithm.schedule');
+Route::post('/optimal-schedule/compute', [StudyScheduleController::class, 'compute'])->name('algorithm.schedule.compute');
 
 //nearest college
 Route::get('/nearest-college', [NearestAlgorithmController::class, 'index'])->name('home.nearest');
