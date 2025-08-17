@@ -251,14 +251,15 @@ Route::get('/nearest-college/store', [NearestAlgorithmController::class, 'findNe
 Route::get('/smart-recommend', [HybridRecommendationController::class, 'index'])->name('algorithm.hybrid');
 
 // stable matching allocation (Gale–Shapley)
-Route::get('/stable-match', [StableMatchingController::class, 'index'])->name('algorithm.match');
+// Route::get('/stable-match', [StableMatchingController::class, 'index'])->name('algorithm.match');
 
 // k-means clustering by location
-Route::get('/kmeans', [KMeansClusteringController::class, 'index'])->name('algorithm.kmeans');
+// Route::get('/kmeans', [KMeansClusteringController::class, 'index'])->name('algorithm.kmeans');
+// Route::get('/kmeans-student', [KMeansClusteringController::class, 'studentIndex'])->name('algorithm.kmeans.student');
 
 
-Route::get('/topsis', [TopsisController::class, 'index'])->name('algorithm.topsis');
-Route::post('/topsis/rank', [TopsisController::class, 'rank'])->name('algorithm.topsis.rank');
+// Route::get('/topsis', [TopsisController::class, 'index'])->name('algorithm.topsis');
+// Route::post('/topsis/rank', [TopsisController::class, 'rank'])->name('algorithm.topsis.rank');
 
 
 //inquiry routes

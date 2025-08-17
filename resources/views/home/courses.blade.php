@@ -1,178 +1,147 @@
 @extends('layouts.app')
 @section('content')
 
-<head>
-  <title>Course - Courses</title>
-  <meta charset="utf-8">
-  <meta name="description" content="Course Project">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: white;
+  }
 
-  <link rel="stylesheet" href="{{ asset('home/plugins/fontawesome-free-5.0.1/css/fontawesome-all.css') }}">
+  /* Hero Banner */
+  .home {
+    position: relative;
+    height: 280px;
+    background-color: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      background-color: white;
+  .home_background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('{{ asset('img/course.jpg') }}');
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+  }
+
+  .home_content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .home_content h1 {
+    font-size: 48px;
+    font-weight: bold;
+  }
+
+  /* Page Intro */
+  .page-intro {
+    max-width: 900px;
+    margin: 40px auto 20px auto;
+    padding: 0 20px;
+    text-align: center;
+    color: black;
+  }
+
+  .page-intro h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .page-intro p {
+    font-size: 16px;
+    color: black;
+    font-weight: 500;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  /* Course Grid (same as first page design) */
+  .course_section {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+  }
+
+  .course_box {
+    flex: 1 1 300px;
+    max-width: 320px;
+  }
+
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #fff;
+    transition: box-shadow 0.3s ease;
+    text-align: center;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.15);
+  }
+
+  .card-title h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #222;
+    margin: 0;
+  }
+
+  .button-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background-color: #ff4d4d;
+    border: none;
+    color: white;
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover,
+  .btn-primary:focus {
+    background-color: #e04343;
+  }
+
+  @media (max-width: 768px) {
+    .course_box {
+      max-width: 100%;
+      flex: 1 1 100%;
     }
-
-    .home {
-      position: relative;
-      height: 280px;
-      background-color: #111;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .home_background {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-image: url('{{ asset('img/course.jpg') }}');
-      background-size: cover;
-      background-position: center;
-      z-index: 1;
-    }
-
-    .home_content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-    }
-
-    .home_content h1 {
-      font-size: 48px;
-      font-weight: bold;
-    }
-
-    /* New header text section */
-    .page-intro {
-      max-width: 900px;
-      margin: 40px auto 20px auto;
-      padding: 0 20px;
-      text-align: center;
-      color: black;
-    }
-
-    .page-intro h2 {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      letter-spacing: 0.05em;
-    }
-
-    .page-intro p {
-      font-size: 16px;
-      color: black;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      max-width: 650px;
-      margin: 0 auto;
-    }
-
     .course_section {
-      max-width: 1300px;
-      margin: 60px auto;
-      padding: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      justify-content: center;
+      gap: 20px;
     }
-
-    .course_card {
-      flex: 1 1 calc(33.333% - 30px);
-      background: white;
-      border-radius: 20px;
-      box-shadow: 
-        0 4px 6px rgba(0, 0, 0, 0.06),
-        0 8px 15px rgba(0, 0, 0, 0.1);
-      padding: 30px 20px;
-      text-align: center;
-      transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                  box-shadow 0.35s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .course_card:hover {
-      transform: translateY(-8px) scale(1.05);
-      box-shadow:
-        0 12px 20px rgba(0, 0, 0, 0.2),
-        0 15px 40px rgba(0, 0, 0, 0.15);
-      background: white;
-    }
-
-    .card-title {
-      font-size: 26px;
-      font-weight: 700;
-      color: black;
-      margin-bottom: 8px;
-      letter-spacing: 0.04em;
-      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    }
-
-    .card-text {
-      font-size: 16px;
-      color: black;
-      margin-bottom: 24px;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      line-height: 1.4;
-      min-height: 48px;
-    }
-
-    .course_card a {
-      width: 100%;
-      margin-top: auto;
-      text-decoration: none;
-    }
-
-    .course_card a button {
-      width: 100%;
-      background: white;
-      color: black;
-      padding: 12px 0;
-      border: 2px solid black;
-      border-radius: 6px;
-      font-size: 17px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .course_card a button:hover {
-      background: black;
-      color: white;
-      box-shadow: 0 6px 15px rgba(27, 77, 62, 0.6);
-    }
-
-    @media (max-width: 992px) {
-      .course_card {
-        flex: 1 1 calc(50% - 30px);
-      }
-    }
-
-    @media (max-width: 600px) {
-      .course_card {
-        flex: 1 1 100%;
-      }
-    }
-  </style>
-</head>
+  }
+</style>
 
 <!-- Hero Banner -->
 <div class="home">
-  <div class="home_background" style="background-image: url('{{ asset('img/course.jpg') }}');"></div>
-
-  <!-- Overlay with text -->
+  <div class="home_background"></div>
   <div style="
     position: absolute;
     width: 100%;
@@ -203,12 +172,15 @@
 <!-- Course Cards Section -->
 <div class="course_section">
   @foreach($course as $course)
-    <div class="course_card">
-      <div class="card-title">{{ $course->name }}</div>
-      <div class="card-text">{{ $course->stream }}, {{ $course->subStream }}</div>
-      <a href="/view/course/description/{{ $course->id }}">
-        <button>View</button>
-      </a>
+    <div class="course_box">
+      <div class="card">
+        <div class="card-title">
+          <h3>{{ $course->name }}</h3>
+        </div>
+        <div class="button-wrapper">
+          <a href="/view/course/description/{{ $course->id }}" class="btn-primary">View Details</a>
+        </div>
+      </div>
     </div>
   @endforeach
 </div>
