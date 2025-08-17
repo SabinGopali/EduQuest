@@ -332,6 +332,12 @@ class KMeansClusteringController extends Controller
 
         $clusterCounts = array_fill(0, $effectiveK, 0);
         $clusterGeoSums = array_fill(0, $effectiveK, ['lat' => 0.0, 'lon' => 0.0, 'cnt' => 0]);
+        $clusterRawSums = array_fill(0, $effectiveK, [
+            'content' => 0.0,
+            'eligibility' => 0.0,
+            'popularity' => 0.0,
+            'proximity' => 0.0,
+        ]);
         foreach ($result['assignments'] as $idx => $clusterId) {
             $pt = $points[$idx];
             $clustersView[$clusterId]['colleges'][] = (object) [
@@ -352,6 +358,10 @@ class KMeansClusteringController extends Controller
                 $clusterGeoSums[$clusterId]['lon'] += (float) $pt['lon'];
                 $clusterGeoSums[$clusterId]['cnt']++;
             }
+            $clusterRawSums[$clusterId]['content'] += $pt['raw']['content'];
+            $clusterRawSums[$clusterId]['eligibility'] += $pt['raw']['eligibility'];
+            $clusterRawSums[$clusterId]['popularity'] += $pt['raw']['popularity'];
+            $clusterRawSums[$clusterId]['proximity'] += $pt['raw']['proximity'];
         }
 
         for ($c = 0; $c < $effectiveK; $c++) {
@@ -361,10 +371,48 @@ class KMeansClusteringController extends Controller
             }
         }
 
+        // Compute per-cluster average raw features and a weighted match score
+        $bestIdx = null; $bestScore = -INF;
+        for ($c = 0; $c < $effectiveK; $c++) {
+            $count = max(1, $clusterCounts[$c]);
+            $avgContent = $clusterRawSums[$c]['content'] / $count;
+            $avgEligibility = $clusterRawSums[$c]['eligibility'] / $count;
+            $avgPopularity = $clusterRawSums[$c]['popularity'] / $count;
+            $avgProximity = $clusterRawSums[$c]['proximity'] / $count;
+
+            $clustersView[$c]['avgRaw'] = [
+                'content' => $avgContent,
+                'eligibility' => $avgEligibility,
+                'popularity' => $avgPopularity,
+                'proximity' => $avgProximity,
+            ];
+            $score = ($weights['content'] * $avgContent)
+                + ($weights['eligibility'] * $avgEligibility)
+                + ($weights['popularity'] * $avgPopularity)
+                + ($weights['proximity'] * $avgProximity);
+            $clustersView[$c]['score'] = $score;
+            if ($clusterCounts[$c] > 0 && $score > $bestScore) {
+                $bestScore = $score; $bestIdx = $c;
+            }
+        }
+        for ($c = 0; $c < $effectiveK; $c++) {
+            $clustersView[$c]['isMatched'] = ($bestIdx !== null && $c === $bestIdx);
+        }
+
+        // Sort clusters: matched first, then by score desc
+        $clustersSorted = array_values($clustersView);
+        usort($clustersSorted, function ($a, $b) {
+            if ($a['isMatched'] === $b['isMatched']) {
+                if ($a['score'] === $b['score']) { return 0; }
+                return ($a['score'] < $b['score']) ? 1 : -1;
+            }
+            return $a['isMatched'] ? -1 : 1;
+        });
+
         return view('home.kmeans_student', [
             'k' => $effectiveK,
             'requestedK' => $requestedK,
-            'clusters' => $clustersView,
+            'clusters' => $clustersSorted,
             'iterations' => $result['iterations'],
             'sse' => $result['sse'],
             'totalColleges' => $numPoints,

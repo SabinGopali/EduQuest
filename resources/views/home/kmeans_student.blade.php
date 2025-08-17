@@ -80,9 +80,9 @@
   <div class="skm-grid">
     @forelse($clusters as $idx => $cluster)
       @php $color = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'][$idx % 10]; @endphp
-      <div class="skm-card">
+      <div class="skm-card" style="border-color: {{ $cluster['isMatched'] ? '#0d6efd' : '#eee' }}; box-shadow: {{ $cluster['isMatched'] ? '0 0 0 2px rgba(13,110,253,0.15)' : '0 4px 10px rgb(0 0 0 / 0.06)' }};">
         <h3>
-          <span class="skm-pill" style="background: {{ $color }};">Cluster {{ $idx + 1 }}</span>
+          <span class="skm-pill" style="background: {{ $color }};">{{ $cluster['isMatched'] ? 'Matched Cluster' : 'Cluster' }} {{ $cluster['isMatched'] ? '' : ($idx + 1) }}</span>
           <span style="color:#666; font-weight: 500;">({{ count($cluster['colleges']) }} colleges)</span>
         </h3>
         @if(!empty($cluster['centroidFeatures']))
@@ -92,6 +92,12 @@
             E={{ number_format($cluster['centroidFeatures'][1] ?? 0, 3) }},
             P={{ number_format($cluster['centroidFeatures'][2] ?? 0, 3) }},
             X={{ number_format($cluster['centroidFeatures'][3] ?? 0, 3) }}
+          </div>
+          <div style="font-size:12px; color:#444; margin-bottom: 10px;">
+            Avg match — C: {{ number_format(($cluster['avgRaw']['content'] ?? 0) * 100, 0) }}%,
+            E: {{ number_format(($cluster['avgRaw']['eligibility'] ?? 0) * 100, 0) }}%,
+            P: {{ number_format(($cluster['avgRaw']['popularity'] ?? 0) * 100, 0) }}%,
+            X: {{ number_format(($cluster['avgRaw']['proximity'] ?? 0) * 100, 0) }}%
           </div>
         @endif
         <div>
