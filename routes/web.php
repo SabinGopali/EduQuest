@@ -21,6 +21,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HybridRecommendationController;
 use App\Http\Controllers\NearestAlgorithmController;
 use App\Http\Controllers\StableMatchingController;
+use App\Http\Controllers\TextRankController;
 
 Auth::routes();
 
@@ -244,12 +245,15 @@ Route::get('/recommend', [AlgorithmController::class, 'recommend'])->name('algor
 Route::get('/nearest-college', [NearestAlgorithmController::class, 'index'])->name('home.nearest');
 Route::get('/nearest-college/store', [NearestAlgorithmController::class, 'findNearestCollege'])->name('algorithm.nearest');
 
-
 // hybrid algorithm (content + popularity + proximity)
 Route::get('/smart-recommend', [HybridRecommendationController::class, 'index'])->name('algorithm.hybrid');
 
 // stable matching allocation (Gale–Shapley)
 Route::get('/stable-match', [StableMatchingController::class, 'index'])->name('algorithm.match');
+
+// text summarization (TextRank)
+Route::get('/summarize', [TextRankController::class, 'index'])->name('algorithm.summarize.form');
+Route::post('/summarize', [TextRankController::class, 'summarize'])->name('algorithm.summarize');
 
 
 //inquiry routes
