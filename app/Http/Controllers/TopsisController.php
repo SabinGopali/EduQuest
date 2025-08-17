@@ -21,7 +21,7 @@ class TopsisController extends Controller
 
     public function index(Request $request)
     {
-        // Default values for weights
+        // Default weights and no location -> automatic ranking on first load
         $defaults = [
             'w_popularity' => 1.0,
             'w_variety' => 1.0,
@@ -29,13 +29,23 @@ class TopsisController extends Controller
             'w_distance' => 1.0,
         ];
 
+        $lat = null;
+        $lon = null;
+
+        $data = $this->generateRanking([
+            'popularity' => (float) $defaults['w_popularity'],
+            'variety' => (float) $defaults['w_variety'],
+            'eligibility' => (float) $defaults['w_eligibility'],
+            'distance' => (float) $defaults['w_distance'],
+        ], $lat, $lon);
+
         return view('home.topsis', [
             'weights' => $defaults,
-            'results' => null,
-            'colleges' => collect(),
-            'latitude' => null,
-            'longitude' => null,
-            'includedCriteria' => [],
+            'results' => $data['results'],
+            'colleges' => $data['colleges'],
+            'latitude' => $lat,
+            'longitude' => $lon,
+            'includedCriteria' => $data['includedCriteria'],
         ]);
     }
 
@@ -60,6 +70,37 @@ class TopsisController extends Controller
         $lat = isset($validated['latitude']) ? (float) $validated['latitude'] : null;
         $lon = isset($validated['longitude']) ? (float) $validated['longitude'] : null;
 
+        $data = $this->generateRanking($weights, $lat, $lon);
+
+        return view('home.topsis', [
+            'weights' => [
+                'w_popularity' => $weights['popularity'],
+                'w_variety' => $weights['variety'],
+                'w_eligibility' => $weights['eligibility'],
+                'w_distance' => $weights['distance'],
+            ],
+            'results' => $data['results'],
+            'colleges' => $data['colleges'],
+            'latitude' => $lat,
+            'longitude' => $lon,
+            'includedCriteria' => $data['includedCriteria'],
+        ]);
+    }
+
+    private function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
+    {
+        $earthRadius = 6371.0; // km
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        $lat1r = deg2rad($lat1);
+        $lat2r = deg2rad($lat2);
+        $a = sin($dLat / 2) * sin($dLat / 2) + cos($lat1r) * cos($lat2r) * sin($dLon / 2) * sin($dLon / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        return $earthRadius * $c;
+    }
+
+    private function generateRanking(array $weights, ?float $lat, ?float $lon): array
+    {
         $student = null;
         $studentGpa = null;
         if (Auth::guard('student')->check()) {
@@ -75,7 +116,6 @@ class TopsisController extends Controller
             ->where('status', 'APPROVED')
             ->get();
 
-        // Popularity counts (inquiries per college) in one query
         $inquiryCounts = Inquiry::select('college_id', DB::raw('COUNT(*) as cnt'))
             ->groupBy('college_id')
             ->pluck('cnt', 'college_id');
@@ -90,7 +130,6 @@ class TopsisController extends Controller
             $popularity = (int) ($inquiryCounts[$college->id] ?? 0);
             $variety = (int) $college->courseDetails->count();
 
-            // Eligibility: proportion of offered courses whose gpa_limit <= student's gpa
             $eligibility = 0.0;
             if ($studentGpa !== null) {
                 $eligible = 0; $considered = 0;
@@ -105,10 +144,9 @@ class TopsisController extends Controller
                 }
                 $eligibility = $considered > 0 ? $eligible / $considered : 0.0;
             } else {
-                $eligibility = 0.0; // unknown GPA -> neutral/low eligibility
+                $eligibility = 0.0;
             }
 
-            // Distance: if coordinates provided; kilometers
             $distance = null;
             if ($lat !== null && $lon !== null && $college->latitude !== null && $college->longitude !== null) {
                 $distance = $this->haversineDistance((float)$lat, (float)$lon, (float)$college->latitude, (float)$college->longitude);
@@ -118,7 +156,7 @@ class TopsisController extends Controller
                 $popularity,   // benefit
                 $variety,      // benefit
                 $eligibility,  // benefit
-                $distance,     // cost (may be null if not provided)
+                $distance,     // cost (may be null)
             ];
 
             $rawValues[] = [
@@ -129,19 +167,16 @@ class TopsisController extends Controller
             ];
         }
 
-        // Align arrays for service
         $weightsVector = [
             $weights['popularity'],
             $weights['variety'],
             $weights['eligibility'],
             $weights['distance'],
         ];
-
         $criteriaTypes = ['benefit', 'benefit', 'benefit', 'cost'];
 
         $ranked = $this->topsisService->rankAlternatives($alternativeIds, $decisionMatrix, $weightsVector, $criteriaTypes);
 
-        // Map results back to colleges
         $idToCollege = [];
         foreach ($colleges as $c) { $idToCollege[$c->id] = $c; }
 
@@ -160,31 +195,10 @@ class TopsisController extends Controller
             }
         }
 
-        // Prepare data for the view
-        return view('home.topsis', [
-            'weights' => [
-                'w_popularity' => $weights['popularity'],
-                'w_variety' => $weights['variety'],
-                'w_eligibility' => $weights['eligibility'],
-                'w_distance' => $weights['distance'],
-            ],
+        return [
             'results' => $resultsDecorated,
             'colleges' => $colleges,
-            'latitude' => $lat,
-            'longitude' => $lon,
             'includedCriteria' => $ranked['meta']['includedCriteria'] ?? [],
-        ]);
-    }
-
-    private function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
-    {
-        $earthRadius = 6371.0; // km
-        $dLat = deg2rad($lat2 - $lat1);
-        $dLon = deg2rad($lon2 - $lon1);
-        $lat1r = deg2rad($lat1);
-        $lat2r = deg2rad($lat2);
-        $a = sin($dLat / 2) * sin($dLat / 2) + cos($lat1r) * cos($lat2r) * sin($dLon / 2) * sin($dLon / 2);
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-        return $earthRadius * $c;
+        ];
     }
 }
