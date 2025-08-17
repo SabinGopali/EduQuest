@@ -19,8 +19,10 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AlgorithmController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HybridRecommendationController;
+use App\Http\Controllers\KMeansClusteringController;
 use App\Http\Controllers\NearestAlgorithmController;
 use App\Http\Controllers\StableMatchingController;
+use App\Http\Controllers\TopsisController;
 
 Auth::routes();
 
@@ -250,6 +252,13 @@ Route::get('/smart-recommend', [HybridRecommendationController::class, 'index'])
 
 // stable matching allocation (Gale–Shapley)
 Route::get('/stable-match', [StableMatchingController::class, 'index'])->name('algorithm.match');
+
+// k-means clustering by location
+Route::get('/kmeans', [KMeansClusteringController::class, 'index'])->name('algorithm.kmeans');
+
+
+Route::get('/topsis', [TopsisController::class, 'index'])->name('algorithm.topsis');
+Route::post('/topsis/rank', [TopsisController::class, 'rank'])->name('algorithm.topsis.rank');
 
 
 //inquiry routes
