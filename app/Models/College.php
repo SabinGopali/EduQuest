@@ -22,6 +22,11 @@ class College extends Authenticatable
         'gallery.*',
     ];
 
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
+    ];
+
     public function images()
     {
         return $this->hasMany(CollegeImage::class);
