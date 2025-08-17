@@ -202,6 +202,7 @@
 
             <li><a href="{{ url('/courses') }}">Courses</a></li>
             <li><a href="{{ url('/college') }}">College</a></li>
+            <li><a href="{{ url('/kmeans') }}">K-Means</a></li>
             <li><a href="{{ url('/aboutus') }}">About Us</a></li>
             <li><a href="{{ url('/contact') }}">Contact</a></li>
         </ul>

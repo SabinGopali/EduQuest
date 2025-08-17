@@ -21,6 +21,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HybridRecommendationController;
 use App\Http\Controllers\NearestAlgorithmController;
 use App\Http\Controllers\StableMatchingController;
+use App\Http\Controllers\KMeansClusteringController;
 
 Auth::routes();
 
@@ -250,6 +251,9 @@ Route::get('/smart-recommend', [HybridRecommendationController::class, 'index'])
 
 // stable matching allocation (Gale–Shapley)
 Route::get('/stable-match', [StableMatchingController::class, 'index'])->name('algorithm.match');
+
+// k-means clustering by location
+Route::get('/kmeans', [KMeansClusteringController::class, 'index'])->name('algorithm.kmeans');
 
 
 //inquiry routes
