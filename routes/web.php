@@ -260,6 +260,9 @@ Route::get('/smart-recommend', [HybridRecommendationController::class, 'index'])
 // Route::get('/kmeans', [KMeansClusteringController::class, 'index'])->name('algorithm.kmeans');
 // Route::get('/kmeans-student', [KMeansClusteringController::class, 'studentIndex'])->name('algorithm.kmeans.student');
 
+// KNN: k-nearest colleges by geospatial distance
+Route::get('/knn', [\App\Http\Controllers\KnnAlgorithmController::class, 'index'])->name('algorithm.knn');
+Route::get('/knn/find', [\App\Http\Controllers\KnnAlgorithmController::class, 'find'])->name('algorithm.knn.find');
 
 // Route::get('/topsis', [TopsisController::class, 'index'])->name('algorithm.topsis');
 // Route::post('/topsis/rank', [TopsisController::class, 'rank'])->name('algorithm.topsis.rank');
