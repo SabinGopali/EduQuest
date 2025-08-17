@@ -13,6 +13,8 @@
 <link rel="stylesheet" type="text/css" href="{{asset('home/styles/main_styles.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('home/styles/responsive.css')}}">
 
+@vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
 <style>
     /* Floating navbar style */
     .badass-navbar {
