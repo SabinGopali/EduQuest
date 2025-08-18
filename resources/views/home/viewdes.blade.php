@@ -40,6 +40,17 @@
         text-align: center;
     }
 
+    .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
     .info-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -118,6 +129,12 @@
     @if(session('success'))
         <div class="alert-success">
             {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert-error">
+            {{ session('error') }}
         </div>
     @endif
 
