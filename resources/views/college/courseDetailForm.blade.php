@@ -141,10 +141,48 @@
         </div>
 
         <div class="form-group">
-            <label for="description">Description (include details for +2 and Bachelor students):</label>
-            <small class="helper-text">Helpful to add: eligibility for +2 and Bachelor entrants, duration, seats, fees & scholarships, syllabus highlights, admission/entrance process, career paths, and contact info.</small>
-            <textarea id="description" name="description" rows="4" required placeholder="Eligibility: (+2 Science/Management, Bachelor prerequisites)\nDuration: (e.g., 4 years, 8 semesters)\nSeats: (e.g., 120)\nFees & Scholarships: (tuition per year, available aid)\nSyllabus Highlights: (core subjects)\nAdmission Process: (deadlines, documents, entrance)\nCareer Paths: (roles, industries)\nContact: (email/phone)"></textarea>
+            <label>Eligibility (+2):</label>
+            <input type="text" id="eligibility_plus_two" placeholder="e.g., +2 Science/Management with minimum GPA 2.0" />
         </div>
+        <div class="form-group">
+            <label>Eligibility (Bachelor):</label>
+            <input type="text" id="eligibility_bachelor" placeholder="e.g., Bachelor in related field with minimum CGPA 2.0" />
+        </div>
+        <div class="form-group">
+            <label>Duration:</label>
+            <input type="text" id="duration" placeholder="e.g., 4 years (8 semesters)" />
+        </div>
+        <div class="form-group">
+            <label>Seats:</label>
+            <input type="text" id="seats" placeholder="e.g., 120" />
+        </div>
+        <div class="form-group">
+            <label>Fees:</label>
+            <input type="text" id="fees" placeholder="e.g., NPR 150,000 per year" />
+        </div>
+        <div class="form-group">
+            <label>Scholarships:</label>
+            <input type="text" id="scholarships" placeholder="e.g., Merit-based up to 50%" />
+        </div>
+        <div class="form-group">
+            <label>Syllabus Highlights:</label>
+            <textarea id="syllabus_highlights" rows="3" placeholder="Core subjects and highlights"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Admission Process:</label>
+            <textarea id="admission_process" rows="3" placeholder="Deadlines, required documents, entrance details"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Career Paths:</label>
+            <textarea id="career_paths" rows="3" placeholder="Typical roles and industries"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Contact Info:</label>
+            <input type="text" id="contact_info" placeholder="e.g., admissions@college.edu, +977-98xxxxxxx" />
+        </div>
+
+        <!-- Hidden field that backend expects -->
+        <textarea id="description" name="description" rows="4" style="display:none;" required></textarea>
 
         <input type="text" id="collegeid" name="college_id" value="{{ Auth::guard('college')->user()->id }}" hidden>
 
@@ -153,4 +191,32 @@
         </button>
     </form>
 </div>
+<script>
+    (function() {
+        function appendIfPresent(parts, label, value) {
+            if (value && value.trim()) {
+                parts.push(label + ': ' + value.trim());
+            }
+        }
+
+        var form = document.getElementById('myForm');
+        if (form) {
+            form.addEventListener('submit', function() {
+                var parts = [];
+                appendIfPresent(parts, 'Eligibility (+2)', document.getElementById('eligibility_plus_two').value);
+                appendIfPresent(parts, 'Eligibility (Bachelor)', document.getElementById('eligibility_bachelor').value);
+                appendIfPresent(parts, 'Duration', document.getElementById('duration').value);
+                appendIfPresent(parts, 'Seats', document.getElementById('seats').value);
+                appendIfPresent(parts, 'Fees', document.getElementById('fees').value);
+                appendIfPresent(parts, 'Scholarships', document.getElementById('scholarships').value);
+                appendIfPresent(parts, 'Syllabus Highlights', document.getElementById('syllabus_highlights').value);
+                appendIfPresent(parts, 'Admission Process', document.getElementById('admission_process').value);
+                appendIfPresent(parts, 'Career Paths', document.getElementById('career_paths').value);
+                appendIfPresent(parts, 'Contact', document.getElementById('contact_info').value);
+
+                document.getElementById('description').value = parts.join('\n');
+            });
+        }
+    })();
+</script>
 @endsection
