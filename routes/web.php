@@ -253,6 +253,11 @@ Route::get('/nearest-college/store', [NearestAlgorithmController::class, 'findNe
 // hybrid algorithm (content + popularity + proximity)
 Route::get('/smart-recommend', [HybridRecommendationController::class, 'index'])->name('algorithm.hybrid');
 
+
+// KNN: k-nearest colleges by geospatial distance
+Route::get('/knn', [\App\Http\Controllers\KnnAlgorithmController::class, 'index'])->name('algorithm.knn');
+Route::get('/knn/find', [\App\Http\Controllers\KnnAlgorithmController::class, 'find'])->name('algorithm.knn.find');
+
 // stable matching allocation (Gale–Shapley)
 // Route::get('/stable-match', [StableMatchingController::class, 'index'])->name('algorithm.match');
 
