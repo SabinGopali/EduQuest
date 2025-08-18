@@ -17,6 +17,7 @@ class CourseDetailController extends Controller
 
     public function courseDetailCreateForm()
     {
+        // Only show courses that have been approved and visible to students
         $courses = Course::all();
         return view('college/courseDetailForm',['courses'=>$courses]);
     }
@@ -29,19 +30,19 @@ class CourseDetailController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'course_id' => 'required',
-            'college_id' => 'required',
-            'description' => 'required'
+        $validated = $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'description' => 'required|string'
         ]);
 
-        $data['course_id'] = $request->input('course_id');
-        $data['college_id'] = $request->input('college_id');
-        $data['description'] = $request->input('description');
-        $data['status'] = 'PENDING';
+        $college = Auth::guard('college')->user();
 
-        // If you have a model, you can use it to create a new record
-        CourseDetail::create($data);
+        CourseDetail::create([
+            'course_id' => $validated['course_id'],
+            'college_id' => $college->id,
+            'description' => $validated['description'],
+            'status' => 'PENDING',
+        ]);
 
         // return view('/college/course-detail');
         return redirect('/college/course-detail');
