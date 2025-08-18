@@ -137,6 +137,50 @@
             <textarea id="description" name="description" rows="4" required></textarea>
         </div>
 
+        <div class="form-group">
+            <label for="tuition_fee">Tuition Fee:</label>
+            <input type="text" id="tuition_fee" name="tuition_fee" placeholder="e.g., 150000" />
+        </div>
+
+        <div class="form-group">
+            <label for="seats">Seats Available:</label>
+            <input type="text" id="seats" name="seats" placeholder="e.g., 60" />
+        </div>
+
+        <div class="form-group">
+            <label for="eligibility">Eligibility:</label>
+            <textarea id="eligibility" name="eligibility" rows="4" placeholder="Eligibility criteria"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="admission_process">Admission Process:</label>
+            <textarea id="admission_process" name="admission_process" rows="4" placeholder="Admission process details"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="placement">Placement Info:</label>
+            <textarea id="placement" name="placement" rows="4" placeholder="Placement statistics, companies, etc."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="scholarship">Scholarship:</label>
+            <textarea id="scholarship" name="scholarship" rows="3" placeholder="Scholarship details"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="hostel">Hostel Available:</label>
+            <select id="hostel" name="hostel">
+                <option value="">Select</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="application_deadline">Application Deadline:</label>
+            <input type="date" id="application_deadline" name="application_deadline" />
+        </div>
+
         <input type="text" id="collegeid" name="college_id" value="{{ Auth::guard('college')->user()->id }}" hidden>
 
         <button type="submit" class="submit-btn">

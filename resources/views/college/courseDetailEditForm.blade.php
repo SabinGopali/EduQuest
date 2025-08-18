@@ -113,6 +113,50 @@
             <textarea id="description" name="description" rows="6" required>{{ $courseDetail->description }}</textarea>
         </div>
 
+        <div class="form-group">
+            <label for="tuition_fee">Tuition Fee:</label>
+            <input type="text" id="tuition_fee" name="tuition_fee" value="{{ $courseDetail->tuition_fee }}" />
+        </div>
+
+        <div class="form-group">
+            <label for="seats">Seats Available:</label>
+            <input type="text" id="seats" name="seats" value="{{ $courseDetail->seats }}" />
+        </div>
+
+        <div class="form-group">
+            <label for="eligibility">Eligibility:</label>
+            <textarea id="eligibility" name="eligibility" rows="4">{{ $courseDetail->eligibility }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="admission_process">Admission Process:</label>
+            <textarea id="admission_process" name="admission_process" rows="4">{{ $courseDetail->admission_process }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="placement">Placement Info:</label>
+            <textarea id="placement" name="placement" rows="4">{{ $courseDetail->placement }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="scholarship">Scholarship:</label>
+            <textarea id="scholarship" name="scholarship" rows="3">{{ $courseDetail->scholarship }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="hostel">Hostel Available:</label>
+            <select id="hostel" name="hostel">
+                <option value="">Select</option>
+                <option value="1" {{ $courseDetail->hostel === 1 ? 'selected' : '' }}>Yes</option>
+                <option value="0" {{ $courseDetail->hostel === 0 ? 'selected' : '' }}>No</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="application_deadline">Application Deadline:</label>
+            <input type="date" id="application_deadline" name="application_deadline" value="{{ $courseDetail->application_deadline }}" />
+        </div>
+
         <input type="text" id="collegeid" name="college_id" value="{{ Auth::guard('college')->user()->id }}" hidden>
 
         <button type="submit" class="submit-btn">Update</button>

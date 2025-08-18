@@ -172,6 +172,8 @@
                 <th>#</th>
                 <th>Course Name</th>
                 <th>Description</th>
+                <th>Fee</th>
+                <th>Seats</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -183,6 +185,8 @@
                 <td>
                     <div>{{ $courseDetail->description }}</div>
                 </td>
+                <td>{{ $courseDetail->tuition_fee ? number_format($courseDetail->tuition_fee, 2) : '-' }}</td>
+                <td>{{ $courseDetail->seats ?? '-' }}</td>
                 <td>
                     <div class="action-buttons">
                         <a href="/coursedetail/delete/{{ $courseDetail->id }}" class="icon-btn icon-delete" title="Delete">
