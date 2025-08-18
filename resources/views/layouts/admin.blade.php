@@ -222,6 +222,7 @@
         <li><a href="/admin/course-detail/show"><i class="fas fa-info-circle"></i> View Course Detail</a></li>
         <li><a href="/admin/contact/show"><i class="fas fa-envelope"></i> Manage Contact</a></li>
         <li><a href="/admin/inquiry/show"><i class="fas fa-question-circle"></i> View Inquiry</a></li>
+         <li><a href="/admin/bookings"><i class="fas fa-calendar-check"></i> View Bookings</a></li>
         <li><a href="/admin/change-password"><i class="fas fa-key"></i> Change password</a></li>
         <li><a href="/admin/logout" class="logout"><i class="fas fa-sign-out-alt"></i> Log out</a></li>
       </ul>

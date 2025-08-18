@@ -215,6 +215,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{ url('/myprofile') }}">My Profile</a></li>
                         <li><a href="{{ url('/inquiry') }}">My Inquiry</a></li>
+                        <li><a href="{{ url('/student/bookings') }}">My Bookings</a></li>
                         <li><a href="{{ url('/changepassword') }}">Change Password</a></li>
                         <li><a href="{{ url('/student/logout') }}">Logout</a></li>
                     </ul>

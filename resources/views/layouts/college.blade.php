@@ -233,6 +233,11 @@
             <i class="fas fa-question-circle"></i> Manage Inquiry
           </a>
         </li>
+         <li>
+          <a href="/college/bookings">
+            <i class="fas fa-calendar-check"></i> Manage Bookings
+          </a>
+        </li>
         <li>
           <a href="/college/change-password">
             <i class="fas fa-lock"></i> Edit Password
