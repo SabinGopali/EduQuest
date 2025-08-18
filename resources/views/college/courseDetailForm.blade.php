@@ -109,6 +109,14 @@
             box-shadow: 0 3px 8px rgba(99, 102, 241, 0.2);
         }
 
+        .helper-text {
+            display: block;
+            margin-top: 6px;
+            color: #6b7280; /* Tailwind gray-500 */
+            font-size: 0.9rem;
+            line-height: 1.3;
+        }
+
         @media (max-width: 640px) {
             .form-container {
                 padding: 25px 20px;
@@ -133,9 +141,44 @@
         </div>
 
         <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="4" required></textarea>
+            <label>Eligibility:</label>
+            <input type="text" id="eligibility" placeholder="e.g., minimum GPA 2.0" />
         </div>
+        <div class="form-group">
+            <label>Duration:</label>
+            <input type="text" id="duration" placeholder="e.g., 4 years (8 semesters)" />
+        </div>
+        <div class="form-group">
+            <label>Seats:</label>
+            <input type="text" id="seats" placeholder="e.g., 120" />
+        </div>
+        <div class="form-group">
+            <label>Fees:</label>
+            <input type="text" id="fees" placeholder="e.g., NPR 150,000 per year" />
+        </div>
+        <div class="form-group">
+            <label>Scholarships:</label>
+            <input type="text" id="scholarships" placeholder="e.g., Merit-based up to 50%" />
+        </div>
+        <div class="form-group">
+            <label>Syllabus Highlights:</label>
+            <textarea id="syllabus_highlights" rows="3" placeholder="Core subjects and highlights"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Admission Process:</label>
+            <textarea id="admission_process" rows="3" placeholder="Deadlines, required documents, entrance details"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Career Paths:</label>
+            <textarea id="career_paths" rows="3" placeholder="Typical roles and industries"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Contact Info:</label>
+            <input type="text" id="contact_info" placeholder="e.g., admissions@college.edu, +977-98xxxxxxx" />
+        </div>
+
+        <!-- Hidden field that backend expects -->
+        <textarea id="description" name="description" rows="4" style="display:none;" required></textarea>
 
         <input type="text" id="collegeid" name="college_id" value="{{ Auth::guard('college')->user()->id }}" hidden>
 
@@ -144,4 +187,32 @@
         </button>
     </form>
 </div>
+<script>
+    (function() {
+        function appendIfPresent(parts, label, value) {
+            if (value && value.trim()) {
+                parts.push(label + ': ' + value.trim());
+            }
+        }
+
+        var form = document.getElementById('myForm');
+        if (form) {
+            form.addEventListener('submit', function() {
+                var parts = [];
+                appendIfPresent(parts, 'Eligibility', document.getElementById('eligibility').value);
+                
+                appendIfPresent(parts, 'Duration', document.getElementById('duration').value);
+                appendIfPresent(parts, 'Seats', document.getElementById('seats').value);
+                appendIfPresent(parts, 'Fees', document.getElementById('fees').value);
+                appendIfPresent(parts, 'Scholarships', document.getElementById('scholarships').value);
+                appendIfPresent(parts, 'Syllabus Highlights', document.getElementById('syllabus_highlights').value);
+                appendIfPresent(parts, 'Admission Process', document.getElementById('admission_process').value);
+                appendIfPresent(parts, 'Career Paths', document.getElementById('career_paths').value);
+                appendIfPresent(parts, 'Contact', document.getElementById('contact_info').value);
+
+                document.getElementById('description').value = parts.join('\n');
+            });
+        }
+    })();
+</script>
 @endsection
