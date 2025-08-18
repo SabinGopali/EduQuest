@@ -158,8 +158,9 @@ Route::get('/collegesignupshow', function(){
 Route::get('/coursedetail', function(){
     return view('home.coursedetail');
 });
-Route::get('/college/create/course-detail', [CourseDetailController::class, 'courseDetailCreateForm'])->name('coursedetail.courseDetailCreateForm');
-Route::post('/coursedetail/store', [CourseDetailController::class, 'store'])->name('coursedetail.store');
+// moved under auth:college middleware below
+// Route::get('/college/create/course-detail', [CourseDetailController::class, 'courseDetailCreateForm'])->name('coursedetail.courseDetailCreateForm');
+// Route::post('/coursedetail/store', [CourseDetailController::class, 'store'])->name('coursedetail.store');
 Route::get('/coursedetail/show', [CourseDetailController::class, 'show'])->name('coursedetail.show');
 Route::get('/coursedetail/delete/{id}', [CourseDetailController::class, 'destroy'])->name('coursedetail.destroy');
 Route::get('/admin/coursedetail/delete/{id}', [CourseDetailController::class, 'destroyForAdmin'])->name('admin.coursedetail.destroy');
@@ -210,19 +211,25 @@ Route::middleware(['auth:student'])->group(function () {
 
 
 Route::middleware(['auth:college'])->group(function () {
+    Route::get('/college/dashboard', [CollegeDashboardController::class, 'count'])->name('college.dashboard');
+    Route::get('/college/edit-profile/', [CollegeController::class, 'getEditForm'])->name('college.editForm');
+    Route::post('/college/update/', [CollegeController::class, 'update'])->name('college.update');
 
+    // Course details (college)
+    Route::get('/college/create/course-detail', [CourseDetailController::class, 'courseDetailCreateForm'])->name('coursedetail.courseDetailCreateForm');
+    Route::post('/coursedetail/store', [CourseDetailController::class, 'store'])->name('coursedetail.store');
+    Route::get('/college/course-detail', [CourseDetailController::class, 'showForCollege'])->name('college.coursedetail.show');
+    Route::get('/college/coursedetail/edit/{id}', [CourseDetailController::class, 'editCourseDetail'])->name('coursedetail.editCourseDetail');
+    Route::put('/coursedetail/update/{id}', [CourseDetailController::class, 'updateForCollege'])->name('college-coursedetail.update');
 
+    // Inquiries (college)
+    Route::get('/college/view-inquiry', [InquiryController::class, 'showForCollege'])->name('college.inquiryshow');
+    Route::get('/college/inquiry/edit/{id}', [InquiryController::class, 'editForCollege'])->name('college.inquiryedit');
+
+    // Courses (college)
+    Route::get('/college/course', [CourseController::class, 'showForCollege'])->name('college.show-course');
+    Route::get('/college/course/view/{id}', [CourseController::class, 'getByIdForCollege'])->name('college.show-course-detail');
 });
-
-Route::get('/college/dashboard', [CollegeDashboardController::class, 'count'])->name('college.dashboard');
-Route::get('/college/edit-profile/', [CollegeController::class, 'getEditForm'])->name('college.editForm');
-Route::post('/college/update/', [CollegeController::class, 'update'])->name('college.update');
-Route::get('/college/view-inquiry', [InquiryController::class, 'showForCollege'])->name('college.inquiryshow');
-Route::get('/college/inquiry/edit/{id}', [InquiryController::class, 'editForCollege'])->name('college.inquiryedit');
-Route::get('/college/course-detail', [CourseDetailController::class, 'showForCollege'])->name('college.coursedetail.show');
-Route::get('/college/coursedetail/edit/{id}', [CourseDetailController::class, 'editCourseDetail'])->name('coursedetail.editCourseDetail');
-Route::put('/coursedetail/update/{id}', [CourseDetailController::class, 'updateForCollege'])->name('college-coursedetail.update');
-
 Route::get('/college/detail/{id}', [CollegeController::class, 'getByIdForStudent'])->name('college.getByIdForStudent');
 Route::get('/college/inquiry/givedate', function(){
     return view('college.inquirygivedate');
@@ -231,8 +238,6 @@ Route::get('/college/inquiry/givedate', function(){
 Route::get('/college/course/view', function(){
     return view('college.viewcollegedes');
 });
-Route::get('/college/course', [CourseController::class, 'showForCollege'])->name('college.show-course');
-Route::get('/college/course/view/{id}', [CourseController::class, 'getByIdForCollege'])->name('college.show-course-detail');
 
 // //for admin
 // Route::get('/admin/course', [CourseController::class, 'showForCollege'])->name('admin.show-course');

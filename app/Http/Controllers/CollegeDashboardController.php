@@ -20,15 +20,16 @@ class CollegeDashboardController extends Controller
     {
         $college = Auth::guard('college')->user();
 
-        $coursecount = Course::count();
+        // Count distinct courses that this college has provided details for
+        $coursecount = CourseDetail::where('college_id', $college->id)
+            ->distinct('course_id')
+            ->count('course_id');
 
         // Get CourseDetails for the current college
         $coursedetailcount = CourseDetail::where('college_id', $college->id)->count();
 
         // Get Inquiries for the current college
-        $inquirycount = Inquiry::whereHas('courseDetail', function ($query) use ($college) {
-            $query->where('college_id', $college->id);
-        })->count();
+        $inquirycount = Inquiry::where('college_id', $college->id)->count();
 
         return view('college.dashboard', compact('coursecount', 'coursedetailcount', 'inquirycount'));
     }
