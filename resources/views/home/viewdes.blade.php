@@ -163,6 +163,56 @@
         {{ $courseDetail->description }}
     </div>
 
+    <div class="info-grid">
+        <div class="info-card">
+            <h3>Tuition Fee</h3>
+            <p>{{ $courseDetail->tuition_fee ? 'Rs. ' . number_format($courseDetail->tuition_fee, 2) : '—' }}</p>
+        </div>
+
+        <div class="info-card">
+            <h3>Seats</h3>
+            <p>{{ $courseDetail->seats ?? '—' }}</p>
+        </div>
+
+        <div class="info-card">
+            <h3>Hostel</h3>
+            <p>{{ $courseDetail->hostel === null ? '—' : ($courseDetail->hostel ? 'Available' : 'Not available') }}</p>
+        </div>
+
+        <div class="info-card">
+            <h3>Application Deadline</h3>
+            <p>{{ $courseDetail->application_deadline ?? '—' }}</p>
+        </div>
+    </div>
+
+    @if($courseDetail->eligibility)
+        <div class="description-box">
+            <strong>Eligibility:</strong><br>
+            {{ $courseDetail->eligibility }}
+        </div>
+    @endif
+
+    @if($courseDetail->admission_process)
+        <div class="description-box">
+            <strong>Admission Process:</strong><br>
+            {{ $courseDetail->admission_process }}
+        </div>
+    @endif
+
+    @if($courseDetail->placement)
+        <div class="description-box">
+            <strong>Placement:</strong><br>
+            {{ $courseDetail->placement }}
+        </div>
+    @endif
+
+    @if($courseDetail->scholarship)
+        <div class="description-box">
+            <strong>Scholarship:</strong><br>
+            {{ $courseDetail->scholarship }}
+        </div>
+    @endif
+
     <a href="{{ route('home.inquiry.form', $courseDetail->id) }}" class="btn-primary">Inquiry</a>
 </div>
 

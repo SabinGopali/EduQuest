@@ -30,17 +30,32 @@ class CourseDetailController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'course_id' => 'required',
-            'college_id' => 'required',
-            'description' => 'required'
+            'course_id' => 'required|exists:courses,id',
+            'college_id' => 'required|exists:colleges,id',
+            'description' => 'required|string',
+            'tuition_fee' => 'nullable|numeric',
+            'seats' => 'nullable|integer',
+            'eligibility' => 'nullable|string',
+            'admission_process' => 'nullable|string',
+            'placement' => 'nullable|string',
+            'scholarship' => 'nullable|string',
+            'hostel' => 'nullable|boolean',
+            'application_deadline' => 'nullable|date',
         ]);
 
         $data['course_id'] = $request->input('course_id');
         $data['college_id'] = $request->input('college_id');
         $data['description'] = $request->input('description');
+        $data['tuition_fee'] = $request->input('tuition_fee');
+        $data['seats'] = $request->input('seats');
+        $data['eligibility'] = $request->input('eligibility');
+        $data['admission_process'] = $request->input('admission_process');
+        $data['placement'] = $request->input('placement');
+        $data['scholarship'] = $request->input('scholarship');
+        $data['hostel'] = $request->input('hostel');
+        $data['application_deadline'] = $request->input('application_deadline');
         $data['status'] = 'PENDING';
 
-        // If you have a model, you can use it to create a new record
         CourseDetail::create($data);
 
         // return view('/college/course-detail');
@@ -117,7 +132,19 @@ class CourseDetailController extends Controller
     public function update(Request $request, $id)
     {
         $courseDetail = CourseDetail::find($id);
-        $courseDetail->description = $request->input('description');
+        $validated = $request->validate([
+            'description' => 'required|string',
+            'tuition_fee' => 'nullable|numeric',
+            'seats' => 'nullable|integer',
+            'eligibility' => 'nullable|string',
+            'admission_process' => 'nullable|string',
+            'placement' => 'nullable|string',
+            'scholarship' => 'nullable|string',
+            'hostel' => 'nullable|boolean',
+            'application_deadline' => 'nullable|date',
+        ]);
+
+        $courseDetail->fill($validated);
         $courseDetail->save();
 
         return redirect()->route('coursedetail.show');
@@ -126,7 +153,21 @@ class CourseDetailController extends Controller
     public function updateForCollege(Request $request, $id)
     {
         $courseDetail = CourseDetail::find($id);
-        $courseDetail->description = $request->input('description');
+        $validated = $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'description' => 'required|string',
+            'tuition_fee' => 'nullable|numeric',
+            'seats' => 'nullable|integer',
+            'eligibility' => 'nullable|string',
+            'admission_process' => 'nullable|string',
+            'placement' => 'nullable|string',
+            'scholarship' => 'nullable|string',
+            'hostel' => 'nullable|boolean',
+            'application_deadline' => 'nullable|date',
+        ]);
+
+        $courseDetail->course_id = $request->input('course_id');
+        $courseDetail->fill($validated);
         $courseDetail->save();
 
         return redirect()->route('college.coursedetail.show');
