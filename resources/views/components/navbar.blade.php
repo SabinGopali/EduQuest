@@ -46,6 +46,7 @@
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 						<li><a class="dropdown-item" href="myprofile">My Profile</a></li>
 						<li><a class="dropdown-item" href="inquiry">My Inquiry</a></li>
+						<li><a class="dropdown-item" href="/student/bookings">My Bookings</a></li>
 						<li><a class="dropdown-item" href="changepassword">Change Password</a></li>
 						<li><a class="dropdown-item" href="/student/logout">Logout</a></li>
 					</ul>
