@@ -20,18 +20,18 @@
 </style>
 
 <div class="scr-container">
-  <h1 class="scr-page-title">Most Inquired Colleges</h1>
-  <p class="scr-subtitle">Ranked by how many student inquiries each college has received.</p>
+  <h1 class="scr-page-title">Most Booked Colleges</h1>
+  <p class="scr-subtitle">Ranked by how many course bookings each college has received.</p>
 
   <div class="scr-grid">
     @forelse($items as $index => $item)
-      @php $college = $item['college']; $count = $item['inquiries']; @endphp
+      @php $college = $item['college']; $count = $item['bookings']; @endphp
       <div class="scr-card">
         <div class="scr-rank">#{{ $index + 1 }}</div>
         <img class="scr-logo" src="{{ isset($college->logo) ? asset('storage/' . $college->logo) : asset('img/landing.jpg') }}" alt="Logo" />
         <div class="scr-name">{{ $college->name }}</div>
         <div class="scr-meta">{{ $college->address }}</div>
-        <div class="text-center"><span class="scr-badge">Inquiries: {{ $count }}</span></div>
+        <div class="text-center"><span class="scr-badge">Bookings: {{ $count }}</span></div>
         <div class="scr-actions">
           <a class="scr-btn scr-btn-primary" href="/college/detail/{{ $college->id }}">View</a>
         </div>
