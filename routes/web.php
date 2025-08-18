@@ -23,6 +23,7 @@ use App\Http\Controllers\KMeansClusteringController;
 use App\Http\Controllers\NearestAlgorithmController;
 use App\Http\Controllers\StableMatchingController;
 use App\Http\Controllers\TopsisController;
+use App\Http\Controllers\BookingController;
 
 Auth::routes();
 
@@ -290,3 +291,14 @@ Route::post('/inquiry-form/store', [InquiryController::class, 'inquiryFormStore'
 
 Route::get('/colleges/{college_id}/inquiries', [InquiryController::class, 'getInquiriesByCollege'])->name('home.inquiry.college');
 
+// Booking routes
+Route::middleware(['auth:student'])->group(function () {
+    Route::post('/booking/{coursedetail_id}', [BookingController::class, 'store'])->name('booking.store');
+    Route::get('/student/bookings', [BookingController::class, 'indexForStudent'])->name('booking.index.student');
+});
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/bookings', [BookingController::class, 'indexForAdmin'])->name('booking.index.admin');
+});
+Route::middleware(['auth:college'])->group(function () {
+    Route::get('/college/bookings', [BookingController::class, 'indexForCollege'])->name('booking.index.college');
+});

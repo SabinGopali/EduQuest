@@ -278,6 +278,18 @@
       });
     });
   </script>
+  @if(session('success'))
+  <script>
+    alert(@json(session('success')));
+    if (window.Swal) { Swal.fire({icon:'success', title:'Success', text:@json(session('success'))}); }
+  </script>
+  @endif
+  @if(session('error'))
+  <script>
+    alert(@json(session('error')));
+    if (window.Swal) { Swal.fire({icon:'error', title:'Error', text:@json(session('error'))}); }
+  </script>
+  @endif
 
 </body>
 </html>

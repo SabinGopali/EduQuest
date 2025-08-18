@@ -189,6 +189,12 @@
   </div>
 
   <a href="/view/course/description/college/{{ $course->id }}" class="btn-view">View Colleges</a>
+  @if(isset($courseDetail))
+  <form method="POST" action="{{ route('booking.store', $courseDetail->id) }}" style="display:inline-block;margin-left:10px;">
+    @csrf
+    <button type="submit" class="btn-view">Book</button>
+  </form>
+  @endif
 </div>
 
 @endsection
