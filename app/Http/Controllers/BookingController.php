@@ -132,4 +132,41 @@ class BookingController extends Controller
 
         return redirect()->route('booking.index.college')->with('success', 'Booking approved successfully.');
     }
+
+    public function rejectForAdmin(int $id)
+    {
+        if (!Auth::guard('admin')->check()) {
+            return redirect()->route('admin.loginFrom');
+        }
+
+        $booking = Booking::with(['courseDetail'])->findOrFail($id);
+        if ($booking->status !== 'rejected') {
+            $booking->status = 'rejected';
+            $booking->save();
+        }
+
+        return redirect()->route('booking.index.admin')->with('success', 'Booking rejected successfully.');
+    }
+
+    public function rejectForCollege(int $id)
+    {
+        if (!Auth::guard('college')->check()) {
+            return redirect()->route('college.loginFrom');
+        }
+
+        $college = Auth::guard('college')->user();
+        $booking = Booking::with(['courseDetail'])
+            ->whereHas('courseDetail', function ($q) use ($college) {
+                $q->where('college_id', $college->id);
+            })
+            ->where('id', $id)
+            ->firstOrFail();
+
+        if ($booking->status !== 'rejected') {
+            $booking->status = 'rejected';
+            $booking->save();
+        }
+
+        return redirect()->route('booking.index.college')->with('success', 'Booking rejected successfully.');
+    }
 }
