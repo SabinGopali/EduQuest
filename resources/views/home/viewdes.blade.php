@@ -214,6 +214,10 @@
     @endif
 
     <a href="{{ route('home.inquiry.form', $courseDetail->id) }}" class="btn-primary">Inquiry</a>
+    <form method="POST" action="{{ route('booking.store', $courseDetail->id) }}" style="display:inline-block;margin-left:10px;">
+        @csrf
+        <button type="submit" class="btn-primary">Book</button>
+    </form>
 </div>
 
 @endsection
