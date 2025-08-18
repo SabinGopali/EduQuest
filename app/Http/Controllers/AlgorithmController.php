@@ -9,6 +9,7 @@ use App\Models\Students;
 use Illuminate\Support\Facades\DB;
 use App\Models\College;
 use App\Models\Inquiry;
+use App\Models\Booking;
 
 class AlgorithmController extends Controller
 {
@@ -184,17 +185,20 @@ class AlgorithmController extends Controller
     {
         $approvedColleges = College::where('status', 'APPROVED')->get();
 
-        $inquiryCounts = Inquiry::select('college_id', DB::raw('COUNT(*) as cnt'))
-            ->groupBy('college_id')
-            ->pluck('cnt', 'college_id');
+        // Count bookings per college by joining through course details
+        $bookingCounts = Booking::join('coursedetail', 'bookings.coursedetail_id', '=', 'coursedetail.id')
+            ->where('bookings.status', 'booked')
+            ->select('coursedetail.college_id', DB::raw('COUNT(*) as cnt'))
+            ->groupBy('coursedetail.college_id')
+            ->pluck('cnt', 'coursedetail.college_id');
 
-        $ranked = $approvedColleges->map(function ($college) use ($inquiryCounts) {
-            $count = (int) ($inquiryCounts[$college->id] ?? 0);
+        $ranked = $approvedColleges->map(function ($college) use ($bookingCounts) {
+            $count = (int) ($bookingCounts[$college->id] ?? 0);
             return [
                 'college' => $college,
-                'inquiries' => $count,
+                'bookings' => $count,
             ];
-        })->sortByDesc('inquiries')->values();
+        })->sortByDesc('bookings')->values();
 
         return view('home.inquiry_rank', [
             'items' => $ranked,
