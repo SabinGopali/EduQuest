@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <style>
     body { background-color: #f7f9fc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
@@ -27,6 +28,16 @@
     @media(max-width: 992px) { .course_box { flex: 1 1 calc(50% - 20px); } }
     @media(max-width: 600px) { .course_box { flex: 1 1 100%; } }
 </style>
+<style>
+    .user-marker-dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #ff3b30; /* red */
+        border: 2px solid #ffffff;
+        box-shadow: 0 0 0 2px #ff3b30;
+    }
+</style>
 
 <div class="container">
     <div id="autoLocateStatus" class="mt-2"></div>
@@ -48,8 +59,8 @@
         <button type="submit" id="submitLocation"></button>
     </form>
 
-    <!-- Map (optional/hidden). Remove the style to show the map. -->
-    <div class="col-xl-6" style="display: none;">
+    <!-- Map showing colleges -->
+    <div class="col-xl-12">
         <div id="map"></div>
     </div>
 
@@ -92,7 +103,46 @@
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    var marker = L.marker([0,0], { draggable:true }).addTo(map);
+    // User location marker (added to map once position is known)
+    var userIcon = L.divIcon({ className: 'user-marker-dot' });
+    var userMarker = L.marker([0,0], { icon: userIcon, draggable:true });
+
+    // Plot colleges with hover popups and fit bounds
+    var colleges = @json($colleges);
+    var boundsArr = [];
+    if (Array.isArray(colleges) && colleges.length) {
+        colleges.forEach(function(c){
+            if (!c || c.latitude == null || c.longitude == null) return;
+            var lat = parseFloat(c.latitude);
+            var lon = parseFloat(c.longitude);
+            if (isNaN(lat) || isNaN(lon)) return;
+            var cm = L.marker([lat, lon]).addTo(map);
+            if (c.name) {
+                cm.bindPopup(String(c.name));
+                cm.on('mouseover', function(){ this.openPopup(); });
+                cm.on('mouseout', function(){ this.closePopup(); });
+            }
+            boundsArr.push([lat, lon]);
+        });
+    }
+    if (boundsArr.length) {
+        map.fitBounds(boundsArr, { padding: [40, 40] });
+    }
+
+    // If page was loaded with user coords (from query), place user marker
+    var initialUser = @json(['lat' => request('latitude'), 'lon' => request('longitude')]);
+    if (initialUser && initialUser.lat && initialUser.lon) {
+        var uLat = parseFloat(initialUser.lat), uLon = parseFloat(initialUser.lon);
+        if (!isNaN(uLat) && !isNaN(uLon)) {
+            var uLatLng = L.latLng(uLat, uLon);
+            updateMarkerPosition(uLatLng);
+            if (boundsArr.length) {
+                map.fitBounds(boundsArr.concat([[uLat, uLon]]), { padding: [40, 40] });
+            } else {
+                map.setView(uLatLng, 13);
+            }
+        }
+    }
 
     const statusEl = document.getElementById('autoLocateStatus');
     const locationAlert = document.getElementById('locationAlert');
@@ -106,7 +156,10 @@
     function submitLocation() { document.getElementById('submitLocation').click(); }
 
     function updateMarkerPosition(latlng) {
-        marker.setLatLng(latlng);
+        if (!map.hasLayer(userMarker)) { userMarker.addTo(map); }
+        userMarker.setLatLng(latlng);
+        userMarker.bindPopup('Your location');
+        userMarker.openPopup();
         setCoords(latlng.lat, latlng.lng);
     }
 
@@ -149,7 +202,7 @@
             .catch(() => alert('Geocoding failed. Try again.'));
     });
 
-    marker.on('dragend', function(event){
+    userMarker.on('dragend', function(event){
         const pos = event.target.getLatLng();
         updateMarkerPosition(pos);
         submitLocation();

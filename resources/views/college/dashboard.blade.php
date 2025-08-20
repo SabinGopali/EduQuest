@@ -5,12 +5,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-    body {
-        background-color: #f9fafb;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    .dashboard {
+    .content-dashboard {
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -104,7 +99,7 @@
     }
 </style>
 
-<div class="dashboard">
+<div class="content-dashboard">
     <div class="dashboard-header">
         <h2>College Dashboard</h2>
         <p>Overview of courses, details, and inquiries</p>

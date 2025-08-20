@@ -203,7 +203,7 @@
             <li><a href="{{ url('/courses') }}">Courses</a></li>
             <li><a href="{{ url('/college') }}">College</a></li>
             <li><a href="{{ route('home.nearest') }}">Nearest</a></li>
-            <li><a href="{{ route('algorithm.knn') }}">KNN</a></li>
+            {{-- <li><a href="{{ route('algorithm.knn') }}">KNN</a></li> --}}
             <li><a href="{{ url('/aboutus') }}">About Us</a></li>
             <li><a href="{{ url('/contact') }}">Contact</a></li>
         </ul>

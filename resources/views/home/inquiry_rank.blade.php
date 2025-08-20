@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<section id="inquiry_rank">
 <style>
   .scr-container { max-width: 1200px; margin: 200px auto 60px; padding: 0 20px; }
   .scr-page-title { text-align: center; font-size: 2.2rem; font-weight: 800; color: #222; margin-bottom: 8px; }
@@ -31,7 +32,7 @@
         <img class="scr-logo" src="{{ isset($college->logo) ? asset('storage/' . $college->logo) : asset('img/landing.jpg') }}" alt="Logo" />
         <div class="scr-name">{{ $college->name }}</div>
         <div class="scr-meta">{{ $college->address }}</div>
-        <div class="text-center"><span class="scr-badge">Bookings: {{ $count }}</span></div>
+        <input type="hidden" name="bookings_count" value="{{ $count }}">  
         <div class="scr-actions">
           <a class="scr-btn scr-btn-primary" href="/college/detail/{{ $college->id }}">View</a>
         </div>
@@ -41,4 +42,5 @@
     @endforelse
   </div>
 </div>
+</section>
 @endsection
