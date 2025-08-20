@@ -3,8 +3,6 @@
 
   <title>My-Profile</title>
   
-  
-
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -14,7 +12,7 @@
       color: #333;
     }
 
-    .super_container {
+    .profile_card_container {
       max-width: 700px;
       margin: 150px auto 60px;
       padding: 20px;
@@ -23,13 +21,13 @@
       box-shadow: 0 4px 16px rgb(0 0 0 / 0.1);
     }
 
-    .profile {
+    .profile_header {
       text-align: center;
       padding: 30px 20px 10px;
       border-bottom: 1px solid #ddd;
     }
 
-    .profile img {
+    .profile_header img {
       width: 160px;
       height: 160px;
       object-fit: cover;
@@ -40,34 +38,34 @@
       transition: transform 0.3s ease;
     }
 
-    .profile img:hover {
+    .profile_header img:hover {
       transform: scale(1.05);
     }
 
-    .profile h2 {
+    .profile_header h2 {
       font-weight: 700;
       font-size: 28px;
       margin: 0 0 8px;
       color: #222;
     }
 
-    .profile p {
+    .profile_header p {
       font-size: 16px;
       color: #555;
       margin: 4px 0;
       font-weight: 500;
     }
 
-    .section {
+    .profile_section {
       padding: 25px 20px;
       border-bottom: 1px solid #eee;
     }
 
-    .section:last-child {
+    .profile_section:last-child {
       border-bottom: none;
     }
 
-    .section h3 {
+    .profile_section h3 {
       font-size: 22px;
       font-weight: 700;
       margin-bottom: 14px;
@@ -76,7 +74,7 @@
       padding-left: 12px;
     }
 
-    .section p {
+    .profile_section p {
       font-size: 16px;
       color: #444;
       margin: 6px 0;
@@ -84,7 +82,7 @@
     }
 
     /* Edit button */
-    .edit-profile-btn {
+    .edit_profile_button {
       display: block;
       width: 160px;
       margin: 30px auto 0;
@@ -102,8 +100,8 @@
       transition: background-color 0.3s ease;
     }
 
-    .edit-profile-btn:hover,
-    .edit-profile-btn:focus {
+    .edit_profile_button:hover,
+    .edit_profile_button:focus {
       background-color: #0056b3;
       box-shadow: 0 8px 16px rgb(0 86 179 / 0.4);
       outline: none;
@@ -111,25 +109,25 @@
 
     /* Responsive */
     @media (max-width: 480px) {
-      .super_container {
+      .profile_card_container {
         margin: 100px 15px 40px;
         padding: 15px;
       }
 
-      .profile img {
+      .profile_header img {
         width: 120px;
         height: 120px;
       }
 
-      .profile h2 {
+      .profile_header h2 {
         font-size: 24px;
       }
 
-      .section h3 {
+      .profile_section h3 {
         font-size: 20px;
       }
 
-      .edit-profile-btn {
+      .edit_profile_button {
         width: 140px;
         font-size: 14px;
         padding: 10px 0;
@@ -137,17 +135,16 @@
     }
   </style>
 
+<div class="profile_card_container">
 
-<div class="super_container">
-
-  <div class="profile">
+  <div class="profile_header">
     <img src="{{ asset('storage/uploads/' . $student->image) }}" alt="Student Image" />
     <h2>{{ $student->name }}</h2>
     <p>Email: {{ $student->email }}</p>
     <p>Contact: {{ $student->contact }}</p>
   </div>
 
-  <div class="section">
+  <div class="profile_section">
     <h3>Academic Information</h3>
     <p>Education Level: {{ $student->educationLevel }}</p>
     <p>Passed Year: {{ $student->passedyear }}</p>
@@ -155,22 +152,18 @@
     <p>GPA: {{ $student->gpa }}</p>
   </div>
 
-  <div class="section">
+  <div class="profile_section">
     <h3>Interests</h3>
     <p>{{ $student->interest }}</p>
   </div>
 
-  <div class="section">
+  <div class="profile_section">
     <h3>Goals</h3>
     <p>{{ $student->goal }}</p>
   </div>
 
-  <a href="/myprofile-edit" class="edit-profile-btn">Edit Profile</a>
+  <a href="/myprofile-edit" class="edit_profile_button">Edit Profile</a>
 
 </div>
 
 @endsection
-
-
-
-

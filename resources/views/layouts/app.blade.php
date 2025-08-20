@@ -184,11 +184,11 @@
             <img 
                 src="{{ asset('img/logo.png') }}"
                 alt="EduQuest Logo"
-                width="126"
-                height="126"
+                width="156"
+                height="90"
                 style="flex-shrink: 0;"
             />
-            <h2 style="color:black;">EDU<span style="color:red;">QUEST</span></h2>
+            
         </div>
         
         <ul>
