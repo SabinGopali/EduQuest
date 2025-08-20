@@ -95,6 +95,34 @@
         </div>
     @endif
 
+    @if(($pendingCollegeCount ?? 0) > 0 || ($pendingCourseDetailCount ?? 0) > 0)
+        <div class="alert alert-warning" role="alert">
+            <strong>Approvals pending:</strong>
+            @if(($pendingCollegeCount ?? 0) > 0)
+                {{ $pendingCollegeCount }} college(s)
+                <a href="/admin/college/show" class="alert-link">review</a>
+            @endif
+            @if(($pendingCollegeCount ?? 0) > 0 && ($pendingCourseDetailCount ?? 0) > 0)
+                &nbsp;|&nbsp;
+            @endif
+            @if(($pendingCourseDetailCount ?? 0) > 0)
+                {{ $pendingCourseDetailCount }} course detail(s)
+                <a href="/admin/course-detail/show" class="alert-link">review</a>
+            @endif
+        </div>
+        <script>
+            // Optional: draw admin's attention on first load
+            window.addEventListener('load', function() {
+                try {
+                    const alertBox = document.querySelector('.alert.alert-warning');
+                    if (alertBox) {
+                        alertBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                } catch (e) {}
+            });
+        </script>
+    @endif
+
     <div class="dashboard-header">
         <h2>Admin Dashboard</h2>
         <p>Overview of entities and activity</p>

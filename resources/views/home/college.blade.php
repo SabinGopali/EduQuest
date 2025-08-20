@@ -118,9 +118,9 @@
   }
 
   .btn-primary {
-    background-color: #ff4d4d;
-    border: none;
-    color: white;
+    background-color: white;;
+    border: 2px solid black;
+    color: black;
     padding: 10px 24px;
     font-size: 1rem;
     font-weight: 600;
@@ -133,7 +133,8 @@
 
   .btn-primary:hover,
   .btn-primary:focus {
-    background-color: #e04343;
+    background-color: black;
+    color: white;
   }
 
   @media (max-width: 768px) {

@@ -21,8 +21,21 @@ class AdminDashboardController extends Controller
         $studentscount = Students::count();
         $contactcount = Contact::count();
 
+        // Pending approvals
+        $pendingCollegeCount = College::where('status', 'PENDING')->count();
+        $pendingCourseDetailCount = CourseDetail::where('status', 'PENDING')->count();
+
         // Pass multiple values to the view using compact
-        return view('admin.dashboard', compact('coursecount', 'collegecount', 'coursedetailcount', 'inquirycount', 'studentscount', 'contactcount'));
+        return view('admin.dashboard', compact(
+            'coursecount',
+            'collegecount',
+            'coursedetailcount',
+            'inquirycount',
+            'studentscount',
+            'contactcount',
+            'pendingCollegeCount',
+            'pendingCourseDetailCount'
+        ));
     }
 
 }
