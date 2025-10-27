@@ -40,6 +40,7 @@
     <input id="addressInput" type="text" name="q" placeholder="Optional: enter your city/street to improve proximity scoring" value="" />
     <input type="hidden" id="latitude" name="latitude" />
     <input type="hidden" id="longitude" name="longitude" />
+    <button class="scr-btn" type="button" id="useGeoBtn">Use my location</button>
     <button class="scr-btn scr-btn-primary" type="submit">Refresh</button>
   </form>
 
@@ -81,27 +82,48 @@
   const addressInput = document.getElementById('addressInput');
   const latEl = document.getElementById('latitude');
   const lonEl = document.getElementById('longitude');
+  const form = document.querySelector('form.scr-controls');
+  const useGeoBtn = document.getElementById('useGeoBtn');
 
   function geocodeAddress(address) {
-    if (!address) return;
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
+    if (!address) return Promise.resolve(false);
+    return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
       .then(r => r.json())
       .then(data => {
         if (data && data.length > 0) {
           latEl.value = parseFloat(data[0].lat).toFixed(6);
           lonEl.value = parseFloat(data[0].lon).toFixed(6);
+          return true;
         }
-      })
-      .catch(() => {});
+        return false;
+      });
   }
 
-  const form = document.querySelector('form.scr-controls');
-  form.addEventListener('submit', (e) => {
-    if (addressInput.value && !latEl.value && !lonEl.value) {
+  if (addressInput) {
+    addressInput.addEventListener('input', () => { latEl.value = ''; lonEl.value = ''; });
+  }
+
+  form.addEventListener('submit', async (e) => {
+    if (addressInput && addressInput.value && (!latEl.value || !lonEl.value)) {
       e.preventDefault();
-      geocodeAddress(addressInput.value);
-      setTimeout(() => form.submit(), 450);
+      try { await geocodeAddress(addressInput.value); } catch (err) {}
+      form.submit();
     }
   });
+
+  if (useGeoBtn) {
+    useGeoBtn.addEventListener('click', () => {
+      if (!navigator.geolocation) { alert('Geolocation not supported by your browser.'); return; }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          latEl.value = parseFloat(pos.coords.latitude).toFixed(6);
+          lonEl.value = parseFloat(pos.coords.longitude).toFixed(6);
+          form.submit();
+        },
+        () => { alert('Unable to access your location. Please enter your address instead.'); },
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 10000 }
+      );
+    });
+  }
 </script>
 @endsection
