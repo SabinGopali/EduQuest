@@ -304,4 +304,5 @@ Route::middleware(['auth:admin'])->group(function () {
 Route::middleware(['auth:college'])->group(function () {
     Route::get('/college/bookings', [BookingController::class, 'indexForCollege'])->name('booking.index.college');
     Route::post('/college/bookings/{id}/approve', [BookingController::class, 'approveForCollege'])->name('booking.college.approve');
+    Route::post('/college/bookings/{id}/reject', [BookingController::class, 'rejectForCollege'])->name('booking.college.reject');
 });
