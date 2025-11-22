@@ -12,15 +12,17 @@
 <link rel="stylesheet" type="text/css" href="{{asset('home/plugins/OwlCarousel2-2.2.1/animate.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('home/styles/main_styles.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('home/styles/responsive.css')}}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 <style>
-    /* Floating navbar style */
-    .badass-navbar {
+    /* Floating navbar style (namespaced) */
+    .eq-navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 12%;
+        height: auto;
+        box-sizing: border-box;
         background: white;
         backdrop-filter: blur(10px);
         display: flex;
@@ -34,11 +36,11 @@
         border-bottom: 2px solid black;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .badass-navbar.scrolled {
+    .eq-navbar.scrolled {
         background: rgba(255, 255, 255, 0.85);
         padding: 10px 50px;
     }
-    .badass-navbar .logo {
+    .eq-navbar .logo {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -48,20 +50,20 @@
         height: 50px;      
         object-fit: contain; 
     }
-    .badass-navbar .logo svg {
+    .eq-navbar .logo svg {
         width: 36px;
         height: 36px;
         fill: #ff4d4d;
         flex-shrink: 0;
     }
-    .badass-navbar .logo span {
+    .eq-navbar .logo span {
         font-size: 1.6rem;
         font-weight: bold;
         color: #ff4d4d;
         letter-spacing: 1px;
         user-select: none;
     }
-    .badass-navbar ul {
+    .eq-navbar ul {
         
         display: flex;
         gap: 25px;
@@ -69,7 +71,7 @@
         margin: 0;
         padding: 0;
     }
-    .badass-navbar ul li a {
+    .eq-navbar ul li a {
         text-decoration: none;
         font-size: 1rem;
         font-weight: 500;
@@ -77,16 +79,16 @@
         transition: color 0.3s ease;
         padding: 6px 0;
     }
-    .badass-navbar ul li a:hover {
+    .eq-navbar ul li a:hover {
         color: #ff4d4d;
     }
-    .badass-navbar .auth-buttons {
+    .eq-navbar .auth-buttons {
         display: flex;
         align-items: center;
         gap: 10px;
         flex-shrink: 0;
     }
-    .badass-navbar .auth-buttons a button {
+    .eq-navbar .auth-buttons a button {
         background: white;
         color: black;
         border: 1px solid black;
@@ -96,13 +98,30 @@
         transition: background 0.3s ease;
         font-size: 0.95rem;
     }
-    .badass-navbar .auth-buttons a button:hover {
+    .eq-navbar .auth-buttons a button:hover {
         background: black;
         color: white;
     }
 
+    /* Mobile menu toggle button */
+    .eq-navbar .menu-toggle {
+        display: none;
+        background: none;
+        border: 1px solid #000;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        align-items: center;
+        gap: 8px;
+    }
+    .eq-navbar .menu-toggle .icon {
+        font-size: 1.2rem;
+        line-height: 1;
+    }
+
     /* New Welcome Button Style */
-    .badass-navbar .dropdown button {
+    .eq-navbar .dropdown button {
         background: linear-gradient(135deg, #ff6b6b, #ff4d4d);
         color: white;
         border: none;
@@ -116,13 +135,13 @@
         align-items: center;
         gap: 8px;
     }
-    .badass-navbar .dropdown button:hover {
+    .eq-navbar .dropdown button:hover {
         transform: scale(1.05);
         box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4);
     }
 
     /* Dropdown menu tweaks to match new design */
-    .badass-navbar .dropdown-menu {
+    .eq-navbar .dropdown-menu {
         display: none;
         position: absolute;
         right: 0;
@@ -134,13 +153,13 @@
         min-width: 180px;
         z-index: 10000;
     }
-    .badass-navbar .dropdown:hover .dropdown-menu {
+    .eq-navbar .dropdown:hover .dropdown-menu {
         display: block;
     }
-    .badass-navbar .dropdown-menu li {
+    .eq-navbar .dropdown-menu li {
         list-style: none;
     }
-    .badass-navbar .dropdown-menu li a {
+    .eq-navbar .dropdown-menu li a {
         display: block;
         padding: 10px 18px;
         font-size: 0.95rem;
@@ -148,27 +167,37 @@
         transition: all 0.2s ease;
         border-radius: 6px;
     }
-    .badass-navbar .dropdown-menu li a:hover {
+    .eq-navbar .dropdown-menu li a:hover {
         background: #ff4d4d;
         color: white;
     }
 
     /* Mobile */
     @media (max-width: 768px) {
-        .badass-navbar {
+        .eq-navbar {
             padding: 12px 20px;
             flex-direction: column;
             align-items: flex-start;
         }
-        .badass-navbar ul {
+        .eq-navbar .menu-toggle {
+            display: inline-flex;
+        }
+        .eq-navbar ul {
+            display: none;
             flex-direction: column;
             gap: 10px;
             width: 100%;
         }
-        .badass-navbar .auth-buttons {
+        .eq-navbar .auth-buttons {
+            display: none;
             margin-top: 10px;
             width: 100%;
             justify-content: flex-start;
+        }
+        /* When menu is open on mobile */
+        .eq-navbar.open ul,
+        .eq-navbar.open .auth-buttons {
+            display: flex;
         }
     }
 </style>
@@ -179,7 +208,7 @@
 <div class="super_container">
 
     <!-- Floating Navbar -->
-    <header class="badass-navbar" id="badassNavbar">
+    <header class="eq-navbar" id="eqNavbar">
        <div class="logo" aria-label="EduQuest logo">
             <img 
                 src="{{ asset('img/logo.png') }}"
@@ -190,22 +219,26 @@
             />
             
         </div>
-        
-        <ul>
+        <button class="menu-toggle" id="eqMenuToggle" aria-controls="eqNavList" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="icon">☰</span> Menu
+        </button>
+        <ul id="eqNavList">
             <li><a href="{{ url('/') }}">Home</a></li>
 
             @auth('student')
-                <li><a href="{{ url('/recommend') }}">Recommend Me</a></li>
+                {{-- <li><a href="{{ url('/recommend') }}">Collaborative Recommend</a></li> --}}
+                <li><a href="{{ url('/recommend-content') }}">Recommend Courses</a></li>
             @else
-                <li><a href="{{ url('/login') }}">Recommend Me</a></li>
+                {{-- <li><a href="{{ url('/login') }}">Collaborative Recommend</a></li> --}}
+                <li><a href="{{ url('/login') }}">Recommend Courses</a></li>
             @endauth
 
             <li><a href="{{ url('/courses') }}">Courses</a></li>
             <li><a href="{{ url('/college') }}">College</a></li>
-            <li><a href="{{ route('home.nearest') }}">Nearest</a></li>
+            <li><a href="{{ route('home.nearest') }}">Find Nearby Colleges</a></li>
             {{-- <li><a href="{{ route('algorithm.knn') }}">KNN</a></li> --}}
-            <li><a href="{{ url('/aboutus') }}">About Us</a></li>
-            <li><a href="{{ url('/contact') }}">Contact</a></li>
+            {{-- <li><a href="{{ url('/aboutus') }}">About Us</a></li>
+            <li><a href="{{ url('/contact') }}">Contact</a></li> --}}
         </ul>
 
         <div class="auth-buttons">
@@ -227,7 +260,7 @@
         </div>
     </header>
 
-    <div class="container" style="margin-top: 120px; min-height: 100vh">
+    <div class="@yield('container_class', 'container')" style="margin-top: 120px; min-height: 100vh">
         @yield('content')
     </div>
     <x-footer/>
@@ -237,13 +270,37 @@
 <script>
     // Change navbar style on scroll
     window.addEventListener('scroll', function() {
-        const navbar = document.getElementById('badassNavbar');
+        const navbar = document.getElementById('eqNavbar');
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
         }
     });
+    // Mobile menu toggle
+    (function() {
+        const navbar = document.getElementById('eqNavbar');
+        const toggle = document.getElementById('eqMenuToggle');
+        if (!navbar || !toggle) return;
+        toggle.addEventListener('click', function() {
+            const isOpen = navbar.classList.toggle('open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        // Close menu on resize to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && navbar.classList.contains('open')) {
+                navbar.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+        // Close when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!navbar.contains(e.target) && navbar.classList.contains('open')) {
+                navbar.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    })();
 </script>
 
 </body>

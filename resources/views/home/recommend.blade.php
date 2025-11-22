@@ -67,9 +67,9 @@
 
   /* Button style */
   .btn-primary {
-    background-color: #ff4d4d;
-    border: none;
-    color: white;
+    background-color: white;
+    border: 1px solid black;
+    color: black;
     padding: 12px 28px;
     font-size: 1rem;
     font-weight: 600;
@@ -81,7 +81,8 @@
   }
   .btn-primary:hover,
   .btn-primary:focus {
-    background-color: #e04343;
+    background-color: black;
+    color: white;
   }
 
   /* No data message */

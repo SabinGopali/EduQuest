@@ -32,7 +32,9 @@
             z-index: 1;
             text-transform: uppercase;
             font-weight: 1300;
-            
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideInLeft 1s ease 0.5s forwards;
         }
 
         .hero-text h1 {
@@ -42,6 +44,9 @@
             line-height: 1.2;
             margin-bottom: 1.5rem;
             color: #333;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideInUp 1s ease 0.8s forwards;
         }
 
         .hero-text .description {
@@ -50,6 +55,9 @@
             color: #555;
             font-weight: 500;
             max-width: 500px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideInUp 1s ease 1.1s forwards;
         }
 
         .hero-btn {
@@ -63,6 +71,9 @@
             text-decoration: none;
             transition: transform 0.3s ease, background-color 0.3s ease;
             display: inline-block;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideInUp 1s ease 1.4s forwards;
         }
 
         .hero-btn:hover {
@@ -79,6 +90,9 @@
             overflow: hidden;
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
             position: relative;
+            opacity: 0;
+            transform: translateX(50px);
+            animation: slideInRight 1s ease 1.7s forwards;
         }
 
         .carousel-track {
@@ -101,6 +115,28 @@
             66%  { transform: translateX(-200%); }
             96%  { transform: translateX(-200%); }
             100% { transform: translateX(0%); }
+        }
+
+        /* Hero animations */
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         /* Responsive */
@@ -141,5 +177,8 @@
         </div>
     </div>
 </section>
+
+<!-- Most Popular Colleges Section -->
+<x-inquiry-rank />
 
 @endsection

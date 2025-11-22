@@ -183,26 +183,7 @@ class AlgorithmController extends Controller
 
     public function rankCollegesByInquiry(Request $request)
     {
-        $approvedColleges = College::where('status', 'APPROVED')->get();
-
-        // Count bookings per college by joining through course details
-        $bookingCounts = Booking::join('coursedetail', 'bookings.coursedetail_id', '=', 'coursedetail.id')
-            ->where('bookings.status', 'booked')
-            ->select('coursedetail.college_id', DB::raw('COUNT(*) as cnt'))
-            ->groupBy('coursedetail.college_id')
-            ->pluck('cnt', 'coursedetail.college_id');
-
-        $ranked = $approvedColleges->map(function ($college) use ($bookingCounts) {
-            $count = (int) ($bookingCounts[$college->id] ?? 0);
-            return [
-                'college' => $college,
-                'bookings' => $count,
-            ];
-        })->sortByDesc('bookings')->values();
-
-        return view('home.inquiry_rank', [
-            'items' => $ranked,
-        ]);
+        return view('home.inquiry_rank');
     }
 
 }

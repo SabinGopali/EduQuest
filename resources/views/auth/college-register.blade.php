@@ -345,14 +345,36 @@
                 <!-- Your existing Leaflet map script remains unchanged -->
                 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
                 <script>
-                    var map = L.map('map').setView([27.708317, 85.320582], 13);
+                    // Nepal bounds (approx)
+                    const NEPAL_BOUNDS = {
+                        minLat: 26.347,  // south
+                        maxLat: 30.447,  // north
+                        minLon: 80.0586, // west
+                        maxLon: 88.2015  // east
+                    };
+                    function isWithinNepal(lat, lon) {
+                        return (+lat) >= NEPAL_BOUNDS.minLat && (+lat) <= NEPAL_BOUNDS.maxLat &&
+                               (+lon) >= NEPAL_BOUNDS.minLon && (+lon) <= NEPAL_BOUNDS.maxLon;
+                    }
+
+                    // Initialize map constrained to Nepal
+                    const nepalBoundsLeaflet = L.latLngBounds(
+                        [NEPAL_BOUNDS.minLat, NEPAL_BOUNDS.minLon],
+                        [NEPAL_BOUNDS.maxLat, NEPAL_BOUNDS.maxLon]
+                    );
+                    var map = L.map('map', { maxBounds: nepalBoundsLeaflet, maxBoundsViscosity: 1.0 })
+                        .setView([27.708317, 85.320582], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     }).addTo(map);
 
-                    var marker = L.marker([0, 0], { draggable: true }).addTo(map);
+                    var marker = L.marker([27.708317, 85.320582], { draggable: true }).addTo(map);
 
                     function updateMarkerPosition(latlng) {
+                        if (!isWithinNepal(latlng.lat, latlng.lng)) {
+                            alert('Please select a location within Nepal.');
+                            return;
+                        }
                         marker.setLatLng(latlng);
                         document.getElementById('coordinates').innerHTML = 'Latitude: ' + latlng.lat.toFixed(6) + '   Longitude: ' + latlng.lng.toFixed(6);
                         document.querySelector('input[name="latitude"]').value = latlng.lat.toFixed(6);
@@ -360,13 +382,18 @@
                     }
 
                     function geocodeAddress(address) {
-                        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
+                        const viewbox = '80.0586,30.447,88.2015,26.347'; // Nepal bbox: left,top,right,bottom
+                        fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=np&bounded=1&viewbox=${viewbox}&addressdetails=1&q=${encodeURIComponent(address)}`)
                             .then(response => response.json())
                             .then(data => {
                                 if (data && data.length > 0) {
                                     var result = data[0];
                                     var lat = parseFloat(result.lat);
                                     var lon = parseFloat(result.lon);
+                                    if (!isWithinNepal(lat, lon)) {
+                                        alert('Please search for an address within Nepal.');
+                                        return;
+                                    }
                                     var latlng = L.latLng(lat, lon);
                                     map.setView(latlng, 13);
                                     updateMarkerPosition(latlng);
@@ -380,7 +407,7 @@
                     }
 
                     document.getElementById('geocodeButton').addEventListener('click', function () {
-                        var address = document.getElementById('addressInput').value;
+                        var address = document.getElementById('addressInput').value.trim();
                         if (address) {
                             geocodeAddress(address);
                         } else {
@@ -389,7 +416,26 @@
                     });
 
                     marker.on('drag', function (event) {
-                        updateMarkerPosition(event.target.getLatLng());
+                        const ll = event.target.getLatLng();
+                        if (!isWithinNepal(ll.lat, ll.lng)) {
+                            // Snap back to last valid position
+                            const currentLat = parseFloat(document.querySelector('input[name="latitude"]').value || '27.708317');
+                            const currentLon = parseFloat(document.querySelector('input[name="longitude"]').value || '85.320582');
+                            marker.setLatLng([currentLat, currentLon]);
+                            alert('Please keep the marker within Nepal.');
+                            return;
+                        }
+                        updateMarkerPosition(ll);
+                    });
+
+                    // Prevent form submission with out-of-Nepal coordinates
+                    document.getElementById('Collegeform').addEventListener('submit', function(e){
+                        const lat = parseFloat(document.querySelector('input[name="latitude"]').value);
+                        const lon = parseFloat(document.querySelector('input[name="longitude"]').value);
+                        if (!isFinite(lat) || !isFinite(lon) || !isWithinNepal(lat, lon)) {
+                            e.preventDefault();
+                            alert('Latitude and Longitude must be within Nepal.');
+                        }
                     });
                 </script>
 

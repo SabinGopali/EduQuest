@@ -24,6 +24,7 @@ use App\Http\Controllers\NearestAlgorithmController;
 use App\Http\Controllers\StableMatchingController;
 use App\Http\Controllers\TopsisController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\CollaborativeFilteringController;
 
 Auth::routes();
 
@@ -240,8 +241,7 @@ Route::get('/college/course/view/{id}', [CourseController::class, 'getByIdForCol
 // Route::get('/admin/course/view/{id}', [CourseController::class, 'getByIdForCollege'])->name('admin.show-course-detail');
 
 
-//recommend
-Route::get('/recommend', [AlgorithmController::class, 'recommend'])->name('algorithm.recommend');
+// recommend (old route removed; handled by CollaborativeFilteringController below)
 
 // colleges ranked by student inquiries (popularity)
 Route::get('/inquiry-rank', [AlgorithmController::class, 'rankCollegesByInquiry'])->name('algorithm.inquiry');
@@ -300,8 +300,22 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/bookings', [BookingController::class, 'indexForAdmin'])->name('booking.index.admin');
     Route::post('/admin/bookings/{id}/approve', [BookingController::class, 'approveForAdmin'])->name('booking.admin.approve');
     Route::post('/admin/bookings/{id}/reject', [BookingController::class, 'rejectForAdmin'])->name('booking.admin.reject');
+    // Admin can view recommendations for any student
+    Route::get('/admin/recommendations/{studentId}', [CollaborativeFilteringController::class, 'forStudent'])->name('recommendations.forStudent');
 });
 Route::middleware(['auth:college'])->group(function () {
     Route::get('/college/bookings', [BookingController::class, 'indexForCollege'])->name('booking.index.college');
     Route::post('/college/bookings/{id}/approve', [BookingController::class, 'approveForCollege'])->name('booking.college.approve');
+        Route::post('/college/bookings/{id}/reject', [BookingController::class, 'rejectForCollege'])->name('booking.college.reject');
+
+    // (no student recommendation routes here)
+
+});
+
+// Student-facing recommendations
+Route::middleware(['auth:student'])->group(function () {
+    Route::get('/recommendations/me', [CollaborativeFilteringController::class, 'myRecommendations'])->name('recommendations.me');
+    Route::get('/recommend', [CollaborativeFilteringController::class, 'recommendPage'])->name('recommend.page');
+    // Content-based recommendation (TF-IDF)
+    Route::get('/recommend-content', [AlgorithmController::class, 'recommend'])->name('algorithm.recommend');
 });

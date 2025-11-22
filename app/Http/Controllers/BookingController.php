@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\CourseDetail;
 use App\Models\Students;
+use App\Services\CollaborativeFilteringService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +64,14 @@ class BookingController extends Controller
             return back()->with('error', 'Booking failed.');
         }
 
-        return back()->with('success', 'Course booked successfully.');
+        // Refresh recommendations and redirect to recommendations page
+        try {
+            app(CollaborativeFilteringService::class)->updateRecommendationsForStudent((int)$student->id);
+        } catch (\Throwable $e) {
+            // ignore errors to not block redirect
+        }
+
+        return redirect()->route('recommend.page')->with('success', 'Course booked successfully.');
     }
 
     public function indexForStudent()

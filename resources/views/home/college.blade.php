@@ -182,14 +182,14 @@
 
 <!-- College Cards Section -->
 <div class="college_section">
-  @foreach($college as $college)
+  @foreach($college as $collegeItem)
     <div class="college_box">
       <div class="card">
-        <img src="{{ asset('storage/' . $college->logo) }}" alt="{{ $college->name }} Logo">
-        <div class="card-title"><h3>{{ $college->name }}</h3></div>
-        <div class="card-text">{{ $college->address }}</div>
+        <img src="{{ asset('storage/' . $collegeItem->logo) }}" alt="{{ $collegeItem->name }} Logo">
+        <div class="card-title"><h3>{{ $collegeItem->name }}</h3></div>
+        <div class="card-text">{{ $collegeItem->address }}</div>
         <div class="button-wrapper">
-          <a href="/college/detail/{{ $college->id }}" class="btn-primary">View Details</a>
+          <a href="/college/detail/{{ $collegeItem->id }}" class="btn-primary">View Details</a>
         </div>
       </div>
     </div>
