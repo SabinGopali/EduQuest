@@ -34,68 +34,53 @@
     margin: 0 auto;
   }
 
-  .course-section {
+  /* College Cards - Same as Course Card Design */
+  .college_section {
     max-width: 1200px;
-    margin: 30px auto 60px auto;
-    padding: 30px 20px;
+    margin: 40px auto 60px auto;
+    padding: 0 20px;
     display: flex;
     flex-wrap: wrap;
+    gap: 30px;
     justify-content: center;
-    gap: 30px; /* consistent spacing between cards */
-    box-sizing: border-box;
   }
 
-  .course-card {
-    flex: 1 1 calc(33.333% - 30px);
-    max-width: calc(33.333% - 30px);
-    background: linear-gradient(145deg, #f6f9f7, #ffffff);
-    border-radius: 20px;
-    box-shadow: 
-      0 4px 6px rgba(0, 0, 0, 0.06),
-      0 8px 15px rgba(0, 0, 0, 0.1);
-    padding: 28px 22px;
-    text-align: center;
-    transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
-                box-shadow 0.35s ease;
+  .college_box {
+    flex: 1 1 300px;
+    max-width: 320px;
+  }
+
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+    min-height: 250px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-    cursor: default;
-    user-select: none;
-  }
-
-  .course-card:hover {
-    transform: translateY(-8px) scale(1.05);
-    box-shadow:
-      0 12px 20px rgba(0, 0, 0, 0.15),
-      0 15px 40px rgba(0, 0, 0, 0.12);
-    background: linear-gradient(145deg, #ffffff, #ffffff);
-  }
-
-  .course-card img {
-    height: 100px;
-    width: 100px;
-    object-fit: contain;
-    margin-bottom: 22px;
-    border-radius: 14px;
-    border: 3px solid #ccc;
-    background-color: #fafafa;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    justify-content: space-between; /* ensures button stays at bottom */
+    padding: 20px;
+    background-color: #fff;
     transition: box-shadow 0.3s ease;
+    text-align: center;
   }
 
-  .course-card:hover img {
-    box-shadow: 0 0 18px 4px black;
+  .card:hover {
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.15);
   }
 
-  .card-title {
-    font-size: 20px;
+  .card img {
+    height: 80px;
+    width: 80px;
+    object-fit: contain;
+    margin: 0 auto 12px;
+    border-radius: 8px;
+  }
+
+  .card-title h3 {
+    font-size: 1.3rem;
     font-weight: 700;
-    color: black;
-    margin-bottom: 8px;
-    letter-spacing: 0.04em;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    color: #222;
+    margin: 0;
   }
 
   .card-title a {
@@ -104,41 +89,40 @@
   }
 
   .card-title a:hover {
-    color: black;
+    color: #222;
   }
 
   .card-text {
-    font-size: 15px;
-    color: #4a5a48;
-    margin-bottom: 28px;
+    font-size: 14px;
+    color: #666;
+    margin: 8px 0 16px 0;
+    min-height: 40px;
     font-weight: 500;
-    letter-spacing: 0.02em;
-    line-height: 1.4;
-    min-height: 48px;
   }
 
-  .course-card a {
-    width: 100%;
+  .button-wrapper {
+    margin-top: auto; /* pushes button to bottom inside card */
     display: flex;
     justify-content: center;
   }
 
-  .course-card a button {
-    width: auto;
-    min-width: 320px;
-    padding: 12px 28px;
-    background: white;
-    color: black;
+  .btn-primary {
+    background-color: white;
     border: 2px solid black;
-    border-radius: 8px;
-    font-size: 16px;
+    color: black;
+    padding: 10px 24px;
+    font-size: 1rem;
     font-weight: 600;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
   }
 
-  .course-card a button:hover {
-    background: black;
+  .btn-primary:hover,
+  .btn-primary:focus {
+    background-color: black;
     color: white;
   }
 
@@ -150,24 +134,13 @@
     width: 100%;
   }
 
-  /* Responsive tweaks */
-  @media (max-width: 992px) {
-    .course-card {
-      flex: 1 1 calc(50% - 30px);
-      max-width: calc(50% - 30px);
-    }
-    .page-header h2 {
-      font-size: 28px;
-    }
-  }
-
-  @media (max-width: 600px) {
-    .course-card {
-      flex: 1 1 100%;
+  @media (max-width: 768px) {
+    .college_box {
       max-width: 100%;
+      flex: 1 1 100%;
     }
-    .page-header h2 {
-      font-size: 24px;
+    .college_section {
+      gap: 20px;
     }
   }
 </style>
@@ -177,18 +150,21 @@
   <p>Explore top colleges carefully matched to the courses you are interested in.</p>
 </div>
 
-<div class="course-section">
+<!-- College Cards Section -->
+<div class="college_section">
   @if (!empty($courseDetails) && count($courseDetails) > 0)
     @foreach ($courseDetails as $detail)
-      <div class="course-card">
-        <img src="{{ asset('storage/' . $detail->college->logo) }}" alt="College Logo">
-        <div class="card-title">
-          <a href="/college/detail/{{ $detail->college->id }}">{{ $detail->college->name }}</a>
+      <div class="college_box">
+        <div class="card">
+          <img src="{{ asset('storage/' . $detail->college->logo) }}" alt="{{ $detail->college->name }} Logo">
+          <div class="card-title">
+            <h3><a href="/college/detail/{{ $detail->college->id }}">{{ $detail->college->name }}</a></h3>
+          </div>
+          <div class="card-text">{{ $detail->college->address }}</div>
+          <div class="button-wrapper">
+            <a href="/college/detail/course/description/{{ $detail->id }}" class="btn-primary">View Details</a>
+          </div>
         </div>
-        <div class="card-text">{{ $detail->college->address }}</div>
-        <a href="/college/detail/course/description/{{ $detail->id }}">
-          <button>View</button>
-        </a>
       </div>
     @endforeach
   @else

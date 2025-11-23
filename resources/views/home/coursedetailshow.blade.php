@@ -75,6 +75,39 @@
         word-wrap: break-word;
     }
 
+    .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        border: 2px solid;
+    }
+
+    .btn-success {
+        background: white;
+        color: #22c55e;
+        border-color: #22c55e;
+    }
+
+    .btn-success:hover {
+        background: #22c55e;
+        color: white;
+    }
+
+    .btn-danger {
+        background: white;
+        color: #ef4444;
+        border-color: #ef4444;
+    }
+
+    .btn-danger:hover {
+        background: #ef4444;
+        color: white;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .custom-table th,
@@ -112,6 +145,7 @@
                 <td>
                     @if(($courseDetail->status ?? 'PENDING') === 'PENDING')
                         <a href="{{ route('admin.coursedetail.approve', $courseDetail->id) }}" class="btn btn-success btn-sm">Approve</a>
+                        <a href="{{ route('admin.coursedetail.reject', $courseDetail->id) }}" class="btn btn-danger btn-sm" style="margin-left: 8px;">Reject</a>
                     @endif
                 </td>
             </tr>

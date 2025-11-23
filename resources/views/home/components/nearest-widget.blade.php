@@ -12,46 +12,49 @@
     .nearest-container { max-width: 1440px; margin: 40px auto; padding: 0 24px; }
     h3 { font-weight: 600; color: #333; margin-bottom: 20px; text-align: center; }
     #addressInput { border-radius: 8px; border: 1px solid #ced4da; padding: 10px 15px; width: 100%; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
-    #addressInput:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25); outline: none; }
+    #addressInput:focus { border-color: black; box-shadow: 0 0 0 0.2rem outline: none; }
     .alert-location { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
     .scr-btn { border-radius: 8px; font-weight: 600; padding: 10px 20px; border: none; cursor: pointer; transition: all 0.2s ease; text-decoration: none; display: inline-block; }
     .scr-btn-primary { background-color: white; color: black; border: 1px solid black; }
     .scr-btn-primary:hover { background-color: black; color: white; }
     .nearest-search-btn {
-        width: 100%;
+        width: 1140px;
         margin-top: 16px;
-        padding: 12px 20px;
-        border-radius: 10px;
+        padding: 8px 16px;
+        border-radius: 8px;
         font-weight: 600;
-        border: none;
-        color: #fff;
-        background: linear-gradient(135deg, #0d6efd, #6610f2);
-        box-shadow: 0 12px 30px rgba(13, 110, 253, 0.25);
+        font-size: 0.9rem;
+        border: 1px solid black;
+        color: black;
+        background: white;
         cursor: pointer;
         transition: all 0.3s ease;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
+        letter-spacing: 0.5px;
     }
     .nearest-search-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 16px 35px rgba(108, 92, 231, 0.35);
+        background: black;
+        color: white;
     }
     .nearest-search-btn:focus {
         outline: none;
         box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.25);
     }
     .form-group label { font-weight: 500; color: #555; }
-    .searchresult { margin-top: 40px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-    .course_boxes { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-    .course_box { flex: 1 1 calc(33.333% - 20px); min-width: 250px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .course_box:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
-    .course_box .card { border-radius: 12px; border: none; height: 360px; display: flex; flex-direction: column; justify-content: space-between; padding: 15px; text-align: center; background: #fff; }
-    .course_box img { height: 100px; width: 100px; object-fit: contain; margin: 0 auto 10px; border-radius: 50%; border: 2px solid #0d6efd; background: #fff; padding: 5px; }
-    .card-title a { font-size: 18px; font-weight: 600; color: black; text-decoration: none; }
-    .card button { border-radius: 8px; font-weight: 500; transition: all 0.3s ease; padding: 8px 20px; margin-top: 10px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
-    .card button:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(13,110,253,0.3); }
+    .searchresult { margin-top: 40px; padding: 20px; background: #fff; }
+    .course_boxes { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+    .course_box { flex: 1 1 300px; max-width: 320px; transition: box-shadow 0.3s ease; }
+    .course_box:hover .card { box-shadow: 0 8px 20px rgb(0 0 0 / 0.15); }
+    .course_box .card { border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 10px rgb(0 0 0 / 0.1); min-height: 250px; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; background-color: #fff; text-align: center; transition: box-shadow 0.3s ease; }
+    .course_box img { height: 80px; width: 80px; object-fit: contain; margin: 0 auto 12px; border-radius: 8px; }
+    .card-title { margin: 0; }
+    .card-title a { font-size: 1.3rem; font-weight: 700; color: #222; text-decoration: none; }
+    .card-text { font-size: 14px; color: #666; margin: 8px 0 16px 0; min-height: 40px; font-weight: 500; }
+    .button-wrapper { margin-top: auto; }
+    .scr-btn { background-color: white; border: 2px solid black; color: black; padding: 10px 24px; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease; text-decoration: none; display: inline-block; }
+    .scr-btn:hover, .scr-btn:focus { background-color: black; color: white; }
     @media(max-width: 992px) { .course_box { flex: 1 1 calc(50% - 20px); } }
-    @media(max-width: 600px) { .course_box { flex: 1 1 100%; } }
+    @media(max-width: 600px) { .course_box { flex: 1 1 100%; max-width: 100%; } }
     .map-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: center; justify-content: center; z-index: 1050; padding: 20px; }
     .map-modal { background: #fff; border-radius: 12px; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
     .map-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #eee; }
@@ -94,13 +97,13 @@
         <button type="submit" id="submitLocation"></button>
     </form>
 
-    <div class="searchresult full-row border shadow-sm" style="{{ $nearestColleges->count() ? '' : 'display:none;' }}">
+    <div class="searchresult" style="{{ $nearestColleges->count() ? '' : 'display:none;' }}">
         <h3>Nearest Colleges</h3>
-        <div class="row course_boxes">
+        <div class="course_boxes">
             @foreach($nearestColleges as $nearCollege)
-                <div class="col-lg-4 course_box">
+                <div class="course_box">
                     <div class="card">
-                        <img src="{{ asset('storage/' . $nearCollege->logo) }}" alt="College Logo">
+                        <img src="{{ asset('storage/' . $nearCollege->logo) }}" alt="{{ $nearCollege->name }} Logo">
                         <div class="card-title"><a>{{ $nearCollege->name }}</a></div>
                         <div class="card-text">{{ $nearCollege->address }}</div>
 
@@ -113,8 +116,8 @@
                                     ? number_format($distanceMeters / 1000, 2) . ' km'
                                     : number_format($distanceMeters, 0) . ' m';
                             @endphp
-                            <div class="card-text mt-2">
-                                <strong>
+                            <div class="card-text" style="margin-top: 4px;">
+                                <strong style="color: #666;">
                                     <span
                                         class="distance-label"
                                         data-college-lat="{{ $nearCollege->latitude }}"
@@ -125,11 +128,11 @@
                             </div>
                         @endif
 
-                        <div class="d-flex justify-content-center">
-                            <a class="scr-btn scr-btn-primary" href="/college/detail/{{ $nearCollege->id }}">View Details</a>
+                        <div class="button-wrapper">
+                            <a class="scr-btn" href="/college/detail/{{ $nearCollege->id }}">View Details</a>
                             <button
-                                class="scr-btn scr-btn-primary"
-                                style="margin-left: 8px;"
+                                class="scr-btn"
+                                style="margin-top: 8px;"
                                 onclick="openMapForCollege({{ json_encode($nearCollege->latitude) }}, {{ json_encode($nearCollege->longitude) }}, {{ json_encode($nearCollege->name) }})"
                                 type="button"
                             >

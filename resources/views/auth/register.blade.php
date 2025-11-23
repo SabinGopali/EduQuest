@@ -14,7 +14,7 @@
             padding: 40px 35px;
             border-radius: 16px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            max-width: 700px;
+            max-width: 1000px;
             margin: 3rem auto 5rem auto;
             transition: box-shadow 0.3s ease;
         }

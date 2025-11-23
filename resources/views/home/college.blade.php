@@ -56,6 +56,33 @@
     line-height: 1.6;
   }
 
+  /* Search Bar */
+  .search-container {
+    max-width: 600px;
+    margin: 30px auto 40px auto;
+    padding: 0 20px;
+  }
+
+  .search-box {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .search-box:focus {
+    border-color: #222;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-box::placeholder {
+    color: #999;
+  }
+
   /* College Cards - Same as Course Card Design */
   .college_section {
     max-width: 1200px;
@@ -180,8 +207,13 @@
      the right place for your education.</p>
 </div>
 
+<!-- Search Bar -->
+<div class="search-container">
+  <input type="text" id="searchInput" class="search-box" placeholder="Search colleges by name or address...">
+</div>
+
 <!-- College Cards Section -->
-<div class="college_section">
+<div class="college_section" id="collegeContainer">
   @foreach($college as $collegeItem)
     <div class="college_box">
       <div class="card">
@@ -195,5 +227,46 @@
     </div>
   @endforeach
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const collegeContainer = document.getElementById('collegeContainer');
+    const collegeBoxes = collegeContainer.querySelectorAll('.college_box');
+
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase().trim();
+      
+      collegeBoxes.forEach(function(box) {
+        const collegeName = box.querySelector('.card-title h3').textContent.toLowerCase();
+        const collegeAddress = box.querySelector('.card-text').textContent.toLowerCase();
+        
+        if (collegeName.includes(searchTerm) || collegeAddress.includes(searchTerm)) {
+          box.style.display = '';
+        } else {
+          box.style.display = 'none';
+        }
+      });
+
+      // Show no results message if needed
+      const visibleBoxes = Array.from(collegeBoxes).filter(box => box.style.display !== 'none');
+      let noResultsMsg = document.getElementById('noResultsMsg');
+      
+      if (visibleBoxes.length === 0 && searchTerm !== '') {
+        if (!noResultsMsg) {
+          noResultsMsg = document.createElement('div');
+          noResultsMsg.id = 'noResultsMsg';
+          noResultsMsg.style.cssText = 'text-align: center; font-size: 1.25rem; color: #666; margin-top: 40px; width: 100%; padding: 0 20px;';
+          noResultsMsg.textContent = 'No colleges found matching your search.';
+          collegeContainer.appendChild(noResultsMsg);
+        }
+      } else {
+        if (noResultsMsg) {
+          noResultsMsg.remove();
+        }
+      }
+    });
+  });
+</script>
 
 @endsection

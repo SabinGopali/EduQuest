@@ -6,25 +6,31 @@
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f2f5;
+      background-color: white;
       margin: 0;
       padding: 0;
       color: #333;
     }
 
     .profile_card_container {
-      max-width: 700px;
-      margin: 150px auto 60px;
-      padding: 20px;
-      background: white;
+      max-width: 1000px;
+      margin: 3rem auto 5rem auto;
+      padding: 40px 35px;
+      background: #fff;
       border-radius: 16px;
-      box-shadow: 0 4px 16px rgb(0 0 0 / 0.1);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .profile_card_container:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 
     .profile_header {
       text-align: center;
-      padding: 30px 20px 10px;
+      padding: 30px 20px 20px;
       border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
     }
 
     .profile_header img {
@@ -32,8 +38,8 @@
       height: 160px;
       object-fit: cover;
       border-radius: 50%;
-      border: 3px solid #007bff;
-      box-shadow: 0 0 10px rgb(0 123 255 / 0.3);
+      border: 3px solid black;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       margin-bottom: 15px;
       transition: transform 0.3s ease;
     }
@@ -43,15 +49,16 @@
     }
 
     .profile_header h2 {
-      font-weight: 700;
+      font-weight: 800;
       font-size: 28px;
       margin: 0 0 8px;
       color: #222;
+      letter-spacing: 1px;
     }
 
     .profile_header p {
       font-size: 16px;
-      color: #555;
+      color: #666;
       margin: 4px 0;
       font-weight: 500;
     }
@@ -59,19 +66,22 @@
     .profile_section {
       padding: 25px 20px;
       border-bottom: 1px solid #eee;
+      margin-bottom: 10px;
     }
 
     .profile_section:last-child {
       border-bottom: none;
+      margin-bottom: 0;
     }
 
     .profile_section h3 {
       font-size: 22px;
       font-weight: 700;
       margin-bottom: 14px;
-      color: #007bff;
-      border-left: 4px solid #007bff;
-      padding-left: 12px;
+      color: red;
+      border-bottom: 2px solid black;
+      padding-bottom: 6px;
+      letter-spacing: 0.05em;
     }
 
     .profile_section p {
@@ -81,37 +91,62 @@
       line-height: 1.5;
     }
 
-    /* Edit button */
-    .edit_profile_button {
-      display: block;
-      width: 160px;
-      margin: 30px auto 0;
-      padding: 12px 0;
-      background-color: #007bff;
-      border: none;
-      border-radius: 30px;
-      color: white;
+    /* Back button */
+    .back_button {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 24px;
+      background-color: white;
+      border: 2px solid black;
+      border-radius: 8px;
+      color: black;
       font-weight: 600;
       font-size: 16px;
       cursor: pointer;
       text-align: center;
       text-decoration: none;
-      box-shadow: 0 6px 12px rgb(0 123 255 / 0.3);
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .back_button:hover,
+    .back_button:focus {
+      background-color: black;
+      color: white;
+      outline: none;
+    }
+
+    /* Edit button */
+    .edit_profile_button {
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin: 30px auto 0;
+      padding: 14px 40px;
+      background-color: white;
+      border: 2px solid black;
+      border-radius: 8px;
+      color: black;
+      font-weight: 800;
+      font-size: 18px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .edit_profile_button:hover,
     .edit_profile_button:focus {
-      background-color: #0056b3;
-      box-shadow: 0 8px 16px rgb(0 86 179 / 0.4);
+      background-color: black;
+      color: white;
       outline: none;
     }
 
     /* Responsive */
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
       .profile_card_container {
-        margin: 100px 15px 40px;
-        padding: 15px;
+        padding: 30px 25px;
+        margin: 2rem 1.5rem 3rem 1.5rem;
+        max-width: 100%;
       }
 
       .profile_header img {
@@ -128,14 +163,15 @@
       }
 
       .edit_profile_button {
-        width: 140px;
-        font-size: 14px;
-        padding: 10px 0;
+        padding: 14px 0;
+        font-size: 8px;
       }
     }
   </style>
 
 <div class="profile_card_container">
+
+  <a href="{{ route('home') }}" class="back_button">← Back</a>
 
   <div class="profile_header">
     <img src="{{ asset('storage/uploads/' . $student->image) }}" alt="Student Image" />

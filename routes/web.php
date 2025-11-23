@@ -191,6 +191,7 @@ Route::middleware(['auth:admin'])->group(function () {
     });
     Route::get('/admin/course-detail/show', [CourseDetailController::class, 'show'])->name('coursedetail.show');
     Route::get('/admin/coursedetail/approve/{id}', [CourseDetailController::class, 'approve'])->name('admin.coursedetail.approve');
+    Route::get('/admin/coursedetail/reject/{id}', [CourseDetailController::class, 'reject'])->name('admin.coursedetail.reject');
     Route::get('/admin/contact/show', [ContactController::class, 'show'])->name('contact.show');
     Route::get('/admin/college/show', [CollegeController::class, 'show'])->name('college.show');
     Route::get('/admin/student/show', [StudentController::class, 'show'])->name('students.show');

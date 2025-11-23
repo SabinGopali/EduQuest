@@ -121,23 +121,27 @@
     }
 
     /* New Welcome Button Style */
+    .eq-navbar .dropdown {
+        position: relative;
+    }
     .eq-navbar .dropdown button {
-        background: linear-gradient(135deg, #ff6b6b, #ff4d4d);
-        color: white;
+        background: white;
+        color: black;
         border: none;
+       
         padding: 8px 20px;
-        border-radius: 50px; /* pill-shaped */
-        font-size: 0.95rem;
+        border-radius: 8px;
+        font-size: 1.25rem;
         font-weight: 600;
         cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: all 0.3s ease;
         display: flex;
         align-items: center;
         gap: 8px;
     }
     .eq-navbar .dropdown button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4);
+        background: black;
+        color: white;
     }
 
     /* Dropdown menu tweaks to match new design */
@@ -147,10 +151,11 @@
         right: 0;
         top: 110%;
         background: #fff;
-        border-radius: 10px;
+        border: 2px solid black;
+        border-radius: 8px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        padding: 10px 0;
-        min-width: 180px;
+        padding: 8px 0;
+        min-width: 200px;
         z-index: 10000;
     }
     .eq-navbar .dropdown:hover .dropdown-menu {
@@ -158,17 +163,19 @@
     }
     .eq-navbar .dropdown-menu li {
         list-style: none;
+        margin: 0;
     }
     .eq-navbar .dropdown-menu li a {
         display: block;
-        padding: 10px 18px;
+        padding: 12px 18px;
         font-size: 0.95rem;
         color: #333;
-        transition: all 0.2s ease;
-        border-radius: 6px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-weight: 500;
     }
     .eq-navbar .dropdown-menu li a:hover {
-        background: #ff4d4d;
+        background: black;
         color: white;
     }
 

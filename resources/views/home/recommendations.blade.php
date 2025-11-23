@@ -2,62 +2,101 @@
 
 @section('content')
 <style>
-    .page-header {
-        background: #f8f9fa;
-        padding: 30px 0;
-        margin-bottom: 30px;
-        border-bottom: 1px solid #e9ecef;
+    body {
+        background-color: white;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Hero Banner */
+    .home {
+        position: relative;
+        height: 280px;
+        background-color: #111;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .home_background {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: url('{{ asset('img/courseyoulike.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.9);
+        z-index: 1;
+    }
+
+    .intro_section {
+        max-width: 1000px;
+        margin: 50px auto 20px auto;
         text-align: center;
+        padding: 0 20px;
     }
-    .page-title {
-        font-size: 2rem;
-        font-weight: 600;
-        color: #333;
-        margin: 0 0 10px 0;
+
+    .intro_section h2 {
+        font-size: 36px;
+        font-weight: 700;
+        color: #1b4d3e;
+        margin-bottom: 12px;
     }
-    .page-subtitle {
-        color: #666;
-        font-size: 1.1rem;
-        margin: 0;
+
+    .intro_section p {
+        font-size: 18px;
+        color: #4a5a48;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
     }
     .rec-grid {
         display: grid; 
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 24px;
+        gap: 30px;
+        margin-bottom: 60px;
     }
     .rec-card {
-        border: 1px solid #e9ecef; 
-        border-radius: 8px; 
+        border: 1px solid #ddd; 
+        border-radius: 10px; 
         background: #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
         overflow: hidden; 
         display: flex; 
         flex-direction: column;
-        transition: all 0.2s ease;
+        transition: box-shadow 0.3s ease;
     }
     .rec-card:hover { 
-        transform: translateY(-2px); 
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        box-shadow: 0 8px 20px rgb(0 0 0 / 0.15);
     }
     .rec-card-header {
         padding: 20px; 
-        border-bottom: 1px solid #e9ecef; 
-        background: #f8f9fa;
+        border-bottom: 1px solid #ddd; 
+        background: #fff;
     }
     .rec-title { 
-        font-size: 1.2rem; 
-        font-weight: 600; 
-        margin: 0 0 8px 0; 
-        color: #333; 
+        font-size: 1.3rem; 
+        font-weight: 700; 
+        margin: 0 0 12px 0; 
+        color: #222; 
         line-height: 1.4;
     }
     .rec-badge { 
-        background: #007bff; 
+        background: black; 
         color: white; 
-        padding: 4px 12px; 
-        border-radius: 4px; 
+        padding: 6px 14px; 
+        border-radius: 6px; 
         font-size: 0.85rem; 
-        font-weight: 500;
+        font-weight: 600;
         display: inline-block;
     }
     .rec-body { 
@@ -74,8 +113,8 @@
         margin-bottom: 0;
     }
     .rec-field-label {
-        font-weight: 500;
-        color: #555;
+        font-weight: 600;
+        color: #333;
     }
     .rec-muted { 
         color: #666; 
@@ -83,62 +122,67 @@
     }
     .rec-actions { 
         padding: 20px; 
-        border-top: 1px solid #e9ecef; 
-        background: #f8f9fa;
+        border-top: 1px solid #ddd; 
+        background: #fff;
         display: flex; 
-        gap: 8px; 
+        gap: 10px; 
         flex-wrap: wrap;
     }
     .btn-small { 
-        padding: 8px 16px; 
-        border-radius: 4px; 
+        padding: 10px 20px; 
+        border-radius: 6px; 
         font-size: 0.9rem; 
-        border: 1px solid #dee2e6; 
-        background: #fff; 
-        color: #495057; 
+        border: 2px solid black; 
+        background: white; 
+        color: black; 
         text-decoration: none; 
-        font-weight: 500;
-        transition: all 0.2s ease;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
     }
     .btn-small.primary { 
-        background: #007bff; 
-        color: #fff; 
-        border-color: #007bff;
+        background: white; 
+        color: black; 
+        border-color: black;
     }
     .btn-small:hover { 
-        background: #f8f9fa;
-        border-color: #adb5bd;
+        background: black;
+        color: white;
+        border-color: black;
     }
     .btn-small.primary:hover {
-        background: #0056b3;
-        border-color: #0056b3;
+        background: black;
+        color: white;
+        border-color: black;
     }
     .empty-state {
         text-align: center;
         padding: 60px 20px;
-        background: #f8f9fa;
-        border: 2px dashed #dee2e6;
-        border-radius: 8px;
+        background: #fff;
+        border: 2px dashed #ddd;
+        border-radius: 10px;
+        max-width: 800px;
+        margin: 0 auto;
     }
     .empty-icon {
         font-size: 3rem;
-        color: #6c757d;
+        color: #666;
         margin-bottom: 20px;
     }
     .empty-title {
         font-size: 1.5rem;
-        font-weight: 600;
-        color: #495057;
+        font-weight: 700;
+        color: #222;
         margin-bottom: 10px;
     }
     .empty-description {
-        color: #6c757d;
+        color: #666;
         font-size: 1rem;
         margin-bottom: 20px;
     }
     .hint-list { 
         margin: 0; 
-        color: #6c757d;
+        color: #666;
         text-align: left;
         max-width: 300px;
         margin: 0 auto;
@@ -152,34 +196,79 @@
         content: '•';
         position: absolute;
         left: 0;
-        color: #007bff;
+        color: black;
         font-weight: bold;
     }
     @media (max-width: 768px) {
         .rec-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
         }
-        .page-header {
-            padding: 20px 0;
+        .container {
+            padding: 0 15px;
         }
-        .page-title {
-            font-size: 1.5rem;
+        .rec-actions {
+            flex-direction: column;
+        }
+        .btn-small {
+            width: 100%;
+            text-align: center;
+        }
+        .home {
+            height: 220px;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            margin-right: calc(-50vw + 50%);
+        }
+        .home h1 {
+            font-size: 32px !important;
+        }
+        .home p {
+            font-size: 16px !important;
+        }
+        .intro_section h2 {
+            font-size: 28px;
+        }
+        .intro_section p {
+            font-size: 16px;
         }
     }
 </style>
 
-<!-- Page Header -->
-<div class="page-header">
-    <div class="container">
-        <h1 class="page-title">🎯 Courses You Might Like</h1>
-        <p class="page-subtitle">Discover courses tailored to your interests and academic goals</p>
+<!-- Hero Banner -->
+<div class="home">
+    <div class="home_background"></div>
+    <div style="
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        z-index: 2;
+        padding: 0 20px;
+        color: #fff;
+    ">
+        <h1 style="font-size: 42px; font-weight: 800; margin: 0; text-transform: uppercase;">Personalized Course Recommendations</h1>
+        <p style="font-size: 18px; margin-top: 12px; max-width: 600px; color:white;">
+            Discover courses recommended specifically for you based on collaborative filtering and your preferences.
+        </p>
     </div>
+</div>
+
+<!-- Intro Section -->
+<div class="intro_section">
+    <h2>Courses You Might Like</h2>
+    
 </div>
 
 <div class="container">
     @if(empty($ranked))
         <div class="empty-state">
-            <div class="empty-icon">🔍</div>
+            <div class="empty-icon">📋</div>
             <h3 class="empty-title">No Course Recommendations Yet</h3>
             <p class="empty-description">
                 We're working on finding the perfect courses for you! Help us understand your preferences better.
@@ -206,33 +295,33 @@
                     </div>
                     <div class="rec-body">
                         <div class="rec-field">
-                            <span class="rec-field-label">🏫 Institution:</span>
+                            <span class="rec-field-label">Institution:</span>
                             <span class="rec-muted">{{ optional($detail->college)->name ?? 'N/A' }}</span>
                         </div>
                         <div class="rec-field">
-                            <span class="rec-field-label">💰 Tuition Fee:</span>
+                            <span class="rec-field-label">Tuition Fee:</span>
                             <span class="rec-muted">{{ $detail->tuition_fee ?? 'N/A' }}</span>
                         </div>
                         <div class="rec-field">
-                            <span class="rec-field-label">👥 Available Seats:</span>
+                            <span class="rec-field-label">Available Seats:</span>
                             <span class="rec-muted">{{ $detail->seats ?? 'N/A' }}</span>
                         </div>
                         @if(!empty($detail->application_deadline))
                             <div class="rec-field">
-                                <span class="rec-field-label">📅 Application Deadline:</span>
+                                <span class="rec-field-label">Application Deadline:</span>
                                 <span class="rec-muted">{{ \Carbon\Carbon::parse($detail->application_deadline)->format('M d, Y') }}</span>
                             </div>
                         @endif
                     </div>
                     <div class="rec-actions">
                         <a class="btn-small primary" href="{{ route('coursedetail.getById', ['id' => $detail->id]) }}">
-                            👁️ View Course Details
+                            View Course Details
                         </a>
                         <a class="btn-small" href="{{ route('course.getCollegeByCourseId', ['id' => $detail->course_id]) }}">
-                            🏫 Explore Institution
+                            Explore Institution
                         </a>
                         <a class="btn-small" href="{{ route('home.inquiry.form', ['coursedetail_id' => $detail->id]) }}">
-                            💬 Ask Questions
+                            Ask Questions
                         </a>
                     </div>
                 </div>

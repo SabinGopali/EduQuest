@@ -2,235 +2,246 @@
 @section('content')
 
 <style>
-    .page-header {
-        background: #f8f9fa;
-        padding: 30px 0;
-        margin-bottom: 30px;
-        border-bottom: 1px solid #e9ecef;
+    body {
+        background-color: white;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .page-title {
-        font-size: 2rem;
-        font-weight: 600;
-        color: #333;
-        margin: 0 0 10px 0;
-    }
-    .page-subtitle {
-        color: #666;
-        font-size: 1.1rem;
-        margin: 0;
-    }
+
     .form-card {
         background: #fff;
-        padding: 40px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        border: 1px solid #e9ecef;
+        padding: 40px 35px;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        max-width: 1000px;
+        margin: 3rem auto 5rem auto;
+        transition: box-shadow 0.3s ease;
     }
+    .form-card:hover {
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
     .form-title {
-        font-size: 1.8rem;
-        font-weight: 600;
+        font-size: 28px;
+        font-weight: 800;
         margin-bottom: 30px;
-        color: #333;
+        color: #222;
         text-align: center;
-        border-bottom: 2px solid #007bff;
-        padding-bottom: 15px;
+        letter-spacing: 1px;
     }
+
     .form-section {
         margin-bottom: 35px;
-        padding: 25px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        border: 1px solid #e9ecef;
     }
     .form-section h3 {
-        font-size: 1.3rem;
-        font-weight: 600;
-        color: #007bff;
+        font-weight: 700;
+        color: red;
         margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #dee2e6;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        border-bottom: 2px solid black;
+        padding-bottom: 6px;
+        letter-spacing: 0.05em;
     }
-    .form-section h3::before {
-        content: '';
-        width: 4px;
-        height: 20px;
-        background: #007bff;
-        border-radius: 2px;
-    }
+
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 18px;
     }
     .form-group:last-child {
         margin-bottom: 0;
     }
+
     .form-group label {
-        font-weight: 600;
-        color: #495057;
+        font-weight: 700;
+        color: #333;
         margin-bottom: 8px;
         display: block;
-        font-size: 0.95rem;
+        font-size: 1rem;
     }
+
     .form-control,
     input,
     textarea,
     select {
+        font-weight: 400;
+        color: #444;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1.8px solid #ddd;
         width: 100%;
-        padding: 12px 16px;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        color: #495057;
-        background: #fff;
-        transition: all 0.2s ease;
         box-sizing: border-box;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
-    .form-control:focus,
+
+    input::placeholder,
+    textarea::placeholder {
+        font-weight: 600;
+        color: #999;
+        opacity: 1;
+    }
+
     input:focus,
     textarea:focus,
     select:focus {
         outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-        background: #fff;
+        border-color: black;
+        background-color: #f0f8ff;
     }
-    .form-control::placeholder,
-    input::placeholder,
-    textarea::placeholder {
-        color: #6c757d;
-        font-weight: 400;
+
+    textarea {
+        resize: vertical;
+        min-height: 80px;
     }
+
     .btn-submit {
-        background: #007bff;
-        color: #fff;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 6px;
-        font-size: 1rem;
-        font-weight: 600;
+        background-color: white;
+        color: black;
+        border: 2px solid black;
+        padding: 14px 40px;
+        border-radius: 8px;
+        font-weight: 800;
+        font-size: 18px;
         cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        display: inline-block;
     }
+
     .btn-submit:hover {
-        background: #0056b3;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        background-color: black;
+        color: white;
     }
+
     .btn-cancel {
-        background: #6c757d;
-        color: #fff;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 6px;
-        font-size: 1rem;
-        font-weight: 600;
+        background-color: white;
+        color: black;
+        border: 2px solid black;
+        padding: 14px 40px;
+        border-radius: 8px;
+        font-weight: 800;
+        font-size: 18px;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
         text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
+        display: inline-block;
         margin-right: 15px;
     }
+
     .btn-cancel:hover {
-        background: #5a6268;
-        transform: translateY(-1px);
-        color: #fff;
+        background-color: black;
+        color: white;
         text-decoration: none;
     }
+
     .form-actions {
         text-align: center;
         margin-top: 30px;
         padding-top: 20px;
-        border-top: 1px solid #e9ecef;
+        border-top: 1px solid #ddd;
     }
+
     .file-input-wrapper {
         position: relative;
         display: inline-block;
         width: 100%;
     }
+
     .file-input-label {
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 12px 16px;
-        border: 2px dashed #dee2e6;
-        border-radius: 6px;
+        padding: 12px 20px;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
         background: #f8f9fa;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
         text-align: center;
         justify-content: center;
+        font-weight: 600;
+        color: #666;
     }
+
     .file-input-label:hover {
-        border-color: #007bff;
+        border-color: black;
         background: #f0f8ff;
     }
+
     .file-input {
         display: none;
     }
+
     .current-image {
         max-width: 100px;
         max-height: 100px;
         border-radius: 8px;
-        border: 2px solid #e9ecef;
+        border: 2px solid #ddd;
         margin-top: 10px;
     }
+
     .interest-checkboxes {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 15px;
         margin-top: 10px;
     }
+
     .checkbox-item {
         display: flex;
         align-items: center;
         gap: 8px;
         padding: 10px 15px;
         background: #fff;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
+        border: 1.8px solid #ddd;
+        border-radius: 8px;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
     }
+
     .checkbox-item:hover {
-        background: #f8f9fa;
-        border-color: #007bff;
+        background: #f0f8ff;
+        border-color: black;
     }
+
     .checkbox-item input[type="checkbox"] {
         width: auto;
         margin: 0;
     }
+
     .checkbox-item label {
         margin: 0;
         cursor: pointer;
         font-weight: 500;
     }
+
     .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
     }
+
     @media (max-width: 768px) {
         .form-card {
-            padding: 20px;
+            padding: 30px 25px;
+            margin: 2rem 1.5rem 3rem 1.5rem;
+            max-width: 100%;
         }
+
         .form-row {
             grid-template-columns: 1fr;
         }
-        .page-header {
-            padding: 20px 0;
-        }
-        .page-title {
-            font-size: 1.5rem;
-        }
+
         .form-section {
-            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        button[type="submit"],
+        .btn-cancel {
+            padding: 14px 0;
+            font-size: 8px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn-cancel {
+            margin-right: 0;
         }
     }
 </style>
@@ -238,10 +249,8 @@
 
 
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="form-card">
-                <div class="form-title">Profile Information</div>
+    <div class="form-card">
+        <div class="form-title">Edit Profile</div>
 
                 <form id="userForm" method="POST" action="{{ route('students.update', $student->id) }}" enctype="multipart/form-data">
                     @csrf
@@ -249,7 +258,7 @@
 
                     <!-- User Information Section -->
                     <div class="form-section">
-                        <h3>👤 Personal Information</h3>
+                        <h3>Personal Information</h3>
 
                         <div class="form-row">
                             <div class="form-group">
@@ -273,7 +282,7 @@
                                 <label for="image">Profile Picture</label>
                                 <div class="file-input-wrapper">
                                     <label for="image" class="file-input-label">
-                                        📷 Choose Profile Picture
+                                        Choose Profile Picture
                                     </label>
                                     <input type="file" id="image" name="image" class="file-input" accept="image/*">
                                 </div>
@@ -289,7 +298,7 @@
 
                     <!-- Academic Details Section -->
                     <div class="form-section">
-                        <h3>🎓 Academic Information</h3>
+                        <h3>Academic Information</h3>
 
                         <div class="form-row">
                             <div class="form-group">
@@ -322,7 +331,7 @@
 
                     <!-- Interests Section -->
                     <div class="form-section">
-                        <h3>🎯 Areas of Interest</h3>
+                        <h3>Areas of Interest</h3>
                         <div class="form-group">
                             <label>Select your areas of interest (you can select multiple)</label>
                             <div class="interest-checkboxes">
@@ -356,7 +365,7 @@
 
                     <!-- Goals Section -->
                     <div class="form-section">
-                        <h3>🎯 Career Goals</h3>
+                        <h3>Career Goals</h3>
                         <div class="form-group">
                             <label for="goals">Describe your career goals and aspirations</label>
                             <textarea id="goals" name="goal" rows="4" placeholder="Tell us about your career goals, what you want to achieve, and how you plan to reach your objectives..." required>{{ $student->goal }}</textarea>
@@ -365,13 +374,9 @@
 
                     <div class="form-actions">
                         <a href="/myprofile" class="btn-cancel">Cancel</a>
-                        <button type="submit" class="btn-submit">
-                            💾 Update Profile
-                        </button>
+                        <button type="submit" class="btn-submit">Update Profile</button>
                     </div>
                 </form>
-            </div>
-        </div>
     </div>
 </div>
 

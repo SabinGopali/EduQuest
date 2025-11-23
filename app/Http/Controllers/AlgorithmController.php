@@ -166,6 +166,8 @@ class AlgorithmController extends Controller
                 'course_id' => $course->id, // You can replace this with the actual course ID
                 'similarity' => $similarity,
                 'name' => $course->name,
+                'shortName' => $course->shortName ?? '',
+                'stream' => $course->stream ?? '',
             ];
         }
 

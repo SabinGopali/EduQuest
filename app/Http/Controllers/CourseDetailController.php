@@ -249,4 +249,13 @@ class CourseDetailController extends Controller
         return redirect()->back()->with('success', 'Course detail approved successfully.');
     }
 
+    public function reject($id)
+    {
+        $courseDetail = CourseDetail::findOrFail($id);
+        $courseDetail->status = 'REJECTED';
+        $courseDetail->save();
+
+        return redirect()->back()->with('success', 'Course detail rejected successfully.');
+    }
+
 }

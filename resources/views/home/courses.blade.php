@@ -63,6 +63,33 @@
     margin: 0 auto;
   }
 
+  /* Search Bar */
+  .search-container {
+    max-width: 600px;
+    margin: 30px auto 40px auto;
+    padding: 0 20px;
+  }
+
+  .search-box {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .search-box:focus {
+    border-color: #222;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-box::placeholder {
+    color: #999;
+  }
+
   /* Course Grid (same as first page design) */
   .course_section {
     max-width: 1200px;
@@ -83,7 +110,7 @@
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
-    height: 250px;
+    min-height: 280px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -101,7 +128,25 @@
     font-size: 1.3rem;
     font-weight: 700;
     color: #222;
-    margin: 0;
+    margin: 0 0 8px 0;
+  }
+
+  /* Card info */
+  .card-info {
+    text-align: center;
+    margin: 8px 0;
+  }
+
+  .card-info-item {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 4px 0;
+    font-weight: 500;
+  }
+
+  .card-info-label {
+    font-weight: 600;
+    color: #333;
   }
 
   .button-wrapper {
@@ -167,16 +212,33 @@
 <!-- Page Intro -->
 <div class="page-intro">
   <h2>Explore Our Courses</h2>
-  <p>Browse through a curated list of courses across multiple streams and disciplines. Whether you’re looking to start a new academic journey or advance your skills, you’ll find the right fit here.</p>
+  <p>Browse through a curated list of courses across multiple streams and disciplines. Whether you're looking to start a new academic journey or advance your skills, you'll find the right fit here.</p>
+</div>
+
+<!-- Search Bar -->
+<div class="search-container">
+  <input type="text" id="searchInput" class="search-box" placeholder="Search courses by name...">
 </div>
 
 <!-- Course Cards Section -->
-<div class="course_section">
+<div class="course_section" id="courseContainer">
   @foreach($course as $course)
     <div class="course_box">
       <div class="card">
         <div class="card-title">
           <h3>{{ $course->name }}</h3>
+        </div>
+        <div class="card-info">
+          @if(!empty($course->shortName))
+            <div class="card-info-item">
+              <span class="card-info-label">Short Name:</span> {{ $course->shortName }}
+            </div>
+          @endif
+          @if(!empty($course->stream))
+            <div class="card-info-item">
+              <span class="card-info-label">Stream:</span> {{ $course->stream }}
+            </div>
+          @endif
         </div>
         <div class="button-wrapper">
           <a href="/view/course/description/{{ $course->id }}" class="btn-primary">View Details</a>
@@ -185,5 +247,46 @@
     </div>
   @endforeach
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const courseContainer = document.getElementById('courseContainer');
+    const courseBoxes = courseContainer.querySelectorAll('.course_box');
+
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase().trim();
+      
+      courseBoxes.forEach(function(box) {
+        const courseName = box.querySelector('.card-title h3').textContent.toLowerCase();
+        
+        if (courseName.includes(searchTerm)) {
+          box.style.display = '';
+        } else {
+          box.style.display = 'none';
+        }
+      });
+
+      // Show no results message if needed
+      const visibleBoxes = Array.from(courseBoxes).filter(box => box.style.display !== 'none');
+      let noResultsMsg = document.getElementById('noResultsMsg');
+      
+      if (visibleBoxes.length === 0 && searchTerm !== '') {
+        if (!noResultsMsg) {
+          noResultsMsg = document.createElement('div');
+          noResultsMsg.id = 'noResultsMsg';
+          noResultsMsg.className = 'no-data';
+          noResultsMsg.style.cssText = 'text-align: center; font-size: 1.25rem; color: #666; margin-top: 40px; width: 100%;';
+          noResultsMsg.textContent = 'No courses found matching your search.';
+          courseContainer.appendChild(noResultsMsg);
+        }
+      } else {
+        if (noResultsMsg) {
+          noResultsMsg.remove();
+        }
+      }
+    });
+  });
+</script>
 
 @endsection

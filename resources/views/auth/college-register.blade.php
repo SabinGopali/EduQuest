@@ -12,76 +12,95 @@
         }
 
         .form-card {
-            background: white;
+            background: #fff;
             padding: 40px 35px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            max-width: 900px;
-            margin: 3rem auto;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            margin: 3rem auto 5rem auto;
+            transition: box-shadow 0.3s ease;
+        }
+        .form-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
         .form-title {
             font-size: 28px;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 30px;
-            color: #000;
+            color: #222;
             text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .form-section {
+            margin-bottom: 35px;
+        }
+        .form-section h3 {
+            font-weight: 700;
+            color: red;
+            margin-bottom: 20px;
+            border-bottom: 2px solid black;
+            padding-bottom: 6px;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
         }
 
         label,
         .form-group label,
         .file-label {
-            font-weight: 700 !important;
-            color: #000 !important;
+            font-weight: 700;
+            color: #333;
             margin-bottom: 8px;
             display: block;
+            font-size: 1rem;
             cursor: pointer;
             user-select: none;
-            transition: color 0.3s ease;
-        }
-
-        label:hover {
-            color: black;
         }
 
         input[type="text"],
         input[type="email"],
         input[type="password"],
+        input[type="number"],
         input[type="file"],
         textarea,
         select {
             font-weight: 400;
-            color: #000;
+            color: #444;
             padding: 12px 14px;
-            border-radius: 6px;
-            border: 1.5px solid #ccc;
-            box-sizing: border-box;
+            border-radius: 8px;
+            border: 1.8px solid #ddd;
             width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="password"]:focus,
-        input[type="file"]:focus,
+        input::placeholder,
+        textarea::placeholder {
+            font-weight: 600;
+            color: #999;
+            opacity: 1;
+        }
+
+        input:focus,
         textarea:focus,
         select:focus {
             outline: none;
             border-color: black;
-            
             background-color: #f0f8ff;
         }
 
         select[multiple] {
-            height: 110px;
+            height: 120px;
         }
 
-        /* Placeholder text bold and black */
-        input::placeholder,
-        textarea::placeholder {
-            font-weight: 700;
-            color: #000;
-            opacity: 1;
+        textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
         /* Custom file upload label */
@@ -89,18 +108,19 @@
             display: inline-block;
             padding: 12px 20px;
             cursor: pointer;
-            border-radius: 6px;
-            border: 2px dashed #6c757d;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
             background-color: #f8f9fa;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, border-color 0.3s ease;
             text-align: center;
             width: 100%;
-            font-weight: 700;
-            color: #000;
+            font-weight: 600;
+            color: #666;
         }
 
         .custom-file-upload:hover {
             background-color: #e2e6ea;
+            border-color: #999;
         }
 
         /* Gallery group flex with gap */
@@ -129,41 +149,65 @@
         .add-gallery {
             margin-top: 16px;
             width: 100%;
-            font-weight: 700;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1.8px solid #ddd;
+            background-color: white;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .add-gallery:hover {
+            background-color: #f0f8ff;
+            border-color: black;
         }
 
         .btn {
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 12px 25px;
-            font-weight: 700;
-            color: #000;
-            transition: color 0.3s ease;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s ease;
+            border: 1.8px solid #ddd;
+            background-color: white;
         }
 
-        .btn-primary {
-            color: black ;
-            font-weight: 700;
+        .btn:hover {
+            background-color: #f0f8ff;
+            border-color: black;
+        }
+
+        button[type="submit"] {
             background-color: white;
+            color: black;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
             border: 2px solid black;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .btn-primary:hover {
+        button[type="submit"]:hover {
             background-color: black;
             color: white;
         }
 
         .file-name {
             font-size: 0.9rem;
-            color: #555;
-            font-weight: 700;
+            color: #666;
+            font-weight: 600;
             margin-top: 6px;
         }
 
         .image-preview {
             max-width: 80px;
             max-height: 80px;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid #ddd;
             object-fit: cover;
         }
@@ -174,20 +218,36 @@
             color: #333;
         }
 
-        /* Buttons and form spacing */
-        .row.g-4 > [class*="col-"] {
-            margin-bottom: 20px;
+        .form-link {
+            margin-top: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .form-link a {
+            color: red;
+            text-decoration: none;
+            border-bottom: 1.5px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-link a:hover {
+            border-color: black;
+            text-decoration: none;
         }
 
         /* Responsive */
-        @media (max-width: 576px) {
+        @media (max-width: 768px) {
             .form-card {
-                padding: 30px 20px;
-                margin: 2rem 1rem;
+                padding: 30px 25px;
+                margin: 2rem 1.5rem 3rem 1.5rem;
+                max-width: 100%;
             }
 
-            .btn {
-                width: 100%;
+            button[type="submit"] {
+                padding: 14px 0;
+                font-size: 16px;
             }
 
             .gallery-group {
@@ -202,104 +262,110 @@
     </style>
 </head>
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-9">
-            <div class="form-card">
-                <div class="form-title text-center">College Registration Form</div>
+<div class="container">
+    <div class="form-card">
+        <div class="form-title">College Registration Form</div>
 
-                <form id="Collegeform" method="POST" action="{{ route('college.store') }}" enctype="multipart/form-data">
-                    @csrf
+        <form id="Collegeform" method="POST" action="{{ route('college.store') }}" enctype="multipart/form-data">
+            @csrf
 
-                    <div class="row g-4">
-                        <!-- Basic Fields -->
-                        <div class="col-md-6">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" name="name" placeholder="Enter Name" required>
-                        </div>
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <h3>Basic Information</h3>
 
-                        <div class="col-md-6">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" name="email" placeholder="Enter Email" required>
-                        </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" placeholder="Enter Name" required>
+                </div>
 
-                        <div class="col-md-12">
-                            <label for="address">Address</label>
-                            <input type="text" class="form-control" name="address" placeholder="Enter Address" required>
-                        </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" placeholder="Enter Email" required>
+                </div>
 
-                        <!-- Location Search -->
-                        <div class="col-md-12">
-                            <label for="location">Search Location</label>
-                            <input type="text" class="form-control mb-2" id="addressInput" placeholder="Enter The Location">
-                            <button type="button" class="btn btn-outline-primary w-100" id="geocodeButton">Search</button>
-                            <div id="coordinates"></div>
-                        </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" placeholder="Enter Password" required>
+                </div>
 
-                        <div class="col-md-6">
-                            <label>Latitude</label>
-                            <input type="number" step="any" class="form-control" name="latitude" required placeholder="Latitude">
-                        </div>
+                <div class="form-group">
+                    <label for="contact">Contact</label>
+                    <input type="text" name="contact" placeholder="Enter Contact" required>
+                </div>
 
-                        <div class="col-md-6">
-                            <label>Longitude</label>
-                            <input type="number" step="any" class="form-control" name="longitude" required placeholder="Longitude">
-                        </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" name="address" placeholder="Enter Address" required>
+                </div>
 
-                        <div class="col-12" style="display: none;">
-                            <div id="map"></div>
-                        </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" rows="3" placeholder="Enter Description" required></textarea>
+                </div>
+            </div>
 
-                        <!-- Other Inputs -->
-                        <div class="col-md-6">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
-                        </div>
+            <!-- Location Section -->
+            <div class="form-section">
+                <h3>Location</h3>
 
-                        <div class="col-md-6">
-                            <label for="contact">Contact</label>
-                            <input type="text" class="form-control" name="contact" placeholder="Enter Contact" required>
-                        </div>
+                <div class="form-group">
+                    <label for="location">Search Location</label>
+                    <input type="text" id="addressInput" placeholder="Enter The Location">
+                    <button type="button" class="btn" id="geocodeButton" style="margin-top: 10px; width: 100%;">Search Location</button>
+                    <div id="coordinates"></div>
+                </div>
 
-                        <div class="col-md-12">
-                            <label for="description">Description</label>
-                            <textarea class="form-control" name="description" rows="3" placeholder="Enter Description" required></textarea>
-                        </div>
+                <div class="form-group">
+                    <label>Latitude</label>
+                    <input type="number" step="any" name="latitude" required placeholder="Latitude">
+                </div>
 
-                        <!-- Logo Upload -->
-                        <div class="col-md-12">
-                            <label for="logo" class="file-label">College Logo</label>
-                            <label class="custom-file-upload">
-                                <input type="file" name="logo" id="logo" hidden onchange="document.getElementById('logoName').textContent = this.files[0]?.name || 'No file chosen'">
-                                Click to upload logo
-                            </label>
-                            <div id="logoName" class="file-name mt-1">No file chosen</div>
-                        </div>
+                <div class="form-group">
+                    <label>Longitude</label>
+                    <input type="number" step="any" name="longitude" required placeholder="Longitude">
+                </div>
 
-                        <!-- Gallery Uploads -->
-                        <div class="col-md-12 gallery-container">
-                            <label for="gallery" class="file-label">Gallery Image</label>
-                            <div class="gallery-group">
-                                <input type="file" class="form-control-file gallery-input" name="gallery[]">
-                                <button type="button" class="remove-gallery" title="Remove">
-                                    <i class="bi bi-trash3-fill"></i>
-                                </button>
-                            </div>
-                        </div>
+                <div class="form-group" style="display: none;">
+                    <div id="map"></div>
+                </div>
+            </div>
 
-                        <!-- Add More Gallery -->
-                        <div class="col-md-12">
-                            <button type="button" class="btn btn-outline-success add-gallery"><i class="bi bi-plus-circle me-1"></i> Add More Gallery</button>
-                        </div>
+            <!-- Media Section -->
+            <div class="form-section">
+                <h3>Media</h3>
+
+                <div class="form-group">
+                    <label for="logo" class="file-label">College Logo</label>
+                    <label class="custom-file-upload">
+                        <input type="file" name="logo" id="logo" hidden onchange="document.getElementById('logoName').textContent = this.files[0]?.name || 'No file chosen'">
+                        Click to upload logo
+                    </label>
+                    <div id="logoName" class="file-name">No file chosen</div>
+                </div>
+
+                <div class="form-group gallery-container">
+                    <label for="gallery" class="file-label">Gallery Image</label>
+                    <div class="gallery-group">
+                        <input type="file" class="gallery-input" name="gallery[]">
+                        <button type="button" class="remove-gallery" title="Remove">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
                     </div>
+                </div>
 
-                    <!-- Submit -->
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-primary px-5">Submit</button>
-                    </div>
+                <div class="form-group">
+                    <button type="button" class="add-gallery"><i class="bi bi-plus-circle me-1"></i> Add More Gallery</button>
+                </div>
+            </div>
 
-                    @include('partials.errors')
-                </form>
+            <button type="submit">Submit</button>
+
+            <div class="form-link">
+                <a href="/register">Sign up as Student</a>
+            </div>
+
+            @include('partials.errors')
+        </form>
 
                 <script>
                     $(document).ready(function () {
@@ -438,9 +504,6 @@
                         }
                     });
                 </script>
-
-            </div>
-        </div>
     </div>
 </div>
 

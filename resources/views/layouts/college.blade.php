@@ -45,12 +45,38 @@
 
     .sidebar .logo {
       text-align: center;
-      font-size: 1.5rem;
-      font-weight: 700;
       margin-bottom: 35px;
-      color: black;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
       user-select: none;
+      padding: 15px 0;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .sidebar .logo a {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar .logo-img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 2px solid black;
+      padding: 5px;
+      background: white;
+    }
+
+    .sidebar .logo-text {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #222;
+      margin: 0;
+      letter-spacing: 0.5px;
+      line-height: 1.3;
     }
 
     .sidebar ul {
@@ -212,11 +238,23 @@
 
   <div class="dashboard">
     <nav class="sidebar" id="sidebar" tabindex="-1" aria-label="Sidebar Navigation">
-      <a href="/college/dashboard" class="logo">
+      <div class="logo">
         @auth('college')
-          <p>{{ Auth::guard('college')->user()->name }}</p>
+          @php
+            $college = Auth::guard('college')->user();
+          @endphp
+          <a href="/college/dashboard">
+            @if($college->logo)
+              <img src="{{ asset('storage/' . $college->logo) }}" alt="{{ $college->name }} Logo" class="logo-img">
+            @else
+              <div class="logo-img" style="display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: #999; font-size: 0.8rem; text-align: center;">
+                No Logo
+              </div>
+            @endif
+            <p class="logo-text">{{ $college->name }}</p>
+          </a>
         @endauth
-      </a>
+      </div>
       <ul>
         <li>
           <a href="/college/edit-profile">

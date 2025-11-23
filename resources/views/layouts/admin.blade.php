@@ -57,13 +57,39 @@
     }
 
     nav.sidebar .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 35px;
-      color: #000;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
       text-align: center;
+      margin-bottom: 35px;
       user-select: none;
+      padding: 15px 0;
+      border-bottom: 2px solid #ddd;
+    }
+
+    nav.sidebar .logo a {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    nav.sidebar .logo-img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 2px solid black;
+      padding: 5px;
+      background: white;
+    }
+
+    nav.sidebar .logo-text {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #222;
+      margin: 0;
+      letter-spacing: 0.5px;
+      line-height: 1.3;
     }
 
     nav.sidebar ul {
@@ -124,13 +150,13 @@
     }
 
     nav.sidebar ul li a.logout {
-      color: #e74c3c;
+      color: #ff6f61;
       font-weight: 700;
     }
     nav.sidebar ul li a.logout:hover,
     nav.sidebar ul li a.logout:focus {
-      background: rgba(231, 76, 60, 0.15);
-      color: #c0392b;
+      background: rgba(255, 111, 97, 0.25);
+      color: #ff3b2e;
       outline: none;
     }
 
@@ -154,19 +180,20 @@
       width: 48px;
       height: 48px;
       border-radius: 8px;
-      border: none;
-      background: #0059b3;
-      color: #fff;
+      border: 2px solid black;
+      background: white;
+      color: black;
       font-size: 1.7rem;
       cursor: pointer;
       z-index: 1100;
       box-shadow: 0 3px 8px rgba(0,0,0,0.25);
       display: none;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
     }
     button.toggle-btn:hover,
     button.toggle-btn:focus {
-      background: #003d7a;
+      background: black;
+      color: white;
       outline: none;
     }
 
@@ -214,9 +241,12 @@
 
   <div class="dashboard">
     <nav class="sidebar" id="sidebar" tabindex="-1" aria-label="Sidebar Navigation">
-      <a href="/admin/dashboard" class="logo">
-        Admin Dashboard
-      </a>
+      <div class="logo">
+        <a href="/admin/dashboard">
+          {{-- <img src="{{ asset('img/logo.png') }}" alt="EduQuest Logo" class="logo-img"> --}}
+          <p class="logo-text">Admin Dashboard</p>
+        </a>
+      </div>
       <ul>
         <li><a href="/admin/college/show"><i class="fas fa-building"></i> Manage College</a></li>
         <li><a href="/admin/student/show"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
