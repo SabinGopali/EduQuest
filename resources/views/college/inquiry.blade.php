@@ -20,6 +20,7 @@
             padding: 30px 40px;
             border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+             margin-top: -25px;
         }
 
         h2 {

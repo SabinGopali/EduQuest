@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -36,10 +37,10 @@ class CourseController extends Controller
             $course->description = $request->description;
             $saved = $course->save();
             if($saved){
-                return redirect()->route('admin.course.index')->with('message', 'category successfully added');
+                return redirect()->route('course.show')->with('success', 'Course successfully added');
             }
             else{
-                return redirect()->back()->with('message', 'category could not be add');
+                return redirect()->back()->with('error', 'Course could not be added');
             }
         }
 
@@ -83,35 +84,60 @@ class CourseController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Course  $course
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Course $course)
+    public function edit($id)
     {
-        //
+        $course = Course::findOrFail($id);
+        return view('admin.courseedit', compact('course'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Course  $course
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Course $course)
+    public function update(Request $request, $id)
     {
-        //
+        $course = Course::findOrFail($id);
+        $course->name = $request->fname;
+        $course->stream = $request->stream;
+        $course->gpa_limit = $request->gpalimit;
+        $course->shortName = $request->sname;
+        $course->substream = $request->substream;
+        $course->duration = $request->duration;
+        $course->description = $request->description;
+        $saved = $course->save();
+        
+        if($saved){
+            return redirect()->route('course.show')->with('success', 'Course updated successfully');
+        }
+        else{
+            return redirect()->back()->with('error', 'Course could not be updated');
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Course  $course
-     * @return \Illuminate\Http\Response
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Course $course)
+    public function destroy($id)
     {
-        //
+        $course = Course::with('courseDetails')->findOrFail($id);
+
+        DB::transaction(function () use ($course) {
+            $course->courseDetails()->delete();
+            $course->delete();
+        });
+
+        return redirect()
+            ->route('admin.course.show')
+            ->with('success', 'Course deleted successfully.');
     }
     public function getById($id)
     {

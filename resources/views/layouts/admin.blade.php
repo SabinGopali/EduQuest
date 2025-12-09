@@ -49,7 +49,7 @@
       top: 0;
       bottom: 0;
       left: 0;
-      overflow-y: auto;
+      /* overflow-y: auto; */
       border-radius: 0 20px 20px 0;
       font-weight: 600;
       z-index: 1000;

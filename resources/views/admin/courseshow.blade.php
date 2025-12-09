@@ -18,6 +18,8 @@
         border-radius: 14px;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
         transition: all 0.3s ease-in-out;
+        margin-top: -25px;
+
     }
 
     .custom-container:hover {
@@ -133,6 +135,16 @@
         transform: translateY(-1px);
     }
 
+    .icon-edit {
+        background-color: #10b981; /* green */
+        color: white;
+    }
+
+    .icon-edit:hover {
+        background-color: #059669;
+        transform: translateY(-1px);
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .header-row {
@@ -154,6 +166,12 @@
         <a href="{{ route('admin.course.index') }}" class="add-btn">+ Add Course</a>
     </div>
 
+    @if(session('success'))
+        <div style="margin-bottom: 20px; color: #16a34a; font-weight: 600;">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <table class="custom-table">
         <thead>
             <tr>
@@ -166,21 +184,28 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($course as $course)
+            @foreach($course as $courseItem)
             <tr>
                 <td><b>{{ $loop->index + 1 }}</b></td>
-                <td>{{ $course->stream }}</td>
-                <td>{{ $course->subStream }}</td>
-                <td>{{ $course->name }}</td>
-                <td>{{ $course->shortName }}</td>
+                <td>{{ $courseItem->stream }}</td>
+                <td>{{ $courseItem->subStream }}</td>
+                <td>{{ $courseItem->name }}</td>
+                <td>{{ $courseItem->shortName }}</td>
                 <td>
                     <div class="action-buttons">
-                        <a href="/admin/course/view/{{ $course->id }}" class="icon-btn icon-view" title="View">
+                        <a href="/admin/course/view/{{ $courseItem->id }}" class="icon-btn icon-view" title="View">
                             <i class="fas fa-eye"></i>
                         </a>
-                        <a href="#" class="icon-btn icon-delete" title="Delete">
-                            <i class="fas fa-trash-alt"></i>
+                        <a href="{{ route('course.edit', $courseItem->id) }}" class="icon-btn icon-edit" title="Edit">
+                            <i class="fas fa-edit"></i>
                         </a>
+                        <form action="{{ route('admin.course.destroy', $courseItem->id) }}" method="POST" onsubmit="return confirm('Delete this course? This will also remove its course details.');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="icon-btn icon-delete" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                     </div>
                 </td>
             </tr>

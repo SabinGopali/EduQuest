@@ -49,6 +49,7 @@
     .course_box img { height: 80px; width: 80px; object-fit: contain; margin: 0 auto 12px; border-radius: 8px; }
     .card-title { margin: 0; }
     .card-title a { font-size: 1.3rem; font-weight: 700; color: #222; text-decoration: none; }
+    .card { height: 400px; }
     .card-text { font-size: 14px; color: #666; margin: 8px 0 16px 0; min-height: 40px; font-weight: 500; }
     .button-wrapper { margin-top: auto; }
     .scr-btn { background-color: white; border: 2px solid black; color: black; padding: 10px 24px; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease; text-decoration: none; display: inline-block; }
@@ -173,6 +174,16 @@
                (+lon) >= NEPAL_BOUNDS.minLon && (+lon) <= NEPAL_BOUNDS.maxLon;
     }
 
+    function getSearchCoords() {
+        const latField = document.getElementById('latitude');
+        const lonField = document.getElementById('longitude');
+        if (!latField || !lonField) return null;
+        const lat = parseFloat(latField.value);
+        const lon = parseFloat(lonField.value);
+        if (!isFinite(lat) || !isFinite(lon) || !isWithinNepal(lat, lon)) return null;
+        return { lat, lon };
+    }
+
     function setCoords(lat, lon) {
         // Keep full precision for server-side geodesic calculation (Vincenty)
         const latNum = +lat;
@@ -284,10 +295,33 @@
     const GEO_OPTS_FALLBACK = { enableHighAccuracy: true, timeout: 15000, maximumAge: 15000 };
     let geoWatchId = null;
 
+    function upsertModalUserMarker(lat, lon, label) {
+        if (!modalMap || !isFinite(lat) || !isFinite(lon)) return;
+        if (modalUserMarker) {
+            modalUserMarker.setLatLng([lat, lon]);
+        } else {
+            modalUserMarker = L.circleMarker([lat, lon], {
+                radius: 6,
+                color: '#2563eb',
+                fillColor: '#2563eb',
+                fillOpacity: 1
+            }).addTo(modalMap);
+        }
+        if (label) {
+            modalUserMarker.bindPopup(label);
+        }
+    }
+
     function openMapForCollege(lat, lon, name) {
         if (lat == null || lon == null) { alert('Location unavailable for this college.'); return; }
         modalEl.style.display = 'flex';
         titleEl.textContent = name ? ('Location — ' + name) : 'Location';
+        const searchCoords = getSearchCoords();
+        const shouldUseLiveGeo = !searchCoords;
+        if (!shouldUseLiveGeo && geoWatchId != null && navigator.geolocation) {
+            navigator.geolocation.clearWatch(geoWatchId);
+            geoWatchId = null;
+        }
         setTimeout(function(){
             if (!modalMapInited) {
                 const bounds = L.latLngBounds([NEPAL_BOUNDS.minLat, NEPAL_BOUNDS.minLon], [NEPAL_BOUNDS.maxLat, NEPAL_BOUNDS.maxLon]);
@@ -297,18 +331,12 @@
                     attribution: '&copy; OpenStreetMap contributors'
                 }).addTo(modalMap);
                 modalMarker = L.marker([+lat, +lon]).addTo(modalMap);
-                // Prefer fresh high-accuracy geolocation for current user marker
-                if (navigator.geolocation) {
+                if (shouldUseLiveGeo && navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(pos){
                         const uLat = +pos.coords.latitude;
                         const uLon = +pos.coords.longitude;
                         if (isWithinNepal(uLat, uLon)) {
-                            modalUserMarker = L.circleMarker([uLat, uLon], {
-                                radius: 6,
-                                color: '#2563eb',
-                                fillColor: '#2563eb',
-                                fillOpacity: 1
-                            }).addTo(modalMap).bindPopup('You are here');
+                            upsertModalUserMarker(uLat, uLon, 'You are here');
                             const fitBounds = L.latLngBounds([[+lat, +lon], [uLat, uLon]]);
                             modalMap.fitBounds(fitBounds.pad(0.25));
                         }
@@ -322,35 +350,26 @@
                                 const wLat = +wp.coords.latitude;
                                 const wLon = +wp.coords.longitude;
                                 if (!isWithinNepal(wLat, wLon)) return;
-                                if (modalUserMarker) {
-                                    modalUserMarker.setLatLng([wLat, wLon]);
-                                } else {
-                                    modalUserMarker = L.circleMarker([wLat, wLon], {
-                                        radius: 6,
-                                        color: '#2563eb',
-                                        fillColor: '#2563eb',
-                                        fillOpacity: 1
-                                    }).addTo(modalMap).bindPopup('You are here');
-                                }
+                                upsertModalUserMarker(wLat, wLon, 'You are here');
                             }, function(){ /* ignore */ }, GEO_OPTS_FALLBACK);
                         } catch(e) { /* ignore */ }
                     }, function(){ /* fallback to cached below */ }, GEO_OPTS_STRICT);
                 }
-                // Fallback to cached live coords or request coords
-                (function fallbackUserMarker(){
-                    const uLat = parseFloat(document.getElementById('user_latitude').value || document.getElementById('latitude').value);
-                    const uLon = parseFloat(document.getElementById('user_longitude').value || document.getElementById('longitude').value);
-                    if (isFinite(uLat) && isFinite(uLon) && !modalUserMarker) {
-                        modalUserMarker = L.circleMarker([uLat, uLon], {
-                            radius: 6,
-                            color: '#2563eb',
-                            fillColor: '#2563eb',
-                            fillOpacity: 1
-                        }).addTo(modalMap).bindPopup('You are here');
-                        const fitBounds = L.latLngBounds([[+lat, +lon], [uLat, uLon]]);
-                        modalMap.fitBounds(fitBounds.pad(0.25));
-                    }
-                })();
+                if (!shouldUseLiveGeo && searchCoords) {
+                    upsertModalUserMarker(searchCoords.lat, searchCoords.lon, 'Search origin');
+                    const fitBounds = L.latLngBounds([[+lat, +lon], [searchCoords.lat, searchCoords.lon]]);
+                    modalMap.fitBounds(fitBounds.pad(0.25));
+                } else {
+                    (function fallbackUserMarker(){
+                        const uLat = parseFloat(document.getElementById('user_latitude').value || document.getElementById('latitude').value);
+                        const uLon = parseFloat(document.getElementById('user_longitude').value || document.getElementById('longitude').value);
+                        if (isFinite(uLat) && isFinite(uLon) && !modalUserMarker) {
+                            upsertModalUserMarker(uLat, uLon, 'You are here');
+                            const fitBounds = L.latLngBounds([[+lat, +lon], [uLat, uLon]]);
+                            modalMap.fitBounds(fitBounds.pad(0.25));
+                        }
+                    })();
+                }
                 modalMapInited = true;
             } else {
                 modalMap.setView([+lat, +lon], 15);
@@ -359,22 +378,12 @@
                 } else {
                     modalMarker = L.marker([+lat, +lon]).addTo(modalMap);
                 }
-                // Update user marker too: prefer fresh geolocation
-                if (navigator.geolocation) {
+                if (shouldUseLiveGeo && navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(pos){
                         const uLat = +pos.coords.latitude;
                         const uLon = +pos.coords.longitude;
                         if (isWithinNepal(uLat, uLon)) {
-                            if (modalUserMarker) {
-                                modalUserMarker.setLatLng([uLat, uLon]);
-                            } else {
-                                modalUserMarker = L.circleMarker([uLat, uLon], {
-                                    radius: 6,
-                                    color: '#2563eb',
-                                    fillColor: '#2563eb',
-                                    fillOpacity: 1
-                                }).addTo(modalMap).bindPopup('You are here');
-                            }
+                            upsertModalUserMarker(uLat, uLon, 'You are here');
                             const fitBounds = L.latLngBounds([[+lat, +lon], [uLat, uLon]]);
                             modalMap.fitBounds(fitBounds.pad(0.25));
                         }
@@ -388,36 +397,22 @@
                                 const wLat = +wp.coords.latitude;
                                 const wLon = +wp.coords.longitude;
                                 if (!isWithinNepal(wLat, wLon)) return;
-                                if (modalUserMarker) {
-                                    modalUserMarker.setLatLng([wLat, wLon]);
-                                } else {
-                                    modalUserMarker = L.circleMarker([wLat, wLon], {
-                                        radius: 6,
-                                        color: '#2563eb',
-                                        fillColor: '#2563eb',
-                                        fillOpacity: 1
-                                    }).addTo(modalMap).bindPopup('You are here');
-                                }
+                                upsertModalUserMarker(wLat, wLon, 'You are here');
                             }, function(){ /* ignore */ }, GEO_OPTS_FALLBACK);
                         } catch(e) { /* ignore */ }
                     }, function(){
                         const uLat = parseFloat(document.getElementById('user_latitude').value || document.getElementById('latitude').value);
                         const uLon = parseFloat(document.getElementById('user_longitude').value || document.getElementById('longitude').value);
                         if (isFinite(uLat) && isFinite(uLon)) {
-                            if (modalUserMarker) {
-                                modalUserMarker.setLatLng([uLat, uLon]);
-                            } else {
-                                modalUserMarker = L.circleMarker([uLat, uLon], {
-                                    radius: 6,
-                                    color: '#2563eb',
-                                    fillColor: '#2563eb',
-                                    fillOpacity: 1
-                                }).addTo(modalMap).bindPopup('You are here');
-                            }
+                            upsertModalUserMarker(uLat, uLon, 'You are here');
                             const fitBounds = L.latLngBounds([[+lat, +lon], [uLat, uLon]]);
                             modalMap.fitBounds(fitBounds.pad(0.25));
                         }
                     }, GEO_OPTS_STRICT);
+                } else if (searchCoords) {
+                    upsertModalUserMarker(searchCoords.lat, searchCoords.lon, 'Search origin');
+                    const fitBounds = L.latLngBounds([[+lat, +lon], [searchCoords.lat, searchCoords.lon]]);
+                    modalMap.fitBounds(fitBounds.pad(0.25));
                 }
             }
             modalMap.invalidateSize();

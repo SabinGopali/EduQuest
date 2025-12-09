@@ -9,6 +9,7 @@ use App\Models\CourseDetail;
 use App\Models\Inquiry;
 use App\Models\Students;
 use App\Models\Contact;
+use App\Models\Booking;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -30,6 +31,23 @@ class CollegeDashboardController extends Controller
             $query->where('college_id', $college->id);
         })->count();
 
-        return view('college.dashboard', compact('coursecount', 'coursedetailcount', 'inquirycount'));
+        $bookingQuery = Booking::whereHas('courseDetail', function ($query) use ($college) {
+            $query->where('college_id', $college->id);
+        });
+
+        $bookingcount = (clone $bookingQuery)->count();
+        $pendingBookingCount = (clone $bookingQuery)->where('status', 'booked')->count();
+        $approvedBookingCount = (clone $bookingQuery)->where('status', 'approved')->count();
+        $rejectedBookingCount = (clone $bookingQuery)->where('status', 'rejected')->count();
+
+        return view('college.dashboard', compact(
+            'coursecount',
+            'coursedetailcount',
+            'inquirycount',
+            'bookingcount',
+            'pendingBookingCount',
+            'approvedBookingCount',
+            'rejectedBookingCount'
+        ));
     }
 }

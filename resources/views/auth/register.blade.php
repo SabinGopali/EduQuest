@@ -225,6 +225,7 @@
                         <option value="science">Science</option>
                         <option value="computer">Computer</option>
                         <option value="hotel">Hotel</option>
+                        <option value="engineering">Engineering</option>
                         <option value="business">Business</option>
                     </select>
                 </div>

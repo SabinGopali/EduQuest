@@ -9,6 +9,7 @@ use App\Models\CourseDetail;
 use App\Models\Inquiry;
 use App\Models\Students;
 use App\Models\Contact;
+use App\Models\Booking;
 
 class AdminDashboardController extends Controller
 {
@@ -20,6 +21,10 @@ class AdminDashboardController extends Controller
         $inquirycount = Inquiry::count();
         $studentscount = Students::count();
         $contactcount = Contact::count();
+        $bookingcount = Booking::count();
+        $pendingBookingCount = Booking::where('status', 'booked')->count();
+        $approvedBookingCount = Booking::where('status', 'approved')->count();
+        $rejectedBookingCount = Booking::where('status', 'rejected')->count();
 
         // Pending approvals
         $pendingCollegeCount = College::where('status', 'PENDING')->count();
@@ -35,6 +40,11 @@ class AdminDashboardController extends Controller
             'contactcount',
             'pendingCollegeCount',
             'pendingCourseDetailCount'
+        ,
+            'bookingcount',
+            'pendingBookingCount',
+            'approvedBookingCount',
+            'rejectedBookingCount'
         ));
     }
 

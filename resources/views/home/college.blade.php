@@ -100,13 +100,13 @@
   }
 
   .card {
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    justify-content: space-between; /* Ensures content is spaced out */
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
-    min-height: 250px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* ensures button stays at bottom */
+    height: 350px; /* Fixed height for consistency */
     padding: 20px;
     background-color: #fff;
     transition: box-shadow 0.3s ease;
@@ -136,16 +136,16 @@
     font-size: 14px;
     color: #666;
     margin: 8px 0 16px 0;
-    min-height: 40px;
     font-weight: 500;
+    flex-grow: 1; /* Allows content to grow and fill available space */
   }
 
   .button-wrapper {
-    margin-top: auto; /* pushes button to bottom inside card */
+    margin-top: auto; /* Pushes the button to the bottom */
   }
 
   .btn-primary {
-    background-color: white;;
+    background-color: white;
     border: 2px solid black;
     color: black;
     padding: 10px 24px;
@@ -201,7 +201,7 @@
 
 <!-- Intro Section -->
 <div class="intro_section">
-  <h2>Explore Top Colleges</h2>
+  <h2>Explore Our Colleges</h2>
   <p>Browse through a curated list of colleges offering diverse programs and academic excellence. 
      Find detailed information about each institution and start your journey towards success by choosing 
      the right place for your education.</p>

@@ -22,11 +22,13 @@ class BookingController extends Controller
         $student = Auth::guard('student')->user();
         $courseDetail = CourseDetail::with('course')->findOrFail($coursedetail_id);
 
+        // Check GPA limit
         $gpaLimit = $courseDetail->course->gpa_limit;
         if (!is_null($gpaLimit) && $student->gpa < $gpaLimit) {
             return back()->with('error', 'Your GPA does not meet the minimum requirement.');
         }
 
+        // Check application deadline
         if (!is_null($courseDetail->application_deadline)) {
             $deadline = Carbon::parse($courseDetail->application_deadline)->endOfDay();
             if (Carbon::now()->greaterThan($deadline)) {
@@ -37,6 +39,7 @@ class BookingController extends Controller
         try {
             DB::beginTransaction();
 
+            // Check available seats
             $existingCount = Booking::where('coursedetail_id', $courseDetail->id)->lockForUpdate()->count();
             $seats = (int)($courseDetail->seats ?? 0);
             if ($seats > 0 && $existingCount >= $seats) {
@@ -44,6 +47,7 @@ class BookingController extends Controller
                 return back()->with('error', 'No seats available.');
             }
 
+            // Check if the student has already booked this course
             $alreadyBooked = Booking::where('student_id', $student->id)
                 ->where('coursedetail_id', $courseDetail->id)
                 ->exists();
@@ -52,6 +56,7 @@ class BookingController extends Controller
                 return back()->with('error', 'You have already booked this course.');
             }
 
+            // Create the booking
             Booking::create([
                 'student_id' => $student->id,
                 'coursedetail_id' => $courseDetail->id,
@@ -64,13 +69,14 @@ class BookingController extends Controller
             return back()->with('error', 'Booking failed.');
         }
 
-        // Refresh recommendations and redirect to recommendations page
+        // Refresh recommendations and redirect
         try {
             app(CollaborativeFilteringService::class)->updateRecommendationsForStudent((int)$student->id);
         } catch (\Throwable $e) {
-            // ignore errors to not block redirect
+            // Ignore errors to not block the redirect
         }
 
+        // Flash the success message and redirect to the recommendations page
         return redirect()->route('recommend.page')->with('success', 'Course booked successfully.');
     }
 

@@ -33,7 +33,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.loginFrom');
     Route::get('/register', [AdminAuthController::class, 'showRegisterForm'])->name('admin.registerFrom');
     Route::post('/register', [AdminAuthController::class, 'register'])->name('admin.register');
-    Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login');
     Route::get('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
 // College authentication routes
@@ -41,7 +41,7 @@ Route::prefix('college')->group(function () {
     Route::get('/login', [CollegeAuthController::class, 'showLoginForm'])->name('college.loginFrom');
     Route::get('/register', [CollegeAuthController::class, 'showRegisterForm'])->name('college.registerFrom');
     Route::post('/register', [CollegeAuthController::class, 'register'])->name('college.register');
-    Route::post('/college/login', [CollegeAuthController::class, 'login'])->name('college.login');
+    Route::post('/login', [CollegeAuthController::class, 'login'])->name('college.login');
     Route::get('/logout', [CollegeAuthController::class, 'logout'])->name('college.logout');
 });
 // Student authentication routes
@@ -49,7 +49,7 @@ Route::prefix('student')->group(function () {
     Route::get('/login', [StudentAuthController::class, 'showLoginForm'])->name('student.loginFrom');
     Route::get('/register', [StudentAuthController::class, 'showRegisterForm'])->name('student.registerFrom');
     Route::post('/register', [StudentAuthController::class, 'register'])->name('student.register');
-    Route::post('/student/login', [StudentAuthController::class, 'login'])->name('student.login');
+    Route::post('/login', [StudentAuthController::class, 'login'])->name('student.login');
     Route::get('/logout', [StudentAuthController::class, 'logout'])->name('student.logout');
 });
 
@@ -128,6 +128,7 @@ Route::get('/view/colleges', function () {
 Route::get('/admin/course', [CourseController::class, 'index'])->name('admin.course.index');
 Route::get('/admin/course-show', [CourseController::class, 'courseShow'])->name('admin.course.show');
 Route::post('/admin/course-store', [CourseController::class, 'courseStore'])->name('admin.course.store');
+Route::delete('/admin/course/{id}', [CourseController::class, 'destroy'])->name('admin.course.destroy');
 
 Route::get('/courses', [CourseController::class, 'showForStudent'])->name('course.showForStudent');
 Route::get('/view/course/description/{id}', [CourseController::class, 'getByIdforStudent'])->name('course.getByIdforStudent');
@@ -197,6 +198,8 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/student/show', [StudentController::class, 'show'])->name('students.show');
     Route::get('/admin/course/show', [CourseController::class, 'show'])->name('course.show');
     Route::get('/admin/course/view/{id}', [CourseController::class, 'getById'])->name('course.getById');
+    Route::get('/admin/course/edit/{id}', [CourseController::class, 'edit'])->name('course.edit');
+    Route::post('/admin/course/update/{id}', [CourseController::class, 'update'])->name('course.update');
     Route::get('/admin/inquiry/show', [InquiryController::class, 'showForAdmin'])->name('inquiry.showForAdmin');
     Route::get('/admin/inquiry/edit/{id}', [InquiryController::class, 'editForAdmin'])->name('admin.inquiryedit');
     Route::get('/admin/student/detail/{id}', [StudentController::class, 'getByIdForAdmin'])->name('students.getByIdForAdmin');

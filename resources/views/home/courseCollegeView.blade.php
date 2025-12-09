@@ -54,7 +54,7 @@
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
-    min-height: 250px;
+    min-height: 350px;
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* ensures button stays at bottom */

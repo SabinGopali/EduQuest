@@ -18,6 +18,7 @@
         border-radius: 14px;
         box-shadow: 0 6px 20px rgba(0,0,0,0.06);
         transition: all 0.3s ease-in-out;
+         margin-top: -25px;
     }
 
     .custom-container:hover {

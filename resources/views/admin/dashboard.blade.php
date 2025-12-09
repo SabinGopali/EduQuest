@@ -10,6 +10,7 @@
         flex-direction: column;
         min-height: 100vh;
         padding: 2rem 1rem;
+        margin-top: -55px;
     }
 
     .dashboard-header {
@@ -123,6 +124,14 @@
         </script>
     @endif
 
+    @if(($pendingBookingCount ?? 0) > 0)
+        <div class="alert alert-info" role="alert">
+            <strong>Bookings awaiting action:</strong>
+            {{ $pendingBookingCount }} booking(s)
+            <a href="{{ route('booking.index.admin') }}" class="alert-link">review</a>
+        </div>
+    @endif
+
     <div class="dashboard-header">
         <h2>Admin Dashboard</h2>
         <p>Overview of entities and activity</p>
@@ -171,6 +180,14 @@
                 <p>{{ $inquirycount }}</p>
             </div>
         </a>
+        <a href="{{ route('booking.index.admin') }}" class="stat-card" style="text-decoration:none; color:inherit;">
+            <div class="stat-icon" style="background:#cffafe; color:#0f766e;">🗂️</div>
+            <div class="stat-content">
+                <h5>No. of Bookings</h5>
+                <p>{{ $bookingcount }}</p>
+                {{-- <small style="color:#6b7280;">{{ $approvedBookingCount }} approved • {{ $pendingBookingCount }} pending</small> --}}
+            </div>
+        </a>
     </div>
 
     <div class="graphs-container">
@@ -190,17 +207,18 @@
         students: {{ $studentscount ?? 0 }},
         courseDetails: {{ $coursedetailcount ?? 0 }},
         contacts: {{ $contactcount ?? 0 }},
-        inquiries: {{ $inquirycount ?? 0 }}
+        inquiries: {{ $inquirycount ?? 0 }},
+        bookings: {{ $bookingcount ?? 0 }}
     };
 
     new Chart(document.getElementById('summaryChart'), {
         type: 'bar',
         data: {
-            labels: ['Courses', 'Colleges', 'Students', 'Course Details', 'Contacts', 'Inquiries'],
+            labels: ['Courses', 'Colleges', 'Students', 'Course Details', 'Contacts', 'Inquiries', 'Bookings'],
             datasets: [{
                 label: 'Count',
-                data: [dataCounts.courses, dataCounts.colleges, dataCounts.students, dataCounts.courseDetails, dataCounts.contacts, dataCounts.inquiries],
-                backgroundColor: ['#3b82f6', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#6b7280'],
+                data: [dataCounts.courses, dataCounts.colleges, dataCounts.students, dataCounts.courseDetails, dataCounts.contacts, dataCounts.inquiries, dataCounts.bookings],
+                backgroundColor: ['#3b82f6', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#6b7280', '#0f766e'],
                 borderRadius: 10
             }]
         },
@@ -214,10 +232,10 @@
     new Chart(document.getElementById('pieChart'), {
         type: 'pie',
         data: {
-            labels: ['Courses', 'Colleges', 'Students', 'Course Details', 'Contacts', 'Inquiries'],
+            labels: ['Courses', 'Colleges', 'Students', 'Course Details', 'Contacts', 'Inquiries', 'Bookings'],
             datasets: [{
-                data: [dataCounts.courses, dataCounts.colleges, dataCounts.students, dataCounts.courseDetails, dataCounts.contacts, dataCounts.inquiries],
-                backgroundColor: ['#3b82f6', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#6b7280']
+                data: [dataCounts.courses, dataCounts.colleges, dataCounts.students, dataCounts.courseDetails, dataCounts.contacts, dataCounts.inquiries, dataCounts.bookings],
+                backgroundColor: ['#3b82f6', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#6b7280', '#0f766e']
             }]
         }
     });

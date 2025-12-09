@@ -229,11 +229,11 @@
     @forelse($items as $index => $item)
       @php $college = $item['college']; $count = $item['bookings']; @endphp
       <div class="scr-card">
-        <div class="scr-rank">#{{ $index + 1 }}</div>
+        {{-- <div class="scr-rank">#{{ $index + 1 }}</div> --}}
         <img class="scr-logo" src="{{ isset($college->logo) ? asset('storage/' . $college->logo) : asset('img/landing.jpg') }}" alt="Logo" />
         <div class="scr-name">{{ $college->name }}</div>
         <div class="scr-meta">{{ $college->address }}</div>
-        <div class="scr-badge">{{ $count }} {{ $count == 1 ? 'Booking' : 'Bookings' }}</div>
+        {{-- <div class="scr-badge">{{ $count }} {{ $count == 1 ? 'Booking' : 'Bookings' }}</div> --}}
         <div class="scr-actions">
           <a class="scr-btn scr-btn-primary" href="/college/detail/{{ $college->id }}">View Details</a>
         </div>

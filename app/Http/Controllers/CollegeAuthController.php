@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\College;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class CollegeAuthController extends Controller
 {
@@ -23,13 +21,19 @@ class CollegeAuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-        $credentials['user_type'] = 'colleges';
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
         if (Auth::guard('college')->attempt($credentials)) {
-            return redirect()->intended('/college/dashboard');
+            $request->session()->regenerate();
+            return redirect()->route('college.dashboard');
         }
-        return back()->withErrors(['email' => 'Invalid credentials']);
+
+        return back()
+            ->withErrors(['email' => 'Invalid credentials'])
+            ->onlyInput('email');
     }
 
     // Log out the college user
