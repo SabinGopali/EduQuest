@@ -7,10 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CollaborativeFilteringService
 {
-    /**
-     * Build item-based collaborative filtering recommendations for a given student
-     * and persist them to storage for quick retrieval.
-     */
+  
     public function updateRecommendationsForStudent(int $studentId): void
     {
         $bookings = Booking::query()

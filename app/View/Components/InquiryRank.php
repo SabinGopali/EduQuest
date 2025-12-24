@@ -47,7 +47,7 @@ class InquiryRank extends Component
 
         // Limit to top 6 if not showing all
         if (!$this->showAll) {
-            $ranked = $ranked->take(6);
+            $ranked = $ranked->take(15);
         }
 
         $this->items = $ranked;
